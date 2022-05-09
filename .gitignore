@@ -1,0 +1,15 @@
+*.iml
+/pension/.idea/
+/pension/logs/
+/pension/ruoyi-admin/target/
+/pension/ruoyi-common/target/
+/pension/ruoyi-framework/target/
+/pension/ruoyi-generator/target/
+/pension/ruoyi-pension/target/
+/pension/ruoyi-quartz/target/
+/pension/ruoyi-system/target/
+/pension/ruoyi-admin/src/main/resources/*.yml
+/pension/ruoyi-pension/src/main/resources/*.yml
+/vue-pension/.idea/
+/vue-pension/dist/
+/vue-pension/node_modules/
