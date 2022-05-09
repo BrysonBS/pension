@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.owon.mapper.DatapacketMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.owon.domain.dto.Datapacket">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="reportId" column="report_id" jdbcType="INTEGER"/>
+            <result property="source" column="source" jdbcType="VARCHAR" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+            <result property="target" column="target" jdbcType="VARCHAR" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+            <result property="operation" column="operation" jdbcType="INTEGER"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="command" column="command" jdbcType="VARCHAR"/>
+            <result property="session" column="session" jdbcType="VARCHAR"/>
+            <result property="sequence" column="sequence" jdbcType="INTEGER"/>
+            <result property="ip" column="ip" jdbcType="VARCHAR"/>
+            <result property="port" column="port" jdbcType="VARCHAR"/>
+            <result property="result" column="result" jdbcType="BIT"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="ieee" column="ieee" jdbcType="VARCHAR"/>
+            <result property="ep" column="ep" jdbcType="INTEGER"/>
+            <result property="switchgear" column="switchgear" jdbcType="VARCHAR"/>
+            <result property="startNum" column="start_num" jdbcType="INTEGER"/>
+            <result property="count" column="count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,report_id,source,
+        target,operation,type,
+        command,session,sequence,
+        ip,port,result,
+        description,ieee,ep,
+        switchgear,start_num,count
+    </sql>
+</mapper>

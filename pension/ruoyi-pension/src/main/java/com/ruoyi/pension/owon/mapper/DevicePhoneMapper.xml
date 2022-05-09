@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.owon.mapper.DevicePhoneMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.owon.domain.po.DevicePhone">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="deviceId" column="device_id" jdbcType="INTEGER"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,device_id,phone
+    </sql>
+    <delete id="removeByDeviceIds">
+        delete
+        from owon_device_phone
+        where device_id in
+        <foreach collection="idList" item="deviceId" open="(" close=")" separator=",">
+            #{deviceId,jdbcType=INTEGER}
+        </foreach>
+    </delete>
+    <select id="getByDeviceId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from owon_device_phone
+        where
+        device_id = #{deviceId,jdbcType=NUMERIC}
+    </select>
+</mapper>

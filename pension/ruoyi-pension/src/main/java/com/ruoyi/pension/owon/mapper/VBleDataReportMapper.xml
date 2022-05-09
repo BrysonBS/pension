@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.owon.mapper.VBleDataReportMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.owon.domain.po.VBleDataReport">
+            <result property="id" column="id" jdbcType="INTEGER"/>
+            <result property="code" column="code" jdbcType="VARCHAR"/>
+            <result property="mac" column="mac" jdbcType="VARCHAR"/>
+            <result property="ts" column="ts" jdbcType="TIMESTAMP"/>
+            <result property="created" column="created" jdbcType="TIMESTAMP"/>
+            <result property="bid" column="bid" jdbcType="INTEGER"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="command" column="command" jdbcType="VARCHAR"/>
+            <result property="cid" column="cid" jdbcType="INTEGER"/>
+            <result property="ieee" column="ieee" jdbcType="VARCHAR"/>
+            <result property="ep" column="ep" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="devType" column="dev_type" jdbcType="INTEGER"/>
+            <result property="heartRate" column="heart_rate" jdbcType="INTEGER"/>
+            <result property="respiratoryRate" column="respiratory_rate" jdbcType="INTEGER"/>
+            <result property="sleepFlag" column="sleep_flag" jdbcType="INTEGER"/>
+            <result property="statusValue" column="status_value" jdbcType="INTEGER"/>
+            <result property="dataType" column="data_type" jdbcType="INTEGER"/>
+            <result property="awakeFlag" column="awake_flag" jdbcType="INTEGER"/>
+            <result property="batCharge" column="bat_charge" jdbcType="INTEGER"/>
+            <result property="batLvl" column="bat_lvl" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,code,mac,
+        ts,created,bid,
+        type,command,cid,
+        ieee,ep,status,
+        dev_type,heart_rate,respiratory_rate,
+        sleep_flag,status_value,data_type,
+        awake_flag,bat_charge,bat_lvl
+    </sql>
+</mapper>

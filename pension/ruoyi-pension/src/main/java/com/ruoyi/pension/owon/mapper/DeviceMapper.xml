@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.owon.mapper.DeviceMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.owon.domain.po.Device">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="gwCode" column="gw_code" jdbcType="VARCHAR"/>
+            <result property="ieee" column="ieee" jdbcType="VARCHAR"/>
+            <result property="ep" column="ep" jdbcType="INTEGER"/>
+            <result property="netDeviceType" column="net_device_type" jdbcType="INTEGER"/>
+            <result property="linkStatus" column="link_status" jdbcType="BIT"/>
+            <result property="deviceType" column="device_type" jdbcType="INTEGER"/>
+            <result property="iasZoneType" column="ias_zone_type" jdbcType="INTEGER"/>
+            <result property="profileId" column="profile_id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="devModel" column="dev_model" jdbcType="VARCHAR"/>
+            <result property="clusterFlag" column="cluster_flag" jdbcType="INTEGER"/>
+            <result property="manuCode" column="manu_code" jdbcType="INTEGER"/>
+            <result property="option" column="option" jdbcType="INTEGER"/>
+            <result property="duration" column="duration" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="CHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+            <result property="netState" column="net_state" jdbcType="INTEGER"/>
+            <result property="categoriesId" column="categories_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dept_id,gw_code,ieee,
+        ep,net_device_type,link_status,
+        device_type,ias_zone_type,profile_id,
+        name,dev_model,cluster_flag,
+        manu_code,option,duration,
+        status,del_flag,net_state,categories_id
+    </sql>
+    <select id="getListByDeptIdsAndDevice" resultType="com.ruoyi.pension.owon.domain.po.Device">
+        SELECT * FROM v_device_gw_categories a
+        <where>
+            <if test="device.gwCode != null">
+                AND a.gw_code = #{device.gwCode}
+            </if>
+            <if test="device.cid != null">
+                <choose>
+                    <when test="device.cid != 0">
+                        AND a.`cid` = #{device.cid}
+                    </when>
+                    <otherwise>
+                        AND a.`cid` IS NULL
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="device.linkStatus != null">
+                AND (a.link_status = #{device.linkStatus,jdbcType=BIT}
+                OR a.net_state =
+                <choose>
+                    <when test="device.linkStatus">1</when>
+                    <otherwise>0</otherwise>
+                </choose>
+                )
+            </if>
+
+            <if test="deptIds != null and deptIds.size() > 0 ">
+                <choose>
+                    <when test="device.deptId == 100">
+                        AND (
+                    </when>
+                    <otherwise>AND </otherwise>
+                </choose>
+                a.dept_id in
+                <foreach collection="deptIds" item="deptId" open="(" close=")" separator=",">
+                    #{deptId}
+                </foreach>
+                <if test="device.deptId == 100">
+                    OR a.dept_id is NULL)
+                </if>
+            </if>
+            <if test="device.name != null">
+                AND a.`name` LIKE CONCAT('%',#{device.name},'%')
+            </if>
+            <if test="device.ieee != null">
+                AND a.ieee LIKE CONCAT('%',#{device.ieee},'%')
+            </if>
+        </where>
+    </select>
+    <select id="selectAllByDeptIds" resultType="java.lang.String">
+        SELECT DISTINCT gw_code FROM owon_device
+        where dept_id in
+        <foreach collection="deptIds" item="deptId" open="(" close=")" separator=",">
+            #{deptId}
+        </foreach>
+    </select>
+    <select id="getOneAndDeptNameByIeeeAndEp" resultType="com.ruoyi.pension.owon.domain.po.Device">
+        SELECT b.dept_name deptName,a.* FROM v_device_gw_categories a
+        INNER JOIN sys_dept b ON a.dept_id = b.dept_id
+        WHERE a.ieee = #{ieee,jdbcType=VARCHAR} AND a.ep = #{ep,jdbcType=INTEGER}
+    </select>
+    <select id="getPhonesByIeeeAndEp" resultType="java.lang.String">
+        SELECT a.phone FROM `owon_device_phone` a
+        INNER JOIN owon_device b ON a.device_id = b.id
+        WHERE b.ieee = #{ieee,jdbcType=VARCHAR} AND b.ep = #{ep,jdbcType=INTEGER}
+    </select>
+    <select id="getOneById" resultType="com.ruoyi.pension.owon.domain.po.Device">
+        SELECT * FROM v_device_gw_categories
+        WHERE id = #{id}
+    </select>
+    <select id="getListByDeptIdsAndCids" resultType="com.ruoyi.pension.owon.domain.po.Device">
+        SELECT * FROM v_device_gw_categories
+        <where>
+            dept_id in
+            <foreach collection="deptIds" item="deptId" open="(" close=")" separator=",">
+                #{deptId}
+            </foreach>
+            <if test="cids != null">
+                AND cid in
+                <foreach collection="cids" item="cid" open="(" close=")" separator=",">
+                    #{cid}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="getCountByIeeeAndCids" resultType="java.lang.Integer">
+        SELECT count(*) FROM v_device_gw_categories
+        WHERE ieee = #{ieee}
+        <if test="cids != null">
+            AND cid in
+            <foreach collection="cids" item="cid" open="(" close=")" separator=",">
+                #{cid}
+            </foreach>
+        </if>
+    </select>
+    <insert id="saveOrUpdateByIeeeAndEp" keyColumn="id" keyProperty="id" useGeneratedKeys="true"
+            parameterType="com.ruoyi.pension.owon.domain.po.DeviceEp">
+        <selectKey keyProperty="id" resultType="com.ruoyi.pension.owon.domain.po.Device" order="BEFORE">
+            SELECT count(id) AS id FROM owon_device WHERE ieee = #{ieee} and ep = #{ep}
+        </selectKey>
+        <if test="id > 0">
+            update owon_device
+            <set>
+                <if test="gwCode != null">gw_code = #{gwCode}, </if>
+                <if test="netDeviceType != null">net_device_type = #{netDeviceType}, </if>
+                <if test="linkStatus != null">link_status = #{linkStatus,jdbcType=BIT},</if>
+                <if test="deviceType != null">device_type = #{deviceType}, </if>
+                <if test="iasZoneType != null">ias_zone_type = #{iasZoneType}, </if>
+                <if test="profileId != null">profile_id = #{profileId}, </if>
+                <if test="name != null">`name` = #{name}, </if>
+                <if test="devModel != null">dev_model = #{devModel}, </if>
+                <if test="clusterFlag != null">cluster_flag = #{clusterFlag}, </if>
+                <if test="manuCode != null">manu_code = #{manuCode}, </if>
+                <if test="option != null">`option` = #{option}, </if>
+                <if test="duration != null">duration = #{duration}, </if>
+                <if test="netState != null">net_state = #{netState}</if>
+            </set>
+            WHERE ieee = #{ieee} and ep = #{ep}
+        </if>
+        <if test="id == 0">
+            insert into owon_device
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="ieee != null">ieee, </if>
+                <if test="ep != null">ep, </if>
+                <if test="gwCode != null">gw_code, </if>
+                <if test="netDeviceType != null">net_device_type, </if>
+                <if test="linkStatus != null">link_status, </if>
+                <if test="deviceType != null">device_type, </if>
+                <if test="iasZoneType != null">ias_zone_type, </if>
+                <if test="profileId != null">profile_id, </if>
+                <if test="name != null">`name`, </if>
+                <if test="devModel != null">dev_model, </if>
+                <if test="clusterFlag != null">cluster_flag, </if>
+                <if test="manuCode != null">manu_code, </if>
+                <if test="option != null">`option`, </if>
+                <if test="duration != null">duration, </if>
+                <if test="netState != null">net_state,</if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="ieee != null">#{ieee}, </if>
+                <if test="ep != null">#{ep}, </if>
+                <if test="gwCode != null">#{gwCode}, </if>
+                <if test="netDeviceType != null">#{netDeviceType}, </if>
+                <if test="linkStatus != null">#{linkStatus,jdbcType=BIT}, </if>
+                <if test="deviceType != null">#{deviceType}, </if>
+                <if test="iasZoneType != null">#{iasZoneType}, </if>
+                <if test="profileId != null">#{profileId}, </if>
+                <if test="name != null">#{name}, </if>
+                <if test="devModel != null">#{devModel}, </if>
+                <if test="clusterFlag != null">#{clusterFlag}, </if>
+                <if test="manuCode != null">#{manuCode}, </if>
+                <if test="option != null">#{option}, </if>
+                <if test="duration != null">#{duration}, </if>
+                <if test="netState != null">#{netState},</if>
+            </trim>
+        </if>
+    </insert>
+    <insert id="insertByDeviceEp" parameterType="com.ruoyi.pension.owon.domain.po.DeviceEp">
+        insert into owon_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ieee != null">ieee, </if>
+            <if test="ep != null">ep, </if>
+            <if test="gwCode != null">gw_code, </if>
+            <if test="netDeviceType != null">net_device_type, </if>
+            <if test="linkStatus != null">link_status, </if>
+            <if test="deviceType != null">device_type, </if>
+            <if test="iasZoneType != null">ias_zone_type, </if>
+            <if test="profileId != null">profile_id, </if>
+            <if test="name != null">`name`, </if>
+            <if test="devModel != null">dev_model, </if>
+            <if test="clusterFlag != null">cluster_flag, </if>
+            <if test="manuCode != null">manu_code, </if>
+            <if test="option != null">`option`, </if>
+            <if test="duration != null">duration, </if>
+            <if test="netState != null">net_state,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ieee != null">#{ieee}, </if>
+            <if test="ep != null">#{ep}, </if>
+            <if test="gwCode != null">#{gwCode}, </if>
+            <if test="netDeviceType != null">#{netDeviceType}, </if>
+            <if test="linkStatus != null">#{linkStatus,jdbcType=BIT}, </if>
+            <if test="deviceType != null">#{deviceType}, </if>
+            <if test="iasZoneType != null">#{iasZoneType}, </if>
+            <if test="profileId != null">#{profileId}, </if>
+            <if test="name != null">#{name}, </if>
+            <if test="devModel != null">#{devModel}, </if>
+            <if test="clusterFlag != null">#{clusterFlag}, </if>
+            <if test="manuCode != null">#{manuCode}, </if>
+            <if test="option != null">#{option}, </if>
+            <if test="duration != null">#{duration}, </if>
+            <if test="netState != null">#{netState},</if>
+        </trim>
+    </insert>
+    <update id="updateNameAndLinkStatusAndNetState" parameterType="com.ruoyi.pension.owon.domain.po.DeviceEp">
+        update owon_device
+        <set>
+            <if test="name != null">`name` = #{name,jdbcType=VARCHAR}, </if>
+            <if test="linkStatus != null">link_status = #{linkStatus,jdbcType=BOOLEAN}, </if>
+            <if test="netState != null">net_state = #{netState,jdbcType=NUMERIC}, </if>
+        </set>
+        WHERE ieee = #{ieee} and ep = #{ep}
+    </update>
+    <update id="updateNameAndLinkStatusByIeeeAndEp">
+        update owon_device
+        set name        = #{name,jdbcType=VARCHAR},
+            link_status = #{linkStatus,jdbcType=BOOLEAN}
+        where ieee = #{ieee,jdbcType=VARCHAR}
+          AND ep = #{ep,jdbcType=NUMERIC}
+    </update>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.owon.mapper.DeviceCategoriesMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.owon.domain.po.DeviceCategories">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="displayName" column="display_name" jdbcType="VARCHAR"/>
+            <result property="devModel" column="dev_model" jdbcType="VARCHAR"/>
+            <result property="deviceType" column="device_type" jdbcType="INTEGER"/>
+            <result property="iasZoneType" column="ias_zone_type" jdbcType="INTEGER"/>
+            <result property="serverDevModel" column="server_dev_model" jdbcType="VARCHAR"/>
+            <result property="displayNameUs" column="display_name_us" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,display_name,dev_model,
+        device_type,ias_zone_type,server_dev_model,
+        display_name_us,type
+    </sql>
+    <select id="getAllList" resultType="com.ruoyi.pension.owon.domain.po.DeviceCategories">
+        select id,display_name,CONCAT_WS(' ',dev_model,device_type,ias_zone_type) info from owon_device_categories
+    </select>
+</mapper>

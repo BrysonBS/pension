@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.owon.mapper.DeviceEpMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.owon.domain.po.DeviceEp">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="ieee" column="ieee" jdbcType="VARCHAR"/>
+            <result property="ep" column="ep" jdbcType="INTEGER"/>
+            <result property="netDeviceType" column="net_device_type" jdbcType="INTEGER"/>
+            <result property="linkStatus" column="link_status" jdbcType="BIT"/>
+            <result property="deviceType" column="device_type" jdbcType="INTEGER"/>
+            <result property="iasZoneType" column="ias_zone_type" jdbcType="INTEGER"/>
+            <result property="profileId" column="profile_id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="devModel" column="dev_model" jdbcType="VARCHAR"/>
+            <result property="clusterFlag" column="cluster_flag" jdbcType="INTEGER"/>
+            <result property="manuCode" column="manu_code" jdbcType="INTEGER"/>
+            <result property="option" column="option" jdbcType="INTEGER"/>
+            <result property="duration" column="duration" jdbcType="INTEGER"/>
+            <result property="netState" column="net_state" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,ieee,ep,
+        net_device_type,link_status,device_type,
+        ias_zone_type,profile_id,name,dev_model,cluster_flag,
+        manu_code,option,duration,net_state
+    </sql>
+</mapper>

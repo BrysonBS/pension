@@ -10,6 +10,7 @@
 /pension/ruoyi-system/target/
 /pension/ruoyi-admin/src/main/resources/*.yml
 /pension/ruoyi-pension/src/main/resources/*.yml
+/pension/ruoyi-pension/src/test/
 /vue-pension/.idea/
 /vue-pension/dist/
 /vue-pension/node_modules/

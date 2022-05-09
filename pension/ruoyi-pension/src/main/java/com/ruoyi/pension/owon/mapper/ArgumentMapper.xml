@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.owon.mapper.ArgumentMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.owon.domain.dto.Argument">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="dpId" column="dp_id" jdbcType="INTEGER"/>
+            <result property="mac" column="mac" jdbcType="VARCHAR"/>
+            <result property="agentid" column="agentid" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="oldPassword" column="old_password" jdbcType="VARCHAR"/>
+            <result property="newPassword" column="new_password" jdbcType="VARCHAR"/>
+            <result property="timeArea" column="time_area" jdbcType="VARCHAR"/>
+            <result property="area" column="area" jdbcType="VARCHAR"/>
+            <result property="timezone" column="timezone" jdbcType="INTEGER"/>
+            <result property="dst" column="dst" jdbcType="BIT"/>
+            <result property="utc" column="utc" jdbcType="TIMESTAMP"/>
+            <result property="dhcp" column="dhcp" jdbcType="INTEGER"/>
+            <result property="staticIp" column="static_ip" jdbcType="VARCHAR"/>
+            <result property="ipMask" column="ip_mask" jdbcType="VARCHAR"/>
+            <result property="ipGw" column="ip_gw" jdbcType="VARCHAR"/>
+            <result property="primaryDns" column="primary_dns" jdbcType="VARCHAR"/>
+            <result property="secondDns" column="second_dns" jdbcType="VARCHAR"/>
+            <result property="total" column="total" jdbcType="INTEGER"/>
+            <result property="start" column="start" jdbcType="INTEGER"/>
+            <result property="count" column="count" jdbcType="INTEGER"/>
+            <result property="ieee" column="ieee" jdbcType="VARCHAR"/>
+            <result property="ep" column="ep" jdbcType="INTEGER"/>
+            <result property="time" column="time" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="country" column="country" jdbcType="VARCHAR"/>
+            <result property="state" column="state" jdbcType="VARCHAR"/>
+            <result property="zipcode" column="zipcode" jdbcType="VARCHAR"/>
+            <result property="apptoken" column="apptoken" jdbcType="VARCHAR"/>
+            <result property="session" column="session" jdbcType="VARCHAR"/>
+            <result property="softversion" column="softversion" jdbcType="VARCHAR"/>
+            <result property="softversionnum" column="softversionnum" jdbcType="INTEGER"/>
+            <result property="protocol" column="protocol" jdbcType="VARCHAR"/>
+            <result property="protocolversion" column="protocolversion" jdbcType="VARCHAR"/>
+            <result property="deviceType" column="device_type" jdbcType="INTEGER"/>
+            <result property="devModel" column="dev_model" jdbcType="VARCHAR"/>
+            <result property="chiptype" column="chiptype" jdbcType="VARCHAR"/>
+            <result property="wifitype" column="wifitype" jdbcType="INTEGER"/>
+            <result property="subVersion" column="sub_version" jdbcType="VARCHAR"/>
+            <result property="ssid" column="ssid" jdbcType="VARCHAR"/>
+            <result property="sskey" column="sskey" jdbcType="VARCHAR"/>
+            <result property="netMode" column="net_mode" jdbcType="VARCHAR"/>
+            <result property="web" column="web" jdbcType="VARCHAR"/>
+            <result property="portNum" column="port_num" jdbcType="VARCHAR"/>
+            <result property="ipAddr" column="ip_addr" jdbcType="VARCHAR"/>
+            <result property="sslPortNum" column="ssl_port_num" jdbcType="VARCHAR"/>
+            <result property="success" column="success" jdbcType="BIT"/>
+            <result property="errorcodes" column="errorcodes" jdbcType="TINYINT"/>
+            <result property="errormessages" column="errormessages" jdbcType="VARCHAR"/>
+            <result property="rtype" column="rtype" jdbcType="INTEGER"/>
+            <result property="zoneId" column="zone_id" jdbcType="INTEGER"/>
+            <result property="zoneType" column="zone_type" jdbcType="INTEGER"/>
+            <result property="zoneName" column="zone_name" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="batteryPercentageRemain" column="battery_percentage_remain" jdbcType="INTEGER"/>
+            <result property="switchgear" column="switchgear" jdbcType="VARCHAR"/>
+            <result property="second" column="second" jdbcType="INTEGER"/>
+            <result property="option" column="option" jdbcType="INTEGER"/>
+            <result property="duration" column="duration" jdbcType="INTEGER"/>
+            <result property="devType" column="dev_type" jdbcType="INTEGER"/>
+            <result property="heartRate" column="heart_rate" jdbcType="INTEGER"/>
+            <result property="respiratoryRate" column="respiratory_rate" jdbcType="INTEGER"/>
+            <result property="sleepFlag" column="sleep_flag" jdbcType="INTEGER"/>
+            <result property="statusValue" column="status_value" jdbcType="INTEGER"/>
+            <result property="dataType" column="data_type" jdbcType="INTEGER"/>
+            <result property="awakeFlag" column="awake_flag" jdbcType="INTEGER"/>
+            <result property="batCharge" column="bat_charge" jdbcType="INTEGER"/>
+            <result property="batLvl" column="bat_lvl" jdbcType="INTEGER"/>
+            <result property="netState" column="net_state" jdbcType="INTEGER"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dp_id,mac,
+        agentid,version,username,
+        password,old_password,new_password,
+        time_area,area,timezone,
+        dst,utc,dhcp,
+        static_ip,ip_mask,ip_gw,
+        primary_dns,second_dns,total,
+        start,count,ieee,
+        ep,time,name,
+        country,state,zipcode,
+        apptoken,session,softversion,
+        softversionnum,protocol,protocolversion,
+        device_type,dev_model,chiptype,
+        wifitype,sub_version,ssid,
+        sskey,net_mode,web,
+        port_num,ip_addr,ssl_port_num,
+        success,errorcodes,errormessages,
+        rtype,zone_id,zone_type,zone_name,
+        status,battery_percentage_remain,
+        switchgear,second,option,duration,
+        dev_type,heart_rate,respiratory_rate,
+        sleep_flag,status_value,data_type,awake_flag,
+        bat_charge,bat_lvl,net_state
+    </sql>
+</mapper>
