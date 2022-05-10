@@ -50,7 +50,6 @@ public class OwonHttp {
                 .build();
         String jsonParams = objectMapper.writeValueAsString(request);
         String url = owonProps.getServer_china() + owonProps.getUri_sendGwData();
-        System.out.println(jsonParams);
         //发送请求
         return HttpClientUtil.postOfBody(jsonParams,url);
     }

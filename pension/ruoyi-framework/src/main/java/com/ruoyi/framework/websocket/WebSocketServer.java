@@ -82,6 +82,7 @@ public class WebSocketServer {
             WebSocketUsers.put(loginUser.getUserId()+"",session);
 
             LOGGER.info("\n 建立连接 - {}", session);
+            //LOGGER.info("\n 当前连接数 - {}",socketMaxOnlineCount - socketSemaphore.availablePermits());
             LOGGER.info("\n 当前人数 - {}", WebSocketUsers.getUsers().size());
             WebSocketUsers.sendMessageToUserByText(session, "连接成功");
         }

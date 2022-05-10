@@ -61,7 +61,7 @@
 
     <el-table ref="tables" v-loading="loading" :data="list" @selection-change="handleSelectionChange" :default-sort="defaultSort" @sort-change="handleSortChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" width="50px" align="center">
+      <el-table-column label="序号" width="70px" align="center">
         <template slot-scope="scope">
           <span>{{scope.row.num = scope.$index + (queryParams.pageNum - 1) * queryParams.pageSize + 1}}</span>
         </template>

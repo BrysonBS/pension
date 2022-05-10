@@ -55,20 +55,6 @@
         </el-card>
       </el-col>
     </el-row>
-<!--    <el-table ref="tables" v-loading="loading" :data="list">
-      <el-table-column label="序号" width="50px" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.num = scope.$index + (queryParams.pageNum - 1) * queryParams.pageSize + 1}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="150" label="时间" align="center" prop="ts">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.ts) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="150" label="心率" align="center" prop="heartRate" :show-overflow-tooltip="true"/>
-      <el-table-column width="180" label="呼吸率" align="center" prop="respiratoryRate" :show-overflow-tooltip="true" />
-    </el-table>-->
   </div>
 </template>
 

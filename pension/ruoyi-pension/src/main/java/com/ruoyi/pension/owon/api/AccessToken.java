@@ -47,7 +47,32 @@ public class AccessToken {
                         .put(AjaxResult.CODE_TAG,HttpStatus.INTERNAL_SERVER_ERROR.value())
                         .put(AjaxResult.DATA_TAG,"获取owon的AccessToken失败:  "+httpResponse.body());
             }
-            System.out.println(httpResponse.body());
+        }
+        return AjaxResult.success()
+                .put(AjaxResult.CODE_TAG,HttpStatus.OK.value())
+                .put(AjaxResult.DATA_TAG,owonProps.getAccessToken())
+                .put("ts",owonProps.getTs());
+    }
+
+    public AjaxResult refreshToken() throws JsonProcessingException, ExecutionException, InterruptedException {
+        long ts = OwonTsConvertor.getNowTs();
+        owonProps.setTs(ts);//设置查询时间戳
+        String url = owonProps.getServer_china()+ owonProps.getUri_accessToken_refresh();
+        String jsonParams = owonProps.getRefreshRequestJson();
+        //发送获取token请求
+        HttpResponse<String> httpResponse = HttpClientUtil.post(jsonParams,url);
+        JsonNode jsonNode = objectMapper.readTree(httpResponse.body());
+        String resultCode = jsonNode.at("/code").asText();
+        String resultToken = jsonNode.at("/accessToken").asText();
+        long resultTs = jsonNode.at("/ts").asLong();
+        if("100".equals(resultCode)){//成功
+            owonProps.setAccessToken(resultToken);
+            owonProps.setTs(resultTs);
+        }
+        else{
+            return AjaxResult.error()
+                    .put(AjaxResult.CODE_TAG,HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .put(AjaxResult.DATA_TAG,"刷新owon的AccessToken失败:  "+httpResponse.body());
         }
         return AjaxResult.success()
                 .put(AjaxResult.CODE_TAG,HttpStatus.OK.value())

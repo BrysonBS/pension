@@ -82,6 +82,11 @@ public class OwonSwagger {
     public AjaxResult getAccessToken() throws ExecutionException, InterruptedException, JsonProcessingException {
         return accessToken.getAccessToken();
     }
+    @ApiOperation("刷新AccessToken")
+    @GetMapping("/refreshAccessToken")
+    public AjaxResult refreshAccessToken() throws ExecutionException, JsonProcessingException, InterruptedException {
+        return accessToken.refreshToken();
+    }
     @ApiOperation("获取设备EP节点列表")
     @GetMapping("/getEpList")
     public AjaxResult getEpList() throws ExecutionException, InterruptedException, JsonProcessingException {

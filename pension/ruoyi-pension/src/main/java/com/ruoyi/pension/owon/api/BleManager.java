@@ -20,6 +20,11 @@ public class BleManager {
     @Autowired
     private OwonHttp owonHttp;
 
+    /**
+     * 获取BLE设备列表
+     * @param mac
+     * @return
+     */
     public AjaxResult getBleListByMac(String mac) throws ExecutionException, InterruptedException, JsonProcessingException {
         AjaxResult ajaxResult = accessToken.getAccessToken();
         if((int)(ajaxResult.get(AjaxResult.CODE_TAG)) != HttpStatus.OK.value())
