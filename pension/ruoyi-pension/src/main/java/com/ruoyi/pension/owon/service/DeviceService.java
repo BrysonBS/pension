@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.domain.po.DeviceEp;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import com.ruoyi.pension.owon.mapper.DeviceMapper;
+import io.jsonwebtoken.lang.Collections;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,8 @@ public class DeviceService extends ServiceImpl<DeviceMapper, Device> implements 
     @Autowired
     private SysDeptOwonService deptOwonService;
 
-    public List<Device> getListByDeptIdsAndDevice(List<Long> deptIds,Device device){;
+    public List<Device> getListByDeptIdsAndDevice(List<Long> deptIds,Device device){
+        if(Collections.isEmpty(deptIds)) deptIds = null;
         List<Device> list = this.baseMapper.getListByDeptIdsAndDevice(deptIds,device);
         for(Device e : list){
             DeviceEp deviceEp = redisCache.getCacheObject(e.getIeee());
