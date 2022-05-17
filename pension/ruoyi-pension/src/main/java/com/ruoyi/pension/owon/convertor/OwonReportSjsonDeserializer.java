@@ -47,7 +47,7 @@ public class OwonReportSjsonDeserializer extends StdDeserializer<Datapacket> {
         String command = jsonNode.at("/command").asText();
         String result = jsonNode.at("/result").asText();
 
-        log.info(System.getProperty("line.separator")+"sjson::  "+sjson);
+        //log.info(System.getProperty("line.separator")+"sjson::  "+sjson);
 
         if(Strings.isBlank(result)){ //自动上报信息
             int rtype = jsonNode.at("/argument/rtype").asInt();

@@ -2,13 +2,16 @@ package com.ruoyi.pension.owon.domain.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum Operation {
 
     /** 系统上报 */
-    /** 自动上报2XXXX */
+
+    /** OWON自动上报2XXXX */
     REPORT_PANIC_BUTTON(20000,"拉绳报警器上报信息"),
     REPORT_SENSOR_UPDATE(20010,"安防上报"),
     REPORT_SENSOR_WARNING(20020,"安防报警上报"),
@@ -17,6 +20,11 @@ public enum Operation {
     REPORT_HEART_BEAT(20050,"心跳同步上报"),
     REPORT_BLE_DATA_UPDATE(20060,"BLE设备上报更新"),
     REPORT_BLE_CONNECT_CHANGE(20070,"BLE设备连接状态变化上报"),
+
+    /** BIOLAND自动上报22XXX */
+    REPORT_BLOOD_PRESSURE(22000,"血压计上报信息"),
+    REPORT_BLOOD_GLUCOSE(22010,"血糖仪上报信息"),
+
     /** 请求3XXXX */
     REQUEST_EP_LIST(30040,"EP节点列表请求"),
     REQUEST_PERMIT_JOIN(30050,"设备加网请求"),
@@ -41,9 +49,4 @@ public enum Operation {
     @EnumValue
     private Integer code;
     private String description;
-
-    Operation(Integer code, String description) {
-        this.code = code;
-        this.description = description;
-    }
 }

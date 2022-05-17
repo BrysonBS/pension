@@ -14,6 +14,7 @@ import com.ruoyi.pension.owon.domain.dto.Datapacket;
 import com.ruoyi.pension.owon.domain.dto.OwonReport;
 import com.ruoyi.pension.owon.domain.dto.Response;
 import com.ruoyi.pension.owon.domain.enums.Operation;
+import com.ruoyi.pension.owon.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.Device;
 import com.ruoyi.pension.owon.domain.po.DeviceEp;
 import com.ruoyi.pension.owon.domain.po.OwonNotice;
@@ -221,6 +222,8 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
                 ts.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         );
         OwonNotice owonNotice = OwonNotice.builder()
+                .deptId(device.getDeptId())
+                .source(Platform.OWON)
                 .createTime(LocalDateTime.now())
                 .reportTime(ts)
                 .deviceIeee(device.getIeee())

@@ -15,7 +15,6 @@ import com.ruoyi.pension.owon.domain.po.SysDeptOwon;
 import com.ruoyi.pension.owon.service.GatewayService;
 import com.ruoyi.pension.owon.service.SysDeptOwonService;
 import com.ruoyi.system.service.ISysDeptService;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;

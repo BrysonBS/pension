@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.pension.owon.domain.enums.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,6 +37,9 @@ public class OwonNotice implements Serializable {
     @TableLogic(value = "0",delval = "2")
     private String delFlag;
     private String displayName;
+
+    private Platform source;
+    private Long deptId;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

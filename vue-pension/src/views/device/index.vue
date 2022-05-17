@@ -25,7 +25,7 @@
           />
         </div>
       </el-col>
-      <!--用户数据-->
+      <!--设备数据-->
       <el-col :span="20" :xs="24">
         <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
           <el-form-item :label="columns[1].label" :prop="columns[1].prop">

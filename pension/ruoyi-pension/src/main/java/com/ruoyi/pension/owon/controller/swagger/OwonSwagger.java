@@ -13,10 +13,13 @@ import com.ruoyi.pension.owon.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.DeviceEp;
 import com.ruoyi.pension.owon.domain.result.OwonResult;
 import com.ruoyi.pension.owon.service.OwonReportService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +37,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Api("欧万相关接口API")
-@RequestMapping("/owonTest")
+@Tag(name = "欧万相关接口API")
+@RequestMapping("/owon")
 public class OwonSwagger {
     @Autowired
     private OwonReportService owonReportService;
-    @ApiOperation("欧万上报")
+    @io.swagger.v3.oas.annotations.Operation(summary = "欧万上报",security = { @SecurityRequirement(name = "Authorization") },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(examples = @ExampleObject(
+                            value = """         
+                                    {
+                                       "code": "102",
+                                       "mac": "3C6A2CFFFED0FF3D",
+                                       "ts": "2022-05-06 11:55:21",
+                                       "sjson": "{\\"argument\\":{\\"ieee\\":\\"78BA2B7C95E9\\",\\"ep\\":1,\\"status\\":5,\\"devType\\":48642,\\"heartRate\\":65,\\"respiratoryRate\\":15,\\"sleepFlag\\":0,\\"statusValue\\":0,\\"dataType\\":0,\\"awakeFlag\\":1},\\"type\\":\\"update\\",\\"command\\":\\"bleDataReport\\"}",
+                                       "token": "kIt-79JOk5"
+                                    }   
+                                    """
+                    ))
+            ))
     @PostMapping(value="/owonReport", produces = "application/json;charset=UTF-8")
     public OwonResult getOwonReportData(@RequestBody @Valid OwonReport report) throws Exception {
         //添加接口记录
@@ -77,22 +93,22 @@ public class OwonSwagger {
     @Autowired
     private BleManager bleManager;
 
-    @ApiOperation("获取AccessToken")
+    @io.swagger.v3.oas.annotations.Operation(summary = "获取AccessToken",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/getAccessToken")
     public AjaxResult getAccessToken() throws ExecutionException, InterruptedException, JsonProcessingException {
         return accessToken.getAccessToken();
     }
-    @ApiOperation("刷新AccessToken")
+    @io.swagger.v3.oas.annotations.Operation(summary = "刷新AccessToken",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/refreshAccessToken")
     public AjaxResult refreshAccessToken() throws ExecutionException, JsonProcessingException, InterruptedException {
         return accessToken.refreshToken();
     }
-    @ApiOperation("获取设备EP节点列表")
+    @io.swagger.v3.oas.annotations.Operation(summary = "获取设备EP节点列表",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/getEpList")
     public AjaxResult getEpList() throws ExecutionException, InterruptedException, JsonProcessingException {
         return deviceList.getEpListByMac("3C6A2CFFFED0FF3D");
     }
-    @ApiOperation("获取设备EP当前状态")
+    @io.swagger.v3.oas.annotations.Operation(summary = "获取设备EP当前状态",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/getEpState")
     public AjaxResult getEpState(String[] ieees) throws ExecutionException, InterruptedException, JsonProcessingException {
         DeviceEp[] array = new DeviceEp[ieees.length];
@@ -107,7 +123,7 @@ public class OwonSwagger {
         String mac = "3C6A2CFFFED0FF3D";
         return zigBeeManager.multiDev(mac, array);
     }
-    @ApiOperation("获取报警器传感器状态")
+    @io.swagger.v3.oas.annotations.Operation(summary = "获取报警器传感器状态",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/getWarning")
     public AjaxResult getWarning(String ieee,Integer ep) throws ExecutionException, InterruptedException, JsonProcessingException {
         String mac = "3C6A2CFFFED0FF3D";
@@ -117,13 +133,13 @@ public class OwonSwagger {
                 .build();
         return sirenSensorManager.getWarning(mac,deviceEp);
     }
-    @ApiOperation("开启/关闭报警器")
+    @io.swagger.v3.oas.annotations.Operation(summary = "开启/关闭报警器",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/startWarning")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "ieee", value = "设备ieee", dataType = "String", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "ep", value = "设备ep", dataType = "Integer", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "option", value = "设备报警的模式", dataType = "Integer", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "duration", value = "报警持续时间(秒)", dataType = "Integer", dataTypeClass = Integer.class)
+    @Parameters({
+            @Parameter(name = "ieee", description = "设备ieee", schema = @Schema(name = "String",implementation = String.class)),
+            @Parameter(name = "ep", description = "设备ep", schema=@Schema(name = "Integer",implementation = Integer.class)),
+            @Parameter(name = "option", description = "设备报警的模式", schema=@Schema(name = "Integer",implementation = Integer.class)),
+            @Parameter(name = "duration", description = "报警持续时间(秒)", schema=@Schema(name = "Integer",implementation = Integer.class))
     })
     public AjaxResult startWarning(DeviceEp deviceEp) throws ExecutionException, InterruptedException, JsonProcessingException {
         String mac = "3C6A2CFFFED0FF3D";
@@ -137,10 +153,10 @@ public class OwonSwagger {
     }
 
 
-    @ApiOperation("BLE设备加网")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "mac", value = "要加入的网关mac", dataType = "String", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "serialNo", value = "设备厂商序列号", dataType = "String", dataTypeClass = String.class)
+    @io.swagger.v3.oas.annotations.Operation(summary = "BLE设备加网",security = { @SecurityRequirement(name = "Authorization") })
+    @Parameters({
+            @Parameter(name = "mac", description = "要加入的网关mac", schema = @Schema(name = "String",implementation = String.class)),
+            @Parameter(name = "serialNo", description = "设备厂商序列号", schema = @Schema(name = "String",implementation = String.class))
     })
     @GetMapping("/scanBleDevice")
     public AjaxResult scanBleDevice(String mac,String serialNo) throws ExecutionException, InterruptedException, JsonProcessingException {

@@ -64,12 +64,10 @@
             <!--<if test="deptIds != null and deptIds.size() > 0 ">-->
 
             <if test="deptIds != null">
-                <choose>
-                    <when test="device.deptId == 100">
-                        AND (
-                    </when>
-                    <otherwise>AND </otherwise>
-                </choose>
+                AND
+                <if test="device.deptId == 100">
+                    (
+                </if>
                 a.dept_id in
                 <foreach collection="deptIds" item="deptId" open="(" close=")" separator=",">
                     #{deptId}

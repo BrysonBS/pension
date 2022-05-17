@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.bioland.mapper.SrcDataValueMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.bioland.domain.po.SrcDataValue">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="created" column="created" jdbcType="TIMESTAMP"/>
+            <result property="srcData" column="src_data" jdbcType="VARCHAR"/>
+            <result property="start" column="start" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="VARCHAR"/>
+            <result property="user" column="user" jdbcType="VARCHAR"/>
+            <result property="customer" column="customer" jdbcType="VARCHAR"/>
+            <result property="modelCode" column="model_code" jdbcType="VARCHAR"/>
+            <result property="deviceType" column="device_type" jdbcType="VARCHAR"/>
+            <result property="serialNumber" column="serial_number" jdbcType="VARCHAR"/>
+            <result property="data1" column="data1" jdbcType="VARCHAR"/>
+            <result property="data2" column="data2" jdbcType="VARCHAR"/>
+            <result property="data3" column="data3" jdbcType="VARCHAR"/>
+            <result property="checkTime" column="check_time" jdbcType="TIMESTAMP"/>
+            <result property="checkCode" column="check_code" jdbcType="VARCHAR"/>
+            <result property="separator43" column="separator43" jdbcType="VARCHAR"/>
+            <result property="imsi" column="imsi" jdbcType="VARCHAR"/>
+            <result property="separator59" column="separator59" jdbcType="VARCHAR"/>
+            <result property="latiLongitude" column="lati_longitude" jdbcType="VARCHAR"/>
+            <result property="crcCode" column="crc_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created,src_data,
+        start,version,user,
+        customer,model_code,device_type,
+        serial_number,data1,data2,
+        data3,check_time,check_code,
+        separator43,imsi,separator59,
+        lati_longitude,crc_code
+    </sql>
+</mapper>

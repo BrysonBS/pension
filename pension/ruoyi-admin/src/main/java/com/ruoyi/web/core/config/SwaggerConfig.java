@@ -1,129 +1,103 @@
 package com.ruoyi.web.core.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.ruoyi.common.config.RuoYiConfig;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.headers.Header;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.ruoyi.common.config.RuoYiConfig;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.SecurityReference;
-import springfox.documentation.service.SecurityScheme;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-import springfox.documentation.spring.web.plugins.Docket;
 
-/**
- * Swagger2的接口配置
- * 
- * @author ruoyi
- */
 @Configuration
-public class SwaggerConfig
-{
+public class SwaggerConfig {
+    private static final String TOKEN_KEY = "Authorization";
+
     /** 系统基础配置 */
     @Autowired
     private RuoYiConfig ruoyiConfig;
 
-    /** 是否开启swagger */
-    @Value("${swagger.enabled}")
-    private boolean enabled;
-
-    /** 设置请求的统一前缀 */
-    @Value("${swagger.pathMapping}")
-    private String pathMapping;
-
     /**
-     * 创建API
+     * 添加分组
+     * @return
      */
     @Bean
-    public Docket createRestApi()
-    {
-        return new Docket(DocumentationType.OAS_30)
-                // 是否启用Swagger
-                .enable(enabled)
-                // 用来创建该API的基本信息，展示在文档的页面中（自定义展示的信息）
-                .apiInfo(apiInfo())
-                // 设置哪些接口暴露给Swagger展示
-                .select()
-                // 扫描所有有注解的api，用这种方式更灵活
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                // 扫描指定包中的swagger注解
-                // .apis(RequestHandlerSelectors.basePackage("com.ruoyi.project.tool.swagger"))
-
-                //扫描所有包
-                .apis(requestHandler -> true)
-                // 扫描所有
-                //.apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build()
-                /* 设置安全模式，swagger可以设置访问token */
-                .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts())
-                .pathMapping(pathMapping);
-    }
-
-    /**
-     * 安全模式，这里指定token通过Authorization头请求头传递
-     */
-    private List<SecurityScheme> securitySchemes()
-    {
-        List<SecurityScheme> apiKeyList = new ArrayList<SecurityScheme>();
-        apiKeyList.add(new ApiKey("Authorization", "Authorization", In.HEADER.toValue()));
-        return apiKeyList;
-    }
-
-    /**
-     * 安全上下文
-     */
-    private List<SecurityContext> securityContexts()
-    {
-        List<SecurityContext> securityContexts = new ArrayList<>();
-        securityContexts.add(
-                SecurityContext.builder()
-                        .securityReferences(defaultAuth())
-                        .operationSelector(o -> o.requestMappingPattern().matches("/.*"))
-                        .build());
-        return securityContexts;
-    }
-
-    /**
-     * 默认的安全上引用
-     */
-    private List<SecurityReference> defaultAuth()
-    {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0] = authorizationScope;
-        List<SecurityReference> securityReferences = new ArrayList<>();
-        securityReferences.add(new SecurityReference("Authorization", authorizationScopes));
-        return securityReferences;
-    }
-
-    /**
-     * 添加摘要信息
-     */
-    private ApiInfo apiInfo()
-    {
-        // 用ApiInfoBuilder进行定制
-        return new ApiInfoBuilder()
-                // 设置标题
-                .title("智慧养老平台-接口文档")
-                // 描述
-                .description("用于系统部分接口测试")
-                // 作者信息
-                .contact(new Contact(ruoyiConfig.getName(), null, null))
-                // 版本
-                .version("版本号:" + ruoyiConfig.getVersion())
+    public GroupedOpenApi owonApi() {
+        return GroupedOpenApi.builder()
+                .group("owon")
+                .pathsToMatch("/owon/**")
+                .packagesToScan("com.ruoyi.pension.owon")
                 .build();
+    }
+    @Bean
+    public GroupedOpenApi biolandApi() {
+        return GroupedOpenApi.builder()
+                .group("bioland")
+                .pathsToMatch("/bioland/**")
+                .packagesToScan("com.ruoyi.pension.bioland")
+                .build();
+    }
+    @Bean
+    public GroupedOpenApi generalApi() {
+        return GroupedOpenApi.builder()
+                .group("general")
+                .pathsToMatch("/general/**")
+                .packagesToScan("com.ruoyi.pension")
+                .build();
+    }
+
+    @Bean
+    public OpenAPI springShopOpenAPI() {
+        return new OpenAPI()
+                .info(info())
+                .externalDocs(externalDocumentation())
+                .components(new Components()
+                        .addSecuritySchemes(TOKEN_KEY, new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                        )
+                        .addHeaders(TOKEN_KEY, new Header().required(true)
+                                .description("token")
+                                .schema(new StringSchema()).required(true)
+                        )
+                )
+                //全局请求头参数添加: knife4j无法识别,需在api中单独添加
+                // @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+                .addSecurityItem(new SecurityRequirement().addList(TOKEN_KEY));
+
+    }
+
+    /**
+     * 文档信息
+     * @return
+     */
+    private Info info(){
+        return new Info().title("智慧养老平台-接口文档")
+                .description("用于系统部分接口测试")
+                .version("版本号:" + ruoyiConfig.getVersion())
+                .license(license())
+                .contact(new Contact().name(ruoyiConfig.getName()));
+    }
+    private License license() {
+        return new License()
+                .name("MIT")
+                .url("https://opensource.org/licenses/MIT");//开源协议
+    }
+    /**
+     * 外部文档信息
+     * @return
+     */
+    private ExternalDocumentation externalDocumentation() {
+        return new ExternalDocumentation()
+                .description("外部参考文档")
+                .url("https://sp.feiaikeji.cn");
     }
 }

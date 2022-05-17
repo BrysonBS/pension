@@ -14,6 +14,7 @@ import com.ruoyi.pension.owon.api.BleManager;
 import com.ruoyi.pension.owon.api.DeviceList;
 import com.ruoyi.pension.owon.api.ZigBeeManager;
 import com.ruoyi.pension.owon.domain.dto.Response;
+import com.ruoyi.pension.owon.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.Device;
 import com.ruoyi.pension.owon.domain.po.DeviceEp;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
@@ -50,16 +51,15 @@ public class DeviceController extends BaseController {
 
 
     @GetMapping("/list")
-    public TableDataInfo list(Optional<Long> deptId,Device device) throws ExecutionException, InterruptedException, JsonProcessingException {
-        //标记默认打开列表
-        if(device.getDeptId() == null) device.setDeptId(getLoginUser().getDeptId());
-        List<Long> deptIds = null;
-        if(deptId.isEmpty() && getLoginUser().getUser().getDeptId() == 100L)//根目录不查询子目录非NULL列表
-            deptIds = List.of(100L);
-        else //不存在,从用户信息中获取
-            deptIds = deptOwonService.getListByDeptId(
-                deptId.orElse(getLoginUser().getDeptId())
-            );
+    public TableDataInfo list(Device device) throws ExecutionException, InterruptedException, JsonProcessingException {
+        //不存则默认所属部门id
+        Long deptId = (deptId = device.getDeptId()) == null ?
+                getLoginUser().getDeptId() : deptId;
+        device.setDeptId(deptId);
+        List<Long> deptIds = deptId == 100L ?
+                List.of(100L)
+                : deptOwonService.getListByDeptId(deptId);
+
         //获取网关mac列表更新列表
         List<String> macs = deviceService.selectAllByDeptIds(deptIds);
         for(String mac : macs){
@@ -75,7 +75,7 @@ public class DeviceController extends BaseController {
     public AjaxResult getDevice(@PathVariable("id") Integer id){
         Device deviceResult = deviceService.getOneById(id);
         if(deviceResult == null) return AjaxResult.error();
-        List<DevicePhone> phones = devicePhoneService.getByDeviceId(id);
+        List<DevicePhone> phones = devicePhoneService.getByDeviceIdAndSource(id, Platform.OWON);
         deviceResult.setPhones(phones.toArray(DevicePhone[]::new));
         deviceResult.setPhonesId(new Integer[0]);
         return AjaxResult.success()
@@ -89,7 +89,7 @@ public class DeviceController extends BaseController {
         if(device.getName() != null){
             zigBeeManager.rename(device.getGwCode(),device.getIeee(),device.getEp(),device.getName());
         }
-        return  deviceService.updateDeviceAndPhoneAndCategoriesId(device) ? AjaxResult.success() : AjaxResult.error();
+        return  toAjax(deviceService.updateDeviceAndPhoneAndCategoriesId(device));
     }
 
     /**

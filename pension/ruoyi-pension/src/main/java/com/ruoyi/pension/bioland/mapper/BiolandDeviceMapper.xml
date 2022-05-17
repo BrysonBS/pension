@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.bioland.mapper.BiolandDeviceMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.bioland.domain.po.BiolandDevice">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="categoriesId" column="categories_id" jdbcType="INTEGER"/>
+            <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="serialNumber" column="serial_number" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dept_id,categories_id,
+        del_flag,name,serial_number
+    </sql>
+    <insert id="saveOrUpdateBySerialNumber">
+        <selectKey keyProperty="id" resultType="com.ruoyi.pension.bioland.domain.po.BiolandDevice" order="BEFORE">
+            SELECT COUNT(id) id FROM bioland_device WHERE serial_number = #{serialNumber}
+        </selectKey>
+        <choose>
+            <when test="id > 0">
+                UPDATE bioland_device
+                <set>
+                    <if test="deptId != null">dept_id = #{deptId},</if>
+                    <if test="categoriesId != null">categories_id = #{categoriesId},</if>
+                    <if test="delFlag != null">del_flag = #{delFlag},</if>
+                    <if test="name != null">`name` = #{name},</if>
+                </set>
+                <where>
+                    serial_number = #{serialNumber}
+                </where>
+            </when>
+            <otherwise>
+                INSERT INTO bioland_device
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                    <if test="deptId != null">dept_id,</if>
+                    <if test="categoriesId != null">categories_id,</if>
+                    <if test="delFlag != null">del_flag,</if>
+                    <if test="name != null">`name`,</if>
+                    <if test="serialNumber != null">serial_number,</if>
+                </trim>
+                <trim prefix="values(" suffix=")" suffixOverrides=",">
+                    <if test="deptId != null">#{deptId},</if>
+                    <if test="categoriesId != null">#{categoriesId},</if>
+                    <if test="delFlag != null">#{delFlag},</if>
+                    <if test="name != null">#{name},</if>
+                    <if test="serialNumber != null">#{serialNumber},</if>
+                </trim>
+            </otherwise>
+        </choose>
+    </insert>
+    <select id="getListByDeptIdsAndDevice" resultType="com.ruoyi.pension.bioland.domain.po.BiolandDevice">
+        SELECT * FROM v_bioland_device_categories a
+        <where>
+            <if test="device.categoriesId != null"> a.categories_id = #{device.categoriesId} </if>
+            <if test="deptIds != null">
+                AND
+                <if test="device.deptId == 100">
+                    (
+                </if>
+                a.dept_id in
+                <foreach collection="deptIds" item="deptId" separator="," open="(" close=")">
+                    #{deptId}
+                </foreach>
+                <if test="device.deptId == 100">
+                    OR a.dept_id IS NULL)
+                </if>
+            </if>
+            <if test="device.serialNumber != null">
+                AND a.serial_number LIKE CONCAT('%',#{device.serialNumber},'%')
+            </if>
+            <if test="device.name != null">
+                AND a.`name` LIKE CONCAT('%',#{device.name},'%')
+            </if>
+        </where>
+    </select>
+    <select id="selectOneBySerialNumber" resultMap="BaseResultMap">
+        SELECT a.*,b.dept_name deptName FROM v_bioland_device_categories a
+        LEFT JOIN sys_dept b ON a.dept_id = b.dept_id
+        where a.serial_number = #{serialNumber,jdbcType=VARCHAR}
+    </select>
+    <select id="getPhonesBySerialNumber" resultType="java.lang.String">
+        SELECT phone FROM bioland_device a
+        INNER JOIN owon_device_phone b ON a.id = b.device_id
+        WHERE a.serial_number = #{serialNumber,jdbcType=VARCHAR}
+        AND source = 3
+    </select>
+</mapper>

@@ -20,7 +20,7 @@ public class SysUserOwonService extends ServiceImpl<SysUserOwonMapper, SysUserOw
      * @param deptId
      * @return
      */
-    List<SysUserOwon> getUsersByDeptIdOfSuperiors(long deptId){
+    public List<SysUserOwon> getUsersByDeptIdOfSuperiors(long deptId){
         return this.baseMapper.getUsersByDeptIdOfSuperiors(deptId);
     }
 }

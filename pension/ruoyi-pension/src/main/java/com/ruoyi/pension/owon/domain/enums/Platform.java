@@ -1,14 +1,19 @@
 package com.ruoyi.pension.owon.domain.enums;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@AllArgsConstructor
+@ToString
 public enum Platform {
-    NATIVE("本地"),
-    OWON("欧万")
+    NATIVE(1,"本地"),
+    OWON(2,"欧万"),
+    BIOLAND(3,"爱奥乐")
     ;
+    @EnumValue
+    private Integer code;
     private String name;
-    Platform(String name) {
-        this.name = name;
-    }
-    public String getName() {
-        return name;
-    }
 }

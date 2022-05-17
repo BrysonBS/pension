@@ -1,6 +1,7 @@
 package com.ruoyi.pension.owon.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.pension.owon.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.mapper.DevicePhoneMapper;
@@ -18,12 +19,12 @@ import java.util.List;
 */
 @Service
 public class DevicePhoneService extends ServiceImpl<DevicePhoneMapper, DevicePhone> implements IService<DevicePhone> {
-    public List<DevicePhone> getByDeviceId(Integer id){
-        return this.baseMapper.getByDeviceId(id);
+    public List<DevicePhone> getByDeviceIdAndSource(Integer id,Platform platform){
+        return this.baseMapper.getByDeviceIdAndSource(id,platform.getCode());
     }
 
-    public boolean removeByDeviceIds(Collection<? extends Serializable> idList){
-        this.baseMapper.removeByDeviceIds(idList);
+    public boolean removeByDeviceIdsAndSource(Collection<? extends Serializable> idList,Platform platform){
+        this.baseMapper.removeByDeviceIdsAndSource(idList,platform.getCode());
         return true;
     }
 }

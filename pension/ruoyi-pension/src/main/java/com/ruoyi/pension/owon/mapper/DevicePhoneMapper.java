@@ -14,8 +14,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.ruoyi.pension.owon.domain.po.DevicePhone
 */
 public interface DevicePhoneMapper extends BaseMapper<DevicePhone> {
-    List<DevicePhone> getByDeviceId(@Param("deviceId") Integer deviceId);
-    int removeByDeviceIds(@Param("idList") Collection<? extends Serializable> idList);
+    List<DevicePhone> getByDeviceIdAndSource(@Param("deviceId") Integer deviceId,@Param("source") Integer source);
+    int removeByDeviceIdsAndSource(@Param("idList") Collection<? extends Serializable> idList,@Param("source") Integer source);
 }
 
 

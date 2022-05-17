@@ -16,22 +16,21 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
             <result property="displayName" column="display_name" jdbcType="VARCHAR"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="source" column="source" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,report_id,report_time,
         device_ieee,device_name,notice_type,
         notice_content,description,create_time,del_flag,
-        display_name
+        display_name,dept_id,`source`
     </sql>
     <select id="getListByLoginUserDeptId" resultType="com.ruoyi.pension.owon.domain.po.OwonNotice">
         SELECT a.* FROM owon_notice a
-        <if test="!isAdmin">
-            LEFT JOIN owon_device b ON a.device_ieee = b.ieee
-        </if>
         WHERE a.del_flag = 0
         <if test="!isAdmin">
-            AND b.dept_id != 100
+            AND a.dept_id != 100
         </if>
           <if test="beginTime != null">
               AND a.report_time &gt;= #{beginTime,jdbcType=TIMESTAMP}
@@ -40,7 +39,7 @@
               AND a.report_time &lt; #{endTime,jdbcType=TIMESTAMP}
           </if>
         <if test="!isAdmin">
-            AND find_in_set (b.dept_id,(
+            AND find_in_set (a.dept_id,(
             SELECT CONCAT_WS(',',aa.ancestors,aa.dept_id) FROM sys_dept aa
             WHERE aa.dept_id = #{deptId,jdbcType=BIGINT}
             ))

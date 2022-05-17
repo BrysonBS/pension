@@ -18,3 +18,10 @@ export function gwList() {
     method: 'get'
   })
 }
+export function listBiolandDeviceCategories() {
+  return request({
+    url: '/device/bioland/categories/typeList',
+    method: 'get'
+  })
+}
+

@@ -7,8 +7,8 @@
     <resultMap id="BaseResultMap" type="com.ruoyi.pension.owon.domain.dto.Datapacket">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="reportId" column="report_id" jdbcType="INTEGER"/>
-            <result property="source" column="source" jdbcType="VARCHAR" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
-            <result property="target" column="target" jdbcType="VARCHAR" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+            <result property="source" column="source" jdbcType="INTEGER"/>
+            <result property="target" column="target" jdbcType="INTEGER"/>
             <result property="operation" column="operation" jdbcType="INTEGER"/>
             <result property="type" column="type" jdbcType="VARCHAR"/>
             <result property="command" column="command" jdbcType="VARCHAR"/>

@@ -22,3 +22,10 @@ FROM owon_report a
 INNER JOIN owon_datapacket b ON b.operation = 20060 AND a.id = b.report_id
 INNER JOIN owon_argument c ON b.id = c.dp_id AND c.heart_rate != 0
 ```
+
+> v_bioland_device_categories
+```SQL
+CREATE VIEW v_bioland_device_categories AS
+SELECT a.*,get_fullName(a.dept_id) deptFullName,c.`name` typeName FROM bioland_device a
+LEFT JOIN bioland_device_categories c ON a.categories_id = c.id
+```

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.pension.owon.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.Device;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.domain.po.DeviceEp;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class DeviceService extends ServiceImpl<DeviceMapper, Device> implements 
     private SysDeptOwonService deptOwonService;
 
     public List<Device> getListByDeptIdsAndDevice(List<Long> deptIds,Device device){
-        if(Collections.isEmpty(deptIds)) deptIds = null;
+        if(deptIds.isEmpty()) deptIds = null;
         List<Device> list = this.baseMapper.getListByDeptIdsAndDevice(deptIds,device);
         for(Device e : list){
             DeviceEp deviceEp = redisCache.getCacheObject(e.getIeee());
@@ -114,9 +116,11 @@ public class DeviceService extends ServiceImpl<DeviceMapper, Device> implements 
                 .set(device.getName() != null,Device::getName,device.getName())
                 .set(device.getDeptId() != null,Device::getDeptId,device.getDeptId())
                 .set(device.getCid() != null,Device::getCategoriesId,device.getCid())
-                .eq(device.getId() != null,Device::getId,device.getId());
+                .eq(Device::getId,device.getId());
         this.update(updateWrapper);
         DevicePhone[] phones = device.getPhones();
+        //设置电话归属平台
+        for(DevicePhone p : phones) p.setSource(Platform.OWON);
         Integer[] phonesId = device.getPhonesId();
         if(phonesId != null && phonesId.length > 0) //删除
             devicePhoneService.removeByIds(List.of(phonesId));
@@ -136,9 +140,7 @@ public class DeviceService extends ServiceImpl<DeviceMapper, Device> implements 
 
     @Transactional
     public boolean removeDeviceAndPhoneByIds(Collection<? extends Serializable> idList) {
-        removeByIds(idList);
-        devicePhoneService.removeByDeviceIds(idList);
-        return true;
+        return removeByIds(idList) && devicePhoneService.removeByDeviceIdsAndSource(idList, Platform.OWON);
     }
 
     public Device getOneById(Integer id){

@@ -37,13 +37,12 @@
       </el-form-item>
     </el-form>
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:12px;">
       <SleepChart :chart-data="sleepData"/>
     </el-row>
-
     <!--结果-->
     <el-row style="padding-left: 10px">
-      <el-col v-for="e in list" style="margin: 8px; max-width: 220px">
+      <el-col v-for="e in showList" style="margin: 8px; max-width: 220px">
         <el-card :body-style="{ padding: '0px'}"  shadow="hover">
           <div style="padding: 10px;text-align: center;">
             <el-tag :type="(e.heartRate >= 60 && e.heartRate <= 140) ? 'success' : 'warning'">心率: {{e.heartRate}}</el-tag>
@@ -69,6 +68,7 @@ export default {
   },
   data(){
     return {
+      showList: [],
       sleepData : {
         init: true,
         xAxisData : [],
@@ -151,6 +151,9 @@ export default {
       this.queryParams.endTime = this.dateRange[1];
       listSleep(this.queryParams).then(response => {
         this.list = response.data;
+
+        this.showList = this.list.slice(0,500);
+
         this.sleepData.init = true;
         this.sleepData.xAxisData.splice(0);
         this.sleepData.heartRateData.splice(0) ;

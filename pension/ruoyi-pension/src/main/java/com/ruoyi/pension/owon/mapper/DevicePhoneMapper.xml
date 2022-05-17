@@ -8,24 +8,27 @@
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="deviceId" column="device_id" jdbcType="INTEGER"/>
             <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="source" column="source" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,device_id,phone
+        id,device_id,phone,`source`
     </sql>
-    <delete id="removeByDeviceIds">
+    <delete id="removeByDeviceIdsAndSource">
         delete
         from owon_device_phone
-        where device_id in
+        where source = #{source}
+        AND device_id in
         <foreach collection="idList" item="deviceId" open="(" close=")" separator=",">
             #{deviceId,jdbcType=INTEGER}
         </foreach>
     </delete>
-    <select id="getByDeviceId" resultMap="BaseResultMap">
+    <select id="getByDeviceIdAndSource" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from owon_device_phone
         where
         device_id = #{deviceId,jdbcType=NUMERIC}
+        And source = #{source,jdbcType=NUMERIC}
     </select>
 </mapper>
