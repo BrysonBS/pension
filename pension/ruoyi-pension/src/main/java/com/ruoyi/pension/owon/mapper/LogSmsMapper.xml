@@ -21,4 +21,9 @@
         template_code,send_time,request_id,
         result_message,result_bizId,result_code
     </sql>
+    <delete id="deleteBySendTimeLessThan">
+        delete
+        from log_sms
+        where send_time <![CDATA[  < ]]> #{sendTime}
+    </delete>
 </mapper>

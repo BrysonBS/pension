@@ -20,8 +20,8 @@ public class StatusManager {
                .build();
        switch (cid){
            case 1://睡眠带
-               if(object instanceof Argument)
-                    setSleepace((Argument<?, ?>) object,noticeVo);
+               if(object instanceof Argument argument)
+                    setSleepace(argument,noticeVo);
                break;
            case 12://门磁
            case 13://门磁
@@ -34,14 +34,18 @@ public class StatusManager {
            case 21://拉绳紧急呼叫器
            case 22://拉绳紧急呼叫器
            case 62://烟雾报警器
-               if(object instanceof Response)
-                   setSensorSos((Response<?>) object,noticeVo);
+               if(object instanceof Response response)
+                   setSensorSos(response,noticeVo);
                break;
            case 30://多功能传感器
                break;
            case 74://漏水传感器
-               if(object instanceof Response)
-                   setSensorWater((Response<?>) object,noticeVo);
+               if(object instanceof Response response)
+                   setSensorWater(response,noticeVo);
+               break;
+           case 89://跌倒报警器
+               if(object instanceof Argument<?,?> argument)
+                   setFallDetectNotify(argument,noticeVo);
                break;
            default:
                break;
@@ -49,6 +53,82 @@ public class StatusManager {
        return noticeVo;
    }
 
+    /**
+     * 跌倒报警器
+     * @param argument
+     * @param noticeVo
+     */
+   public static void setFallDetectNotify(Argument<?,?> argument,NoticeVo noticeVo){
+       StringBuilder builder = new StringBuilder();
+       int changes = argument.getChanges();
+       int basicStatus = argument.getBasicStatus();
+       int turnOver = argument.getTurnOver();
+       int respiratoryRate = argument.getRespiratoryRate();
+       int abedExceptionAlarm = argument.getAbedExceptionAlarm();
+       int numOfPeopleDetected = argument.getNumOfPeopleDetected();
+       if((changes & 1) == 1) builder.append(
+               switch (basicStatus){
+                   case 0 -> {
+                       noticeVo.setEnable(true);
+                       yield "[无人]";
+                   }
+                   case 1 -> {
+                       noticeVo.setEnable(true);
+                       yield "活动";
+                   }
+                   case 2 -> {
+                       noticeVo.setEnable(true);
+                       yield "[坐姿]";
+                   }
+                   case 3 -> {
+                       noticeVo.setEnable(true);
+                       yield "[在床]";
+                   }
+                   case 4 -> {
+                       noticeVo.setEnable(true);
+                       yield "[低姿态]";
+                   }
+                   case 5 -> {
+                       noticeVo.setEnable(true);
+                       yield "[跌倒]";
+                   }
+                   default -> "";
+               }
+       );
+
+       if(((changes >>> 1) & 1) == 1 && turnOver == 1){
+          noticeVo.setEnable(true);
+          builder.append("[翻身]");
+       }
+       if(((changes >>> 2) & 1) == 1 && respiratoryRate > 0) {
+           noticeVo.setEnable(true);
+           builder.append("[呼吸率: ").append(respiratoryRate).append("]");
+       }
+       if(((changes >>> 5) & 1) == 1 && respiratoryRate > 0) {
+           builder.append(
+               switch (abedExceptionAlarm){
+                   case 0 -> "[正常]";
+                   case 1 -> {
+                       noticeVo.setEnable(true);
+                       yield "[长时间无活动]";
+                   }
+                   case 2 -> {
+                       noticeVo.setEnable(true);
+                       yield "[长时间无呼吸]";
+                   }
+                   case 3 -> {
+                       noticeVo.setEnable(true);
+                       yield "[长时间无活动且无呼吸]";
+                   }
+                   default -> "";
+               }
+           );
+       }
+       if(((changes >>> 6) & 1) == 1){
+           builder.append("[活动人数: ").append(numOfPeopleDetected).append("]");
+       }
+       noticeVo.setInfo(builder.toString());
+   }
     /**
      * 漏水传感器
      * @param response

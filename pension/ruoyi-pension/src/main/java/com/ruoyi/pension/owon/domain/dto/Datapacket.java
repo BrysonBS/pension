@@ -55,6 +55,8 @@ public class Datapacket<A,R> implements Serializable {
     private Integer count;
 
     @TableField(exist = false)
+    private Boolean ignore; //忽略不持久化
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
 }

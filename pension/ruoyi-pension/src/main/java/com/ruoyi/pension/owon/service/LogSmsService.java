@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.pension.owon.domain.po.LogSms;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.mapper.LogSmsMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 /**
 * @author Administrator
@@ -13,5 +16,7 @@ import org.springframework.stereotype.Service;
 */
 @Service
 public class LogSmsService extends ServiceImpl<LogSmsMapper, LogSms> implements IService<LogSms> {
-
+    public void deleteBySendTimeLessThan(LocalDateTime sendTime){
+        this.baseMapper.deleteBySendTimeLessThan(sendTime);
+    }
 }

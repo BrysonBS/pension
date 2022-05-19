@@ -25,10 +25,12 @@ public class ResponseService extends ServiceImpl<ResponseMapper, Response> imple
     public boolean saveCascade(Response response){
         boolean result = this.save(response);
         List<?> epList = response.getEpList();
-        if(epList != null && !epList.isEmpty()){
-            if(epList.get(0) instanceof DeviceEp)
-                result = deviceEpService.saveBatch((Collection<DeviceEp>) epList);
-            //TODO eplist
+        if(epList != null && !epList.isEmpty() && result){
+            if(epList.get(0) instanceof DeviceEp) {
+                Collection<DeviceEp> eps = (Collection<DeviceEp>) epList;
+                eps.forEach(e -> e.setRespId(response.getId()));
+                result = deviceEpService.saveBatch(eps);
+            }
         }
         return result;
     }

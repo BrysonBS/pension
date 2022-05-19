@@ -76,6 +76,13 @@
             <result property="batCharge" column="bat_charge" jdbcType="INTEGER"/>
             <result property="batLvl" column="bat_lvl" jdbcType="INTEGER"/>
             <result property="netState" column="net_state" jdbcType="INTEGER"/>
+            <result property="targetLocationX" column="target_location_x" jdbcType="INTEGER"/>
+            <result property="targetLocationY" column="target_location_y" jdbcType="INTEGER"/>
+            <result property="numOfPeopleDetected" column="num_of_people_detected" jdbcType="INTEGER"/>
+            <result property="basicStatus" column="basic_status" jdbcType="INTEGER"/>
+            <result property="changes" column="changes" jdbcType="INTEGER"/>
+            <result property="abedExceptionAlarm" column="abed_exception_alarm" jdbcType="INTEGER"/>
+            <result property="turnOver" column="turn_over" jdbcType="INTEGER"/>
 
     </resultMap>
 
@@ -102,6 +109,8 @@
         switchgear,second,option,duration,
         dev_type,heart_rate,respiratory_rate,
         sleep_flag,status_value,data_type,awake_flag,
-        bat_charge,bat_lvl,net_state
+        bat_charge,bat_lvl,net_state,
+        target_location_x,target_location_y,num_of_people_detected,basic_status,
+        changes,abed_exception_alarm,turn_over
     </sql>
 </mapper>

@@ -16,4 +16,7 @@
         id,code,mac,
         ts,created
     </sql>
+    <select id="ProcDeleteLtCreatedCascade" statementType="CALLABLE">
+        {CALL proc_del_owon_report_cascade(#{created,jdbcType=VARCHAR})}
+    </select>
 </mapper>

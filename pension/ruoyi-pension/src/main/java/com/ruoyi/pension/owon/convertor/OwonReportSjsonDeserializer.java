@@ -52,10 +52,16 @@ public class OwonReportSjsonDeserializer extends StdDeserializer<Datapacket> {
         if(Strings.isBlank(result)){ //自动上报信息
             int rtype = jsonNode.at("/argument/rtype").asInt();
             if("record".equals(command)){ //同步安防日志数据
-                if(rtype == 1) return argVPaincButton_V(sjson,Operation.REPORT_PANIC_BUTTON);
+                if(rtype == 1){
+                    Datapacket<?,?> datapacket = argVPaincButton_V(sjson,Operation.REPORT_PANIC_BUTTON);
+                    datapacket.setIgnore(true);//不持久化
+                    return datapacket;
+                }
             }
             else if("connect".equals(command)){//心跳/同步
-                return argVV_V(sjson,Operation.REPORT_HEART_BEAT);
+                Datapacket<?,?> datapacket = argVV_V(sjson,Operation.REPORT_HEART_BEAT);
+                datapacket.setIgnore(true);//不持久化
+                return datapacket;
             }
             else if("sensor".equals(command)){ //安防
                 if("update".equals(type)){ //安防上报
@@ -81,24 +87,37 @@ public class OwonReportSjsonDeserializer extends StdDeserializer<Datapacket> {
                     return argVV_V(sjson,Operation.REPORT_BLE_CONNECT_CHANGE);
                 }
             }
+            else if("fallDetectNotify".equals(command)){
+                if("update".equals(type)){ //跌倒报警器上报信息
+                    return argVV_V(sjson,Operation.REPORT_FALL_DETECT_NOTIFY);
+                }
+            }
         }
         else if(Boolean.parseBoolean(result)){ //主动请求后返回成功
             int sequence = jsonNode.at("/sequence").asInt();
             if(sequence == Operation.REQUEST_EP_LIST.getCode()){
                 //设备ep节点列表查询返回
-                return v_respDeviceEp(sjson,Operation.RESULT_EP_LIST);
+                Datapacket<?,?> datapacket = v_respDeviceEp(sjson,Operation.RESULT_EP_LIST);
+                datapacket.setIgnore(true);//不持久化
+                return datapacket;
             }
             else if(sequence == Operation.REQUEST_STATE_ZB.getCode()){
                 //设备状态查询返回
-                return v_respV(sjson,Operation.RESULT_STATE_ZB);
+                Datapacket<?,?> datapacket = v_respV(sjson,Operation.RESULT_STATE_ZB);
+                datapacket.setIgnore(true);
+                return datapacket;
             }
             else if(sequence == Operation.REQUEST_GET_WARNING.getCode()){
                 //报警器传感器状态查询返回
-                return v_respV(sjson,Operation.RESULT_GET_WARNING);
+                Datapacket<?,?> datapacket = v_respV(sjson,Operation.RESULT_GET_WARNING);
+                datapacket.setIgnore(true);
+                return datapacket;
             }
             else if(sequence == Operation.REQUEST_BLE_LIST.getCode()){
                 //BLE设备列表请求返回
-                return v_respDeviceEp(sjson,Operation.RESULT_BLE_LIST);
+                Datapacket<?,?> datapacket = v_respDeviceEp(sjson,Operation.RESULT_BLE_LIST);
+                datapacket.setIgnore(true);
+                return datapacket;
             }
         }
         else{ //主动请求后返回失败
@@ -110,6 +129,7 @@ public class OwonReportSjsonDeserializer extends StdDeserializer<Datapacket> {
         //不匹配,序列化失败,仅保存json字符串
         return Datapacket.builder()
                 .sjson(sjson)
+                .ignore(true)//不持久化
                 .build();
     }
 

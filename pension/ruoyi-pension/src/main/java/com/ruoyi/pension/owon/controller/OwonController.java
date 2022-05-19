@@ -43,8 +43,8 @@ public class OwonController {
         dataPacket.setSource(Platform.OWON);
         dataPacket.setTarget(Platform.NATIVE);
 
-        if(!(dataPacket.getOperation() == Operation.REPORT_HEART_BEAT)) //心跳同步数据不保存
-            owonReportService.saveCascade(report);
+        //if(!(dataPacket.getOperation() == Operation.REPORT_HEART_BEAT)) //心跳同步数据不保存
+        owonReportService.saveCascade(report);
         return OwonResult.success();
     }
 }

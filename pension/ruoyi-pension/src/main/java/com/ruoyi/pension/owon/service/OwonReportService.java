@@ -1,12 +1,10 @@
 package com.ruoyi.pension.owon.service;
 
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.websocket.WebSocketUsers;
-import com.ruoyi.pension.owon.api.BleManager;
 import com.ruoyi.pension.owon.api.SendSms;
 import com.ruoyi.pension.owon.api.StatusManager;
 import com.ruoyi.pension.owon.domain.dto.Argument;
@@ -22,22 +20,19 @@ import com.ruoyi.pension.owon.domain.vo.NoticeVo;
 import com.ruoyi.pension.owon.mapper.OwonReportMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport> implements IService<OwonReport> {
     @Autowired
     private RedisCache redisCache;
@@ -62,6 +57,10 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
     @Transactional
     public boolean saveCascade(OwonReport owonReport) throws Exception {
         OwonNotice owonNotice = setNotice(owonReport);//先通知前端
+        if(Boolean.TRUE.equals(owonReport.getSjson().getIgnore())) {
+            log.info("ignore: {}",objectMapper.writeValueAsString(owonReport));
+            return true; //忽略数据不进行持久化
+        }
 
         setUpdate(owonReport);//更新部分信息
         setMessage(owonReport);//请求返回消息设置
@@ -78,6 +77,12 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
         }
         return result;
     }
+
+    //级联删除小于指定日期的数据: 存储过程内已定义事务
+    public void deleteLtCreatedCascade(String created){
+        this.baseMapper.ProcDeleteLtCreatedCascade(created);
+    }
+
     //消息
     private void setMessage(OwonReport owonReport) throws JsonProcessingException {
         String mac = owonReport.getMac();
@@ -195,6 +200,11 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
             ep = argument.getEp();
             object = argument;
         }
+        else if(operation == Operation.REPORT_FALL_DETECT_NOTIFY){//跌倒报警器上报
+            ieee = argument.getIeee();
+            ep = argument.getEp();
+            object =argument;
+        }
 
 
         if(ieee == null || ep == null) return null; //未记录设备不处理
@@ -203,12 +213,14 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
         if(device == null || device.getDeptId() == null || device.getCid() == null) return null;
 
         NoticeVo noticeVo = StatusManager.getNoticeInfo(device,object);
-        if(!noticeVo.getEnable()) return null; //正常不报警
+        if(!noticeVo.getEnable()) {
+            owonReport.getSjson().setIgnore(true); //非通报信息不需要持久化
+            return null; //正常不报警
+        }
         noticeVo.setIeee(ieee);//记录设备
         noticeVo.setTs(ts);
         return sendSmsAndNotice(device,operation,ts,noticeVo);
     }
-
     //发送短信和前端通知
     private OwonNotice sendSmsAndNotice(Device device, Operation operation, LocalDateTime ts, NoticeVo noticeVo) throws Exception {
         noticeVo.setName(device.getName());

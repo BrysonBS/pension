@@ -20,6 +20,7 @@ public enum Operation {
     REPORT_HEART_BEAT(20050,"心跳同步上报"),
     REPORT_BLE_DATA_UPDATE(20060,"BLE设备上报更新"),
     REPORT_BLE_CONNECT_CHANGE(20070,"BLE设备连接状态变化上报"),
+    REPORT_FALL_DETECT_NOTIFY(20080,"跌倒报警器信息上报"),
 
     /** BIOLAND自动上报22XXX */
     REPORT_BLOOD_PRESSURE(22000,"血压计上报信息"),

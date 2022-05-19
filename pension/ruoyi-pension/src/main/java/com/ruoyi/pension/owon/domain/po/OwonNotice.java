@@ -37,7 +37,6 @@ public class OwonNotice implements Serializable {
     @TableLogic(value = "0",delval = "2")
     private String delFlag;
     private String displayName;
-
     private Platform source;
     private Long deptId;
 

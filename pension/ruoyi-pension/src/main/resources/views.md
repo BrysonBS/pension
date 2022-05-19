@@ -29,3 +29,33 @@ CREATE VIEW v_bioland_device_categories AS
 SELECT a.*,get_fullName(a.dept_id) deptFullName,c.`name` typeName FROM bioland_device a
 LEFT JOIN bioland_device_categories c ON a.categories_id = c.id
 ```
+
+> proc_del_owon_report_cascade\
+> 授予权限 : 先赋予可查询存储过程权限,再赋予执行存储过程权限\
+> GRANT SELECT ON mysql.proc TO '用户名'@'%';\
+> grant execute on PROCEDURE proc_del_owon_report_cascade to '用户名'@'%'; \
+> 刷新权限:  FLUSH PRIVILEGES;\
+> 执行: CALL proc_del_owon_report_cascade('2022-04-13')
+```SQL
+DELIMITER //
+	CREATE PROCEDURE proc_del_owon_report_cascade(IN endDate VARCHAR(20))
+		BEGIN
+			DECLARE dpId INT DEFAULT 0;
+			
+			SELECT MAX(b.id) INTO dpId FROM owon_report a
+			INNER JOIN owon_datapacket b ON a.id = b.report_id
+			WHERE a.created < endDate;
+			
+			IF dpId > 0 THEN		
+				START TRANSACTION; -- 开启事务
+					DELETE a,b FROM owon_report a
+					INNER JOIN owon_datapacket b ON a.id = b.report_id
+					WHERE b.id <= dpId;
+
+					DELETE FROM owon_argument WHERE dp_id <= dpId;
+					DELETE FROM owon_response WHERE dp_id <= dpId;
+				COMMIT;
+			END IF;
+    END
+    //
+DELIMITER ;

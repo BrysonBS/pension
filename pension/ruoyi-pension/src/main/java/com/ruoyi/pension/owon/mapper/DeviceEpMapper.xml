@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.ruoyi.pension.owon.domain.po.DeviceEp">
             <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="respId" column="resp_id" javaType="INTEGER"/>
             <result property="ieee" column="ieee" jdbcType="VARCHAR"/>
             <result property="ep" column="ep" jdbcType="INTEGER"/>
             <result property="netDeviceType" column="net_device_type" jdbcType="INTEGER"/>
@@ -23,7 +24,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,ieee,ep,
+        id,resp_id,ieee,ep,
         net_device_type,link_status,device_type,
         ias_zone_type,profile_id,name,dev_model,cluster_flag,
         manu_code,option,duration,net_state

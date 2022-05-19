@@ -1,6 +1,7 @@
 package com.ruoyi.pension.owon.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ruoyi.pension.owon.convertor.OwonMillsDeserializer;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -108,6 +109,15 @@ public class Argument<E,R> implements Serializable {
     private Integer batCharge;
     private Integer batLvl;
     private Integer netState;
+
+    private Integer targetLocationX;
+    private Integer targetLocationY;
+    private Integer numOfPeopleDetected;
+    private Integer basicStatus;
+    private Integer changes;
+    private Integer abedExceptionAlarm;
+    @JsonProperty("isTurnOver")
+    private Integer turnOver;
 
     @TableField(exist = false)
     private Integer connectType;

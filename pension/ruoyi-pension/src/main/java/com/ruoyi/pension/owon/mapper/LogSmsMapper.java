@@ -1,4 +1,6 @@
 package com.ruoyi.pension.owon.mapper;
+import org.apache.ibatis.annotations.Param;
+import java.time.LocalDateTime;
 
 import com.ruoyi.pension.owon.domain.po.LogSms;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -10,7 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.ruoyi.pension.owon.domain.po.LogSms
 */
 public interface LogSmsMapper extends BaseMapper<LogSms> {
-
+    int deleteBySendTimeLessThan(@Param("sendTime") LocalDateTime sendTime);
 }
 
 

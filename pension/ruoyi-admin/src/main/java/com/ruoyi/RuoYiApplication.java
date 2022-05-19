@@ -12,7 +12,6 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @author ruoyi
  */
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
-@MapperScan({"com.ruoyi.pension.**.mapper"})
 public class RuoYiApplication
 {
     public static void main(String[] args)
