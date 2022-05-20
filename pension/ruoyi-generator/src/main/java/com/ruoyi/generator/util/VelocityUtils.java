@@ -1,11 +1,13 @@
 package com.ruoyi.generator.util;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.common.utils.spring.SpringUtils;
 import org.apache.velocity.VelocityContext;
-import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.constant.GenConstants;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -33,8 +35,7 @@ public class VelocityUtils
      *
      * @return 模板列表
      */
-    public static VelocityContext prepareContext(GenTable genTable)
-    {
+    public static VelocityContext prepareContext(GenTable genTable) throws JsonProcessingException {
         String moduleName = genTable.getModuleName();
         String businessName = genTable.getBusinessName();
         String packageName = genTable.getPackageName();
@@ -72,18 +73,22 @@ public class VelocityUtils
         return velocityContext;
     }
 
-    public static void setMenuVelocityContext(VelocityContext context, GenTable genTable)
-    {
+    public static void setMenuVelocityContext(VelocityContext context, GenTable genTable) throws JsonProcessingException {
         String options = genTable.getOptions();
-        JSONObject paramsObj = JSONObject.parseObject(options);
+
+        ObjectMapper objectMapper = SpringUtils.getBean(ObjectMapper.class);
+        HashMap<String,String> paramsObj = objectMapper.readValue(options, new TypeReference<>(){});
+
         String parentMenuId = getParentMenuId(paramsObj);
         context.put("parentMenuId", parentMenuId);
     }
 
-    public static void setTreeVelocityContext(VelocityContext context, GenTable genTable)
-    {
+    public static void setTreeVelocityContext(VelocityContext context, GenTable genTable) throws JsonProcessingException {
         String options = genTable.getOptions();
-        JSONObject paramsObj = JSONObject.parseObject(options);
+
+        ObjectMapper objectMapper = SpringUtils.getBean(ObjectMapper.class);
+        HashMap<String,String> paramsObj = objectMapper.readValue(options, new TypeReference<>(){});
+
         String treeCode = getTreecode(paramsObj);
         String treeParentCode = getTreeParentCode(paramsObj);
         String treeName = getTreeName(paramsObj);
@@ -94,11 +99,11 @@ public class VelocityUtils
         context.put("expandColumn", getExpandColumn(genTable));
         if (paramsObj.containsKey(GenConstants.TREE_PARENT_CODE))
         {
-            context.put("tree_parent_code", paramsObj.getString(GenConstants.TREE_PARENT_CODE));
+            context.put("tree_parent_code", paramsObj.get(GenConstants.TREE_PARENT_CODE));
         }
         if (paramsObj.containsKey(GenConstants.TREE_NAME))
         {
-            context.put("tree_name", paramsObj.getString(GenConstants.TREE_NAME));
+            context.put("tree_name", paramsObj.get(GenConstants.TREE_NAME));
         }
     }
 
@@ -317,12 +322,12 @@ public class VelocityUtils
      * @param paramsObj 生成其他选项
      * @return 上级菜单ID字段
      */
-    public static String getParentMenuId(JSONObject paramsObj)
+    public static String getParentMenuId(Map<String,String> paramsObj)
     {
         if (StringUtils.isNotEmpty(paramsObj) && paramsObj.containsKey(GenConstants.PARENT_MENU_ID)
-                && StringUtils.isNotEmpty(paramsObj.getString(GenConstants.PARENT_MENU_ID)))
+                && StringUtils.isNotEmpty(paramsObj.get(GenConstants.PARENT_MENU_ID)))
         {
-            return paramsObj.getString(GenConstants.PARENT_MENU_ID);
+            return paramsObj.get(GenConstants.PARENT_MENU_ID);
         }
         return DEFAULT_PARENT_MENU_ID;
     }
@@ -333,11 +338,11 @@ public class VelocityUtils
      * @param paramsObj 生成其他选项
      * @return 树编码
      */
-    public static String getTreecode(JSONObject paramsObj)
+    public static String getTreecode(HashMap<String,String> paramsObj)
     {
         if (paramsObj.containsKey(GenConstants.TREE_CODE))
         {
-            return StringUtils.toCamelCase(paramsObj.getString(GenConstants.TREE_CODE));
+            return StringUtils.toCamelCase(paramsObj.get(GenConstants.TREE_CODE));
         }
         return StringUtils.EMPTY;
     }
@@ -348,11 +353,11 @@ public class VelocityUtils
      * @param paramsObj 生成其他选项
      * @return 树父编码
      */
-    public static String getTreeParentCode(JSONObject paramsObj)
+    public static String getTreeParentCode(HashMap<String,String> paramsObj)
     {
         if (paramsObj.containsKey(GenConstants.TREE_PARENT_CODE))
         {
-            return StringUtils.toCamelCase(paramsObj.getString(GenConstants.TREE_PARENT_CODE));
+            return StringUtils.toCamelCase(paramsObj.get(GenConstants.TREE_PARENT_CODE));
         }
         return StringUtils.EMPTY;
     }
@@ -363,11 +368,11 @@ public class VelocityUtils
      * @param paramsObj 生成其他选项
      * @return 树名称
      */
-    public static String getTreeName(JSONObject paramsObj)
+    public static String getTreeName(HashMap<String,String> paramsObj)
     {
         if (paramsObj.containsKey(GenConstants.TREE_NAME))
         {
-            return StringUtils.toCamelCase(paramsObj.getString(GenConstants.TREE_NAME));
+            return StringUtils.toCamelCase(paramsObj.get(GenConstants.TREE_NAME));
         }
         return StringUtils.EMPTY;
     }
@@ -378,11 +383,11 @@ public class VelocityUtils
      * @param genTable 业务表对象
      * @return 展开按钮列序号
      */
-    public static int getExpandColumn(GenTable genTable)
-    {
+    public static int getExpandColumn(GenTable genTable) throws JsonProcessingException {
         String options = genTable.getOptions();
-        JSONObject paramsObj = JSONObject.parseObject(options);
-        String treeName = paramsObj.getString(GenConstants.TREE_NAME);
+        ObjectMapper objectMapper = SpringUtils.getBean(ObjectMapper.class);
+        JsonNode paramsObj = objectMapper.readTree(options);
+        String treeName = paramsObj.get(GenConstants.TREE_NAME).asText();
         int num = 0;
         for (GenTableColumn column : genTable.getColumns())
         {

@@ -4,17 +4,19 @@ import java.util.Collection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
-import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.BusinessStatus;
@@ -37,6 +39,9 @@ import com.ruoyi.system.domain.SysOperLog;
 public class LogAspect
 {
     private static final Logger log = LoggerFactory.getLogger(LogAspect.class);
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * 处理完请求后执行
@@ -129,7 +134,8 @@ public class LogAspect
         // 是否需要保存response，参数和值
         if (log.isSaveResponseData() && StringUtils.isNotNull(jsonResult))
         {
-            operLog.setJsonResult(StringUtils.substring(JSON.toJSONString(jsonResult), 0, 2000));
+            operLog.setJsonResult(StringUtils.substring(
+                    objectMapper.writeValueAsString(jsonResult), 0, 2000));
         }
     }
 
@@ -168,8 +174,9 @@ public class LogAspect
                 {
                     try
                     {
-                        Object jsonObj = JSON.toJSON(o);
-                        params += jsonObj.toString() + " ";
+/*                        Object jsonObj = JSON.toJSON(o);
+                        params += jsonObj.toString() + " ";*/
+                        params += objectMapper.writeValueAsString(o) + " ";
                     }
                     catch (Exception e)
                     {

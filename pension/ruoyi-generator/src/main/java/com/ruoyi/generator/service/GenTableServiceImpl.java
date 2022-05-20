@@ -11,6 +11,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
@@ -21,8 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.GenConstants;
 import com.ruoyi.common.core.text.CharsetKit;
@@ -48,6 +50,8 @@ public class GenTableServiceImpl implements IGenTableService
     private static final Logger log = LoggerFactory.getLogger(GenTableServiceImpl.class);
 
     @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
     private GenTableMapper genTableMapper;
 
     @Autowired
@@ -60,8 +64,7 @@ public class GenTableServiceImpl implements IGenTableService
      * @return 业务信息
      */
     @Override
-    public GenTable selectGenTableById(Long id)
-    {
+    public GenTable selectGenTableById(Long id) throws JsonProcessingException {
         GenTable genTable = genTableMapper.selectGenTableById(id);
         setTableFromOptions(genTable);
         return genTable;
@@ -122,9 +125,8 @@ public class GenTableServiceImpl implements IGenTableService
      */
     @Override
     @Transactional
-    public void updateGenTable(GenTable genTable)
-    {
-        String options = JSON.toJSONString(genTable.getParams());
+    public void updateGenTable(GenTable genTable) throws JsonProcessingException {
+        String options = objectMapper.writeValueAsString(genTable.getParams());
         genTable.setOptions(options);
         int row = genTableMapper.updateGenTable(genTable);
         if (row > 0)
@@ -192,8 +194,7 @@ public class GenTableServiceImpl implements IGenTableService
      * @return 预览数据列表
      */
     @Override
-    public Map<String, String> previewCode(Long tableId)
-    {
+    public Map<String, String> previewCode(Long tableId) throws JsonProcessingException {
         Map<String, String> dataMap = new LinkedHashMap<>();
         // 查询表信息
         GenTable table = genTableMapper.selectGenTableById(tableId);
@@ -225,8 +226,7 @@ public class GenTableServiceImpl implements IGenTableService
      * @return 数据
      */
     @Override
-    public byte[] downloadCode(String tableName)
-    {
+    public byte[] downloadCode(String tableName) throws JsonProcessingException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ZipOutputStream zip = new ZipOutputStream(outputStream);
         generatorCode(tableName, zip);
@@ -240,8 +240,7 @@ public class GenTableServiceImpl implements IGenTableService
      * @param tableName 表名称
      */
     @Override
-    public void generatorCode(String tableName)
-    {
+    public void generatorCode(String tableName) throws JsonProcessingException {
         // 查询表信息
         GenTable table = genTableMapper.selectGenTableByName(tableName);
         // 设置主子表信息
@@ -338,8 +337,7 @@ public class GenTableServiceImpl implements IGenTableService
      * @return 数据
      */
     @Override
-    public byte[] downloadCode(String[] tableNames)
-    {
+    public byte[] downloadCode(String[] tableNames) throws JsonProcessingException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ZipOutputStream zip = new ZipOutputStream(outputStream);
         for (String tableName : tableNames)
@@ -353,8 +351,7 @@ public class GenTableServiceImpl implements IGenTableService
     /**
      * 查询表信息并生成代码
      */
-    private void generatorCode(String tableName, ZipOutputStream zip)
-    {
+    private void generatorCode(String tableName, ZipOutputStream zip) throws JsonProcessingException {
         // 查询表信息
         GenTable table = genTableMapper.selectGenTableByName(tableName);
         // 设置主子表信息
@@ -396,21 +393,20 @@ public class GenTableServiceImpl implements IGenTableService
      * @param genTable 业务信息
      */
     @Override
-    public void validateEdit(GenTable genTable)
-    {
+    public void validateEdit(GenTable genTable) throws JsonProcessingException {
         if (GenConstants.TPL_TREE.equals(genTable.getTplCategory()))
         {
-            String options = JSON.toJSONString(genTable.getParams());
-            JSONObject paramsObj = JSONObject.parseObject(options);
-            if (StringUtils.isEmpty(paramsObj.getString(GenConstants.TREE_CODE)))
+            String options = objectMapper.writeValueAsString(genTable.getParams());
+            JsonNode paramsObj = objectMapper.readTree(options);
+            if (StringUtils.isEmpty(paramsObj.get(GenConstants.TREE_CODE).asText()))
             {
                 throw new ServiceException("树编码字段不能为空");
             }
-            else if (StringUtils.isEmpty(paramsObj.getString(GenConstants.TREE_PARENT_CODE)))
+            else if (StringUtils.isEmpty(paramsObj.get(GenConstants.TREE_PARENT_CODE).asText()))
             {
                 throw new ServiceException("树父编码字段不能为空");
             }
-            else if (StringUtils.isEmpty(paramsObj.getString(GenConstants.TREE_NAME)))
+            else if (StringUtils.isEmpty(paramsObj.get(GenConstants.TREE_NAME).asText()))
             {
                 throw new ServiceException("树名称字段不能为空");
             }
@@ -483,16 +479,15 @@ public class GenTableServiceImpl implements IGenTableService
      * 
      * @param genTable 设置后的生成对象
      */
-    public void setTableFromOptions(GenTable genTable)
-    {
-        JSONObject paramsObj = JSONObject.parseObject(genTable.getOptions());
+    public void setTableFromOptions(GenTable genTable) throws JsonProcessingException {
+        JsonNode paramsObj = objectMapper.readTree(genTable.getOptions());
         if (StringUtils.isNotNull(paramsObj))
         {
-            String treeCode = paramsObj.getString(GenConstants.TREE_CODE);
-            String treeParentCode = paramsObj.getString(GenConstants.TREE_PARENT_CODE);
-            String treeName = paramsObj.getString(GenConstants.TREE_NAME);
-            String parentMenuId = paramsObj.getString(GenConstants.PARENT_MENU_ID);
-            String parentMenuName = paramsObj.getString(GenConstants.PARENT_MENU_NAME);
+            String treeCode = paramsObj.get(GenConstants.TREE_CODE).asText();
+            String treeParentCode = paramsObj.get(GenConstants.TREE_PARENT_CODE).asText();
+            String treeName = paramsObj.get(GenConstants.TREE_NAME).asText();
+            String parentMenuId = paramsObj.get(GenConstants.PARENT_MENU_ID).asText();
+            String parentMenuName = paramsObj.get(GenConstants.PARENT_MENU_NAME).asText();
 
             genTable.setTreeCode(treeCode);
             genTable.setTreeParentCode(treeParentCode);

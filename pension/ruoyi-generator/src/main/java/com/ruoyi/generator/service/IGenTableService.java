@@ -2,6 +2,8 @@ package com.ruoyi.generator.service;
 
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ruoyi.generator.domain.GenTable;
 
 /**
@@ -48,7 +50,7 @@ public interface IGenTableService
      * @param id 业务ID
      * @return 业务信息
      */
-    public GenTable selectGenTableById(Long id);
+    public GenTable selectGenTableById(Long id) throws JsonProcessingException;
 
     /**
      * 修改业务
@@ -56,7 +58,7 @@ public interface IGenTableService
      * @param genTable 业务信息
      * @return 结果
      */
-    public void updateGenTable(GenTable genTable);
+    public void updateGenTable(GenTable genTable) throws JsonProcessingException;
 
     /**
      * 删除业务信息
@@ -79,7 +81,7 @@ public interface IGenTableService
      * @param tableId 表编号
      * @return 预览数据列表
      */
-    public Map<String, String> previewCode(Long tableId);
+    public Map<String, String> previewCode(Long tableId) throws JsonProcessingException;
 
     /**
      * 生成代码（下载方式）
@@ -87,7 +89,7 @@ public interface IGenTableService
      * @param tableName 表名称
      * @return 数据
      */
-    public byte[] downloadCode(String tableName);
+    public byte[] downloadCode(String tableName) throws JsonProcessingException;
 
     /**
      * 生成代码（自定义路径）
@@ -95,7 +97,7 @@ public interface IGenTableService
      * @param tableName 表名称
      * @return 数据
      */
-    public void generatorCode(String tableName);
+    public void generatorCode(String tableName) throws JsonProcessingException;
 
     /**
      * 同步数据库
@@ -110,12 +112,12 @@ public interface IGenTableService
      * @param tableNames 表数组
      * @return 数据
      */
-    public byte[] downloadCode(String[] tableNames);
+    public byte[] downloadCode(String[] tableNames) throws JsonProcessingException;
 
     /**
      * 修改保存参数校验
      * 
      * @param genTable 业务信息
      */
-    public void validateEdit(GenTable genTable);
+    public void validateEdit(GenTable genTable) throws JsonProcessingException;
 }

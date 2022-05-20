@@ -1,10 +1,15 @@
 package com.ruoyi.common.core.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * 用户登录对象
  * 
  * @author ruoyi
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoginBody
 {
     /**

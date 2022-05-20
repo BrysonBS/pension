@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.redis.RedisCache;
@@ -28,6 +30,8 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
     public final String REPEAT_PARAMS = "repeatParams";
 
     public final String REPEAT_TIME = "repeatTime";
+    @Autowired
+    private ObjectMapper objectMapper;
 
     // 令牌自定义标识
     @Value("${token.header}")
@@ -38,8 +42,7 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean isRepeatSubmit(HttpServletRequest request, RepeatSubmit annotation)
-    {
+    public boolean isRepeatSubmit(HttpServletRequest request, RepeatSubmit annotation) throws JsonProcessingException {
         String nowParams = "";
         if (request instanceof RepeatedlyRequestWrapper)
         {
@@ -50,7 +53,7 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
         // body参数为空，获取Parameter的数据
         if (StringUtils.isEmpty(nowParams))
         {
-            nowParams = JSONObject.toJSONString(request.getParameterMap());
+            nowParams = objectMapper.writeValueAsString(request.getParameterMap());
         }
         Map<String, Object> nowDataMap = new HashMap<String, Object>();
         nowDataMap.put(REPEAT_PARAMS, nowParams);

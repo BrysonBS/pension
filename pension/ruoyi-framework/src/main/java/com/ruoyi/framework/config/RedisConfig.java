@@ -1,5 +1,9 @@
 package com.ruoyi.framework.config;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -21,8 +27,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator
  */
 @Configuration
 @EnableCaching
-public class RedisConfig extends CachingConfigurerSupport
-{
+public class RedisConfig extends CachingConfigurerSupport {
     @Bean
     @SuppressWarnings(value = { "unchecked", "rawtypes" })
     public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory)
@@ -30,11 +35,13 @@ public class RedisConfig extends CachingConfigurerSupport
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
-        FastJson2JsonRedisSerializer serializer = new FastJson2JsonRedisSerializer(Object.class);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        mapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        ObjectMapper mapper = JsonMapper.builder()
+                .addModule(new Jdk8Module())
+                .addModule(new JavaTimeModule())
+                .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
+                .activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY)
+                .build();
+        Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer(Object.class);
         serializer.setObjectMapper(mapper);
 
         // 使用StringRedisSerializer来序列化和反序列化redis的key值

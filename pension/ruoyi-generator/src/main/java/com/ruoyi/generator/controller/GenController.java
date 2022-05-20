@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,8 +62,7 @@ public class GenController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('tool:gen:query')")
     @GetMapping(value = "/{tableId}")
-    public AjaxResult getInfo(@PathVariable Long tableId)
-    {
+    public AjaxResult getInfo(@PathVariable Long tableId) throws JsonProcessingException {
         GenTable table = genTableService.selectGenTableById(tableId);
         List<GenTable> tables = genTableService.selectGenTableAll();
         List<GenTableColumn> list = genTableColumnService.selectGenTableColumnListByTableId(tableId);
@@ -119,8 +120,7 @@ public class GenController extends BaseController
     @PreAuthorize("@ss.hasPermi('tool:gen:edit')")
     @Log(title = "代码生成", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult editSave(@Validated @RequestBody GenTable genTable)
-    {
+    public AjaxResult editSave(@Validated @RequestBody GenTable genTable) throws JsonProcessingException {
         genTableService.validateEdit(genTable);
         genTableService.updateGenTable(genTable);
         return AjaxResult.success();
@@ -167,8 +167,7 @@ public class GenController extends BaseController
     @PreAuthorize("@ss.hasPermi('tool:gen:code')")
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/genCode/{tableName}")
-    public AjaxResult genCode(@PathVariable("tableName") String tableName)
-    {
+    public AjaxResult genCode(@PathVariable("tableName") String tableName) throws JsonProcessingException {
         genTableService.generatorCode(tableName);
         return AjaxResult.success();
     }

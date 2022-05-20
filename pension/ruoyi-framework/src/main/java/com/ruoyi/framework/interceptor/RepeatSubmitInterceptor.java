@@ -3,10 +3,13 @@ package com.ruoyi.framework.interceptor;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.ServletUtils;
@@ -19,6 +22,8 @@ import com.ruoyi.common.utils.ServletUtils;
 @Component
 public abstract class RepeatSubmitInterceptor implements HandlerInterceptor
 {
+    @Autowired
+    private ObjectMapper objectMapper;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
     {
@@ -32,7 +37,7 @@ public abstract class RepeatSubmitInterceptor implements HandlerInterceptor
                 if (this.isRepeatSubmit(request, annotation))
                 {
                     AjaxResult ajaxResult = AjaxResult.error(annotation.message());
-                    ServletUtils.renderString(response, JSONObject.toJSONString(ajaxResult));
+                    ServletUtils.renderString(response, objectMapper.writeValueAsString(ajaxResult));
                     return false;
                 }
             }
@@ -51,5 +56,5 @@ public abstract class RepeatSubmitInterceptor implements HandlerInterceptor
      * @return
      * @throws Exception
      */
-    public abstract boolean isRepeatSubmit(HttpServletRequest request, RepeatSubmit annotation);
+    public abstract boolean isRepeatSubmit(HttpServletRequest request, RepeatSubmit annotation) throws JsonProcessingException;
 }

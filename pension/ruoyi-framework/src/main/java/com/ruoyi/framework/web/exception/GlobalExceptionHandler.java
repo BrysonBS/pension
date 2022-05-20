@@ -1,6 +1,8 @@
 package com.ruoyi.framework.web.exception;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -110,5 +112,11 @@ public class GlobalExceptionHandler
     public AjaxResult handleDemoModeException(DemoModeException e)
     {
         return AjaxResult.error("演示模式，不允许操作");
+    }
+
+    @ExceptionHandler(JsonProcessingException.class)
+    public AjaxResult handleJsonProcessingException(JsonProcessingException e){
+        log.error(e.getMessage(), e);
+        return AjaxResult.error(e.getMessage());
     }
 }
