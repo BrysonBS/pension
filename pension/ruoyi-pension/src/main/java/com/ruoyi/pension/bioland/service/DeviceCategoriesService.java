@@ -5,7 +5,6 @@ import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.pension.bioland.domain.po.BiolandDeviceCategories;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.bioland.mapper.BiolandDeviceCategoriesMapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

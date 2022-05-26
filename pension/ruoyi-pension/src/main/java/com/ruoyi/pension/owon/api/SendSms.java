@@ -1,9 +1,6 @@
 package com.ruoyi.pension.owon.api;
 
-import com.aliyun.tea.*;
-import com.aliyun.dysmsapi20170525.*;
 import com.aliyun.dysmsapi20170525.models.*;
-import com.aliyun.teaopenapi.*;
 import com.aliyun.teaopenapi.models.*;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.pension.owon.domain.po.LogSms;
@@ -12,8 +9,6 @@ import org.springframework.core.env.Environment;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class SendSms {
     public static void sendWarning(String name,String[] phones) throws Exception {

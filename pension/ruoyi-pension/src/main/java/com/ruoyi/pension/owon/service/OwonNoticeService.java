@@ -1,6 +1,5 @@
 package com.ruoyi.pension.owon.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.pension.owon.domain.po.OwonNotice;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -18,13 +17,6 @@ import java.util.List;
 @Service
 public class OwonNoticeService extends ServiceImpl<OwonNoticeMapper, OwonNotice> implements IService<OwonNotice> {
     public List<OwonNotice> getList(boolean isAdmin,Long deptId, LocalDateTime beginTime,LocalDateTime endTime,OwonNotice notice){
-/*        if(isAdmin){
-            LambdaQueryWrapper<OwonNotice> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(OwonNotice::getDelFlag,0)
-                    .like(OwonNotice::)
-                    .orderByDesc(OwonNotice::getReportTime);
-            return list(queryWrapper);
-        }*/
         return this.baseMapper.getListByLoginUserDeptId(isAdmin,deptId,beginTime,endTime,notice);
     }
 }

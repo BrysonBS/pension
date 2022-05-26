@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 
-import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

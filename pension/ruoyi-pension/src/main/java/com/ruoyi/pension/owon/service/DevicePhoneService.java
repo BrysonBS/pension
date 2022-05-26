@@ -5,7 +5,6 @@ import com.ruoyi.pension.owon.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.mapper.DevicePhoneMapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;

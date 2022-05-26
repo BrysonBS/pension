@@ -2,13 +2,10 @@ package com.ruoyi.pension.owon.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.pension.owon.domain.po.Device;
 import com.ruoyi.pension.owon.domain.po.SysDeptOwon;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.mapper.SysDeptOwonMapper;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;

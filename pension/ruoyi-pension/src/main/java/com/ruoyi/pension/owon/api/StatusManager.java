@@ -73,7 +73,7 @@ public class StatusManager {
                        yield "[无人]";
                    }
                    case 1 -> {
-                       noticeVo.setEnable(true);
+                       //noticeVo.setEnable(true);
                        yield "活动";
                    }
                    case 2 -> {

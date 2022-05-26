@@ -14,6 +14,6 @@ public enum Platform {
     BIOLAND(3,"爱奥乐")
     ;
     @EnumValue
-    private Integer code;
-    private String name;
+    private final Integer code;
+    private final String name;
 }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.pension.owon.domain.enums.Platform;

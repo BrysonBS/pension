@@ -3,7 +3,6 @@ package com.ruoyi.pension.owon.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.pension.owon.config.OwonProps;
 import com.ruoyi.pension.owon.convertor.OwonTsConvertor;
@@ -14,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.net.http.HttpResponse;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.concurrent.ExecutionException;
 
 @Component

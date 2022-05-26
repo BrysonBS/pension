@@ -4,7 +4,6 @@ import com.ruoyi.pension.owon.domain.po.Device;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.pension.owon.domain.po.DeviceEp;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.core.parameters.P;
 
 import java.util.Collection;
 import java.util.List;

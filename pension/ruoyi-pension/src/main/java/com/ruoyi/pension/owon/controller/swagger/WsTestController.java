@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.framework.oss.OssManager;
 import com.ruoyi.framework.websocket.WebSocketUsers;
 import com.ruoyi.pension.owon.api.SendSms;
 import com.ruoyi.pension.owon.domain.vo.NoticeVo;
@@ -11,15 +12,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Tag(name = "一般接口Api")
 @RestController
@@ -27,6 +26,8 @@ import java.util.concurrent.ExecutionException;
 public class WsTestController extends BaseController {
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private OssManager ossManager;
     @Operation(summary = "websocket测试",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/wstest")
     public AjaxResult websocketTest() throws JsonProcessingException {
@@ -45,5 +46,13 @@ public class WsTestController extends BaseController {
     public AjaxResult SendSmsText(String phone) throws Exception {
         SendSms.sendWarning("Sensor-D11396",new String[]{phone});
         return AjaxResult.success();
+    }
+
+
+    @Operation(summary = "文件上传到OSS测试",security = { @SecurityRequirement(name = "Authorization") })
+    @GetMapping("/uploadByStream")
+    public AjaxResult uploadByStream(){
+        String target = "abc.txt";
+        return ossManager.uploadByStream(target) ? AjaxResult.success() : AjaxResult.error();
     }
 }

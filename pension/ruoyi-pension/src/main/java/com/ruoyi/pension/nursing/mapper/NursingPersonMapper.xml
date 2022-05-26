@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.nursing.mapper.NursingPersonMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.nursing.domain.po.NursingPerson">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="dictLevelId" column="dict_level_id" jdbcType="VARCHAR"/>
+            <result property="guardian" column="guardian" jdbcType="VARCHAR"/>
+            <result property="guardianPhone" column="guardian_phone" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="idCardId" column="id_card_id" jdbcType="VARCHAR"/>
+            <result property="medicalHistory" column="medical_history" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dept_id,dict_level_id,
+        guardian,guardian_phone,name,
+        address,remark,id_card_id,
+        medical_history,phone,
+        del_flag,create_by,create_time,
+        update_by,update_time
+    </sql>
+    <sql id="Select_List">
+        id,dept_id,dict_level_id,
+        guardian,guardian_phone,`name`,
+        address,remark,id_card_id,
+        medical_history,phone
+    </sql>
+    <select id="getListByExample" resultType="com.ruoyi.pension.nursing.domain.po.NursingPerson">
+        SELECT
+        <include refid="Select_List"/>
+        FROM `nursing_person`
+        <where>
+            del_flag = '0'
+
+            <if test="name != null">
+                AND `name` LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="guardian != null">
+                AND guardian LIKE CONCAT('%',#{guardian},'%')
+            </if>
+            <if test="guardianPhone != null">
+                AND guardian_phone LIKE CONCAT('%',#{guardianPhone},'%')
+            </if>
+            <if test="idCardId != null">
+                AND id_card_id LIKE CONCAT('%',#{idCardId},'%')
+            </if>
+            <if test="address != null">
+                AND address LIKE CONCAT('%',#{address},'%')
+            </if>
+        </where>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </select>
+</mapper>

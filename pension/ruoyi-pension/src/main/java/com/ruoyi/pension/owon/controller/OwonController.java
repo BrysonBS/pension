@@ -3,7 +3,6 @@ package com.ruoyi.pension.owon.controller;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.ruoyi.pension.owon.domain.enums.Operation;
 import com.ruoyi.pension.owon.domain.enums.Platform;
 import com.ruoyi.pension.owon.service.OwonReportService;
 import com.ruoyi.pension.owon.domain.dto.Datapacket;

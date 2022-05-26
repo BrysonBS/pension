@@ -1,26 +1,16 @@
 package com.ruoyi.pension.owon.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.pension.owon.config.OwonProps;
-import com.ruoyi.pension.owon.convertor.OwonTsConvertor;
 import com.ruoyi.pension.owon.domain.dto.Datapacket;
-import com.ruoyi.pension.owon.domain.dto.OwonRequest;
-import com.ruoyi.pension.owon.domain.dto.Response;
 import com.ruoyi.pension.owon.domain.enums.Command;
 import com.ruoyi.pension.owon.domain.enums.Operation;
 import com.ruoyi.pension.owon.domain.enums.TypeEnum;
-import com.ruoyi.pension.owon.utils.HttpClientUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.net.http.HttpResponse;
 import java.util.concurrent.*;
 
 @Component

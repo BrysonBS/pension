@@ -3,16 +3,13 @@ package com.ruoyi.pension.owon.controller.health;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.pension.owon.domain.po.VBleDataReport;
-import com.ruoyi.pension.owon.service.SysDeptOwonService;
 import com.ruoyi.pension.owon.service.VBleDataReportService;
-import io.jsonwebtoken.lang.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayDeque;
 import java.util.List;
 
 @RestController

@@ -17,19 +17,15 @@
 
     <dependencies><!-- spring-boot-devtools -->
         <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-pension</artifactId>
-            <version>3.8.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional> <!-- 表示依赖不会传递 -->
         </dependency>
-        <!-- 核心模块-->
+        <!--测试-->
         <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-framework</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <!-- 定时任务-->
         <dependency>
@@ -50,8 +46,21 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${springboot.version}</version>
                 <configuration>
                     <fork>true</fork> <!-- 如果没有该配置，devtools不会生效 -->
+                    <excludes>
+                        <!--打包时排除lombok-->
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                        <!--打包时排除processor-->
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                        </exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
@@ -64,7 +73,7 @@
             <plugin>   
                 <groupId>org.apache.maven.plugins</groupId>   
                 <artifactId>maven-war-plugin</artifactId>   
-                <version>3.1.0</version>   
+                <version>3.1.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <warName>${project.artifactId}</warName>
@@ -73,5 +82,4 @@
         </plugins>
         <finalName>${project.artifactId}</finalName>
     </build>
-
 </project>

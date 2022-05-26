@@ -20,14 +20,17 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
     private static final String TOKEN_KEY = "Authorization";
 
-    /** 系统基础配置 */
+/** 系统基础配置 */
+
     @Autowired
     private RuoYiConfig ruoyiConfig;
 
+
     /**
-     * 添加分组
+    * 添加分组
      * @return
      */
+
     @Bean
     public GroupedOpenApi owonApi() {
         return GroupedOpenApi.builder()
@@ -75,10 +78,12 @@ public class SwaggerConfig {
 
     }
 
-    /**
+
+/**
      * 文档信息
      * @return
      */
+
     private Info info(){
         return new Info().title("智慧养老平台-接口文档")
                 .description("用于系统部分接口测试")
@@ -91,13 +96,16 @@ public class SwaggerConfig {
                 .name("MIT")
                 .url("https://opensource.org/licenses/MIT");//开源协议
     }
-    /**
+
+/**
      * 外部文档信息
      * @return
      */
+
     private ExternalDocumentation externalDocumentation() {
         return new ExternalDocumentation()
                 .description("外部参考文档")
                 .url("https://sp.feiaikeji.cn");
     }
 }
+

@@ -10,14 +10,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.domain.po.DeviceEp;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import com.ruoyi.pension.owon.mapper.DeviceMapper;
-import io.jsonwebtoken.lang.Collections;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 

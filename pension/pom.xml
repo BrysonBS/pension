@@ -32,6 +32,13 @@
         <httpclient5.version>5.1.3</httpclient5.version>
         <knife4j.version>3.0.3</knife4j.version>
         <springdoc.version>1.6.8</springdoc.version>
+        <dysmsapi.verson>2.0.9</dysmsapi.verson>
+        <com.aliyun.oss>3.15.0</com.aliyun.oss>
+        <javax.xml.bind>2.3.1</javax.xml.bind>
+        <javax.activation>1.1.1</javax.activation>
+        <org.glassfish.jaxb>2.3.3</org.glassfish.jaxb>
+        <springboot.version>2.6.7</springboot.version>
+        <lombok.version>1.18.24</lombok.version>
     </properties>
 	
     <!-- 依赖声明 -->
@@ -41,9 +48,16 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.6.7</version>
+                <version>${springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!--lombok-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
 
             <!-- 阿里数据库连接池 -->
@@ -52,6 +66,36 @@
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
+            <!--阿里短信服务-->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>dysmsapi20170525</artifactId>
+                <version>${dysmsapi.verson}</version>
+            </dependency>
+            <!--阿里云oss-->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${com.aliyun.oss}</version>
+            </dependency>
+            <!--java9以上版本额外添加-->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${javax.xml.bind}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>${javax.activation}</version>
+            </dependency>
+            <!-- no more than 2.3.3-->
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${org.glassfish.jaxb}</version>
+            </dependency>
+
 
             <!-- 解析客户端操作系统、浏览器等 -->
             <dependency>
@@ -197,6 +241,12 @@
                 <version>${artemis-jms-server.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-pension</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -221,6 +271,7 @@
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
+                <filtering>true</filtering>
             </resource>
         </resources>
         <plugins>
@@ -232,6 +283,18 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                            <version>${springboot.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
@@ -244,7 +307,26 @@
             </plugin>
         </plugins>
     </build>
-<!--    <repositories>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <profile.active>dev</profile.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profile.active>prod</profile.active>
+            </properties>
+        </profile>
+    </profiles>
+
+
+    <repositories>
         <repository>
             <id>public</id>
             <name>aliyun nexus</name>
@@ -267,6 +349,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
-    </pluginRepositories>-->
+    </pluginRepositories>
 
 </project>

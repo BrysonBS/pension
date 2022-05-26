@@ -1,12 +1,10 @@
 package com.ruoyi.pension.bioland.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.websocket.WebSocketUsers;
 import com.ruoyi.pension.bioland.api.SrcDataValueManager;
-import com.ruoyi.pension.bioland.domain.enums.DeviceType;
 import com.ruoyi.pension.bioland.domain.po.BiolandDevice;
 import com.ruoyi.pension.bioland.domain.po.SrcDataValue;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

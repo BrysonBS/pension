@@ -8,8 +8,7 @@
         <version>3.8.2</version>
     </parent>
 
-    <name>ruoyi-pension</name>
-    <description></description>
+    <description>智慧养老平台</description>
     <artifactId>ruoyi-pension</artifactId>
 
     <dependencies>
@@ -19,45 +18,12 @@
             <artifactId>ruoyi-framework</artifactId>
         </dependency>
 
-
         <!--阿里短信服务-->
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>dysmsapi20170525</artifactId>
-            <version>2.0.9</version>
         </dependency>
 
-
-
-
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

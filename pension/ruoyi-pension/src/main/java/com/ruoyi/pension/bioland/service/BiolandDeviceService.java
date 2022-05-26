@@ -1,6 +1,5 @@
 package com.ruoyi.pension.bioland.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.pension.bioland.domain.po.BiolandDevice;
@@ -10,7 +9,6 @@ import com.ruoyi.pension.bioland.mapper.BiolandDeviceMapper;
 import com.ruoyi.pension.owon.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import com.ruoyi.pension.owon.service.DevicePhoneService;
-import org.apache.ibatis.annotations.Param;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**

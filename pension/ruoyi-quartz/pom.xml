@@ -31,14 +31,7 @@
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-pension</artifactId>
-            <version>3.8.2</version>
         </dependency>
-
-        <!--        &lt;!&ndash; 通用工具&ndash;&gt;
-                <dependency>
-                    <groupId>com.ruoyi</groupId>
-                    <artifactId>ruoyi-common</artifactId>
-                </dependency>-->
     </dependencies>
 
 </project>
