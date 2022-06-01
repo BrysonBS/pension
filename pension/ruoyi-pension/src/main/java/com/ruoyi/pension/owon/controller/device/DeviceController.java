@@ -9,7 +9,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.pension.owon.api.BleManager;
 import com.ruoyi.pension.owon.api.DeviceList;
 import com.ruoyi.pension.owon.api.ZigBeeManager;
-import com.ruoyi.pension.owon.domain.enums.Platform;
+import com.ruoyi.pension.common.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.Device;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import com.ruoyi.pension.owon.service.DevicePhoneService;

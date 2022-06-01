@@ -6,7 +6,7 @@ import com.ruoyi.pension.owon.domain.dto.Datapacket;
 import com.ruoyi.pension.owon.domain.po.DeviceEp;
 import com.ruoyi.pension.owon.domain.po.PanicButton;
 import com.ruoyi.pension.owon.domain.dto.Response;
-import com.ruoyi.pension.owon.domain.enums.Operation;
+import com.ruoyi.pension.common.domain.enums.Operation;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 
-import com.ruoyi.pension.owon.domain.enums.Platform;
+import com.ruoyi.pension.common.domain.enums.Platform;
 import lombok.Data;
 
 /**

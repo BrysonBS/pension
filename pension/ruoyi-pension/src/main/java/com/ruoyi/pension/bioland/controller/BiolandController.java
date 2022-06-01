@@ -41,10 +41,11 @@ public class BiolandController {
                             HttpServletResponse response, @RequestParam("data") String data)
             throws Exception {
 
-        log.error("Bioland: " + data);
-
         // 校验数据合法性
-        if (!checkReceivedData(data)) return;
+        if (!checkReceivedData(data)) {
+            log.error("Bioland:数据不合法: " + data);
+            return;
+        }
         SrcDataValue srcDataValue = new SrcDataValue(data);
         //先保存设备
         BiolandDevice biolandDevice = BiolandDevice.builder()

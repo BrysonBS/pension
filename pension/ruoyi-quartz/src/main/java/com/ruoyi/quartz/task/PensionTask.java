@@ -1,6 +1,6 @@
 package com.ruoyi.quartz.task;
 
-import com.ruoyi.pension.owon.service.LogSmsService;
+import com.ruoyi.pension.common.service.LogSmsService;
 import com.ruoyi.pension.owon.service.OwonReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -8,6 +8,12 @@ export function listPerson(query) {
     params: query
   })
 }
+export function listPersonAll() {
+  return request({
+    url: '/nursing/person/listAll',
+    method: 'get'
+  })
+}
 // 根据id查询
 export function getPerson(id) {
   return request({

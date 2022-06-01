@@ -36,4 +36,25 @@
         separator43,imsi,separator59,
         lati_longitude,crc_code
     </sql>
+    <sql id="Select_Record_List">
+        serial_number,data1,data2,
+        data3,check_time
+    </sql>
+    <select id="listLatest" resultType="com.ruoyi.pension.bioland.domain.po.SrcDataValue">
+        SELECT
+        <include refid="Select_Record_List"/>
+        FROM `bioland_srcdata`
+        <where>
+            <if test="serialNumber != null">
+                serial_number = #{serialNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="beginTime != null">
+                AND check_time <![CDATA[ >= ]]> #{beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                AND check_time <![CDATA[ < ]]> #{endTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
 </mapper>

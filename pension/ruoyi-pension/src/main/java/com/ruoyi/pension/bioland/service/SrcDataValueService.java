@@ -9,10 +9,10 @@ import com.ruoyi.pension.bioland.domain.po.BiolandDevice;
 import com.ruoyi.pension.bioland.domain.po.SrcDataValue;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.bioland.mapper.SrcDataValueMapper;
-import com.ruoyi.pension.owon.api.SendSms;
-import com.ruoyi.pension.owon.domain.enums.Platform;
+import com.ruoyi.pension.common.api.SendSms;
+import com.ruoyi.pension.common.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.OwonNotice;
-import com.ruoyi.pension.owon.domain.vo.NoticeVo;
+import com.ruoyi.pension.common.domain.vo.NoticeVo;
 import com.ruoyi.pension.owon.service.OwonNoticeService;
 import com.ruoyi.pension.owon.service.SysUserOwonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +37,11 @@ public class SrcDataValueService extends ServiceImpl<SrcDataValueMapper, SrcData
     private ObjectMapper objectMapper;
     @Autowired
     private OwonNoticeService owonNoticeService;
+
+    public List<SrcDataValue> listLatest(String serialNumber, LocalDateTime beginTime, LocalDateTime endTime){
+        if(endTime != null) endTime = endTime.plusDays(1);
+        return this.baseMapper.listLatest(serialNumber,beginTime,endTime);
+    }
     public boolean saveDataAndSendNotice(SrcDataValue srcDataValue) throws Exception {
         //先发送短信和通知前端
         OwonNotice owonNotice = sendSmsAndNotice(srcDataValue);

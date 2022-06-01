@@ -27,6 +27,11 @@ public class NursingPersonController extends BaseController {
         List<NursingPerson> list = nursingPersonService.getListByExample(nursingPerson);
         return getDataTable(list);
     }
+    @GetMapping("/listAll")
+    public AjaxResult getListAll(){
+        return AjaxResult.success()
+                .put(AjaxResult.DATA_TAG,nursingPersonService.getListPerson(new NursingPerson()));
+    }
     @GetMapping("/{id}")
     public AjaxResult getPerson(@PathVariable("id") Integer id){
         return AjaxResult.success()

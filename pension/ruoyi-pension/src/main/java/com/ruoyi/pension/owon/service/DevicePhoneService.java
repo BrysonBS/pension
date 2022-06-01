@@ -1,7 +1,7 @@
 package com.ruoyi.pension.owon.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.pension.owon.domain.enums.Platform;
+import com.ruoyi.pension.common.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.mapper.DevicePhoneMapper;

@@ -1,8 +1,7 @@
 package com.ruoyi.pension.nursing.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.common.annotation.DataScope;
-import com.ruoyi.pension.aspect.annotation.PensionDataScope;
+import com.ruoyi.pension.common.aspect.annotation.PensionDataScope;
 import com.ruoyi.pension.nursing.domain.po.NursingPerson;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.nursing.mapper.NursingPersonMapper;
@@ -19,8 +18,10 @@ import java.util.List;
 public class NursingPersonService extends ServiceImpl<NursingPersonMapper, NursingPerson> implements IService<NursingPerson> {
    @PensionDataScope
    public List<NursingPerson> getListByExample(NursingPerson person){
-      List<NursingPerson> list = this.baseMapper.getListByExample(person);
-
-      return list;
+      return this.baseMapper.getListByExample(person);
+   }
+   @PensionDataScope
+   public List<NursingPerson> getListPerson(NursingPerson nursingPerson){
+      return this.baseMapper.getListPerson(nursingPerson);
    }
 }

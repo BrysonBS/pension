@@ -37,6 +37,9 @@
         address,remark,id_card_id,
         medical_history,phone
     </sql>
+    <sql id="Select_List_Person">
+        id,dict_level_id,`name`,`phone`,dept_id
+    </sql>
     <select id="getListByExample" resultType="com.ruoyi.pension.nursing.domain.po.NursingPerson">
         SELECT
         <include refid="Select_List"/>
@@ -59,7 +62,15 @@
             <if test="address != null">
                 AND address LIKE CONCAT('%',#{address},'%')
             </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
         </where>
+    </select>
+    <select id="getListPerson" resultType="com.ruoyi.pension.nursing.domain.po.NursingPerson">
+        SELECT
+        <include refid="Select_List_Person"/>
+        FROM `nursing_person`
+        WHERE del_flag = '0'
         <!-- 数据范围过滤 -->
         ${params.dataScope}
     </select>

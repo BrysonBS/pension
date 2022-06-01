@@ -2,8 +2,8 @@ package com.ruoyi.pension.owon.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.ruoyi.pension.owon.domain.enums.Operation;
-import com.ruoyi.pension.owon.domain.enums.Platform;
+import com.ruoyi.pension.common.domain.enums.Operation;
+import com.ruoyi.pension.common.domain.enums.Platform;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;

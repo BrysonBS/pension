@@ -21,8 +21,8 @@
       </el-form-item>
       <el-form-item label="时间范围">
         <el-date-picker
+          @focus="addFocus"
           v-model="dateRange"
-          style="width: 340px"
           value-format="yyyy-MM-dd HH:mm:ss"
           type="datetimerange"
           :picker-options="pickerOptions"
@@ -59,8 +59,10 @@
 
 <script>
 import SleepChart from '@/views/dashboard/health/SleepChart'
-import { listSleep } from '@/api/health/sleep'
+import { listSleep } from '@/api/health/health'
 import { deviceList } from '@/api/device/deviceCategories'
+import { addTouchmove } from '@/api/tool/adaptor'
+
 export default {
   name: 'Sleep',
   components: {
@@ -183,6 +185,9 @@ export default {
       this.sleepData.xAxisData.push(e.ts);
       this.sleepData.heartRateData.push(e.heartRate);
       this.sleepData.respiratoryRateData.push(e.respiratoryRate);
+    },
+    addFocus(){
+      addTouchmove(".el-picker-panel")
     }
   },
   created() {

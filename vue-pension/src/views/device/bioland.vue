@@ -50,7 +50,7 @@
             <el-select
               v-model="queryParams.categoriesId"
               placeholder="设备类别"
-              clearable
+              filterable clearable
               style="width: 240px"
             >
               <el-option

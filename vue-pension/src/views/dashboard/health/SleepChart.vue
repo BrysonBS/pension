@@ -65,10 +65,7 @@ export default {
       this.chart.setOption(
         {
         xAxis: {
-          data: xAxisData,//['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-/*          axisLabel:{
-            rotate:50
-          }*/
+          data: xAxisData,
         },
         grid: {
           left: 10,

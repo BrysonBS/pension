@@ -17,6 +17,10 @@
         id,dept_id,categories_id,
         del_flag,name,serial_number
     </sql>
+    <sql id="Select_List">
+        id,dept_id,categories_id,
+        `name`,serial_number,deptFullName,typeName
+    </sql>
     <insert id="saveOrUpdateBySerialNumber">
         <selectKey keyProperty="id" resultType="com.ruoyi.pension.bioland.domain.po.BiolandDevice" order="BEFORE">
             SELECT COUNT(id) id FROM bioland_device WHERE serial_number = #{serialNumber}
@@ -88,5 +92,21 @@
         INNER JOIN owon_device_phone b ON a.id = b.device_id
         WHERE a.serial_number = #{serialNumber,jdbcType=VARCHAR}
         AND source = 3
+    </select>
+    <select id="getListByExample" resultType="com.ruoyi.pension.bioland.domain.po.BiolandDevice">
+        SELECT
+        <include refid="Select_List"/>
+        FROM v_bioland_device_categories
+        <where>
+            <if test="categoriesId != null"> categories_id = #{categoriesId} </if>
+            <if test="serialNumber != null">
+                AND serial_number LIKE CONCAT('%',#{serialNumber},'%')
+            </if>
+            <if test="name != null">
+                AND `name` LIKE CONCAT('%',#{name},'%')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
     </select>
 </mapper>

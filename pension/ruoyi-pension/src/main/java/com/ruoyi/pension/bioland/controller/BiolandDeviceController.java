@@ -7,7 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.pension.bioland.domain.po.BiolandDevice;
 import com.ruoyi.pension.bioland.service.BiolandDeviceService;
-import com.ruoyi.pension.owon.domain.enums.Platform;
+import com.ruoyi.pension.common.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import com.ruoyi.pension.owon.service.DevicePhoneService;
 import com.ruoyi.pension.owon.service.SysDeptOwonService;
@@ -39,6 +39,12 @@ public class BiolandDeviceController extends BaseController {
         startPage();
         List<BiolandDevice> list = biolandDeviceService.getListByDeptIdsAndDevice(deptIds,device);
         return getDataTable(list);
+    }
+    //下拉选择列表
+    @GetMapping("/blpressureList")
+    public AjaxResult getBlpressureList(BiolandDevice device){
+        return AjaxResult.success()
+                .put(AjaxResult.DATA_TAG,biolandDeviceService.getListByExample(device));
     }
     //根据id获取设备和绑定手机号
     @GetMapping("/{id}")

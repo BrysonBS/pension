@@ -136,7 +136,7 @@ export default {
     onmessageWs(){
       let messageBody = event.data;
       if(messageBody.charAt(0) !== '{'){//非NoticeVo对象
-        if(messageBody === '登录过期') location.reload();
+        if(messageBody === '登录过期' || messageBody === '用户认证失败') location.reload();
         console.log(messageBody);
       }
       else {
@@ -157,17 +157,13 @@ export default {
           duration: 0
         })
 
-        //全局事件总线: 发送数据到睡眠检测
-        if((!isNaN(parseFloat(notice.heartRate)) && isFinite(notice.heartRate)) ||
-          (!isNaN(parseFloat(notice.respiratoryRate)) && isFinite(notice.respiratoryRate))) {
-          let data = {
-            "ts": notice.ts,
-            "ieee": notice.ieee,
-            "heartRate": notice.heartRate,
-            "respiratoryRate": notice.respiratoryRate
-          };
-          this.$bus.$emit('sleep', data)
-        }
+        //全局事件总线相关
+        //发送数据到睡眠检测
+        this.sendSleep(notice)
+        //发送数据到血压
+        this.sendBlpressure(notice)
+        //发送数据到血糖
+        this.sendBlglucose(notice)
       }
       //收到信息,心跳重置
       this.reset();
@@ -232,6 +228,47 @@ export default {
       self.serverTimeoutObj && clearTimeout(self.serverTimeoutObj);
       self.timeoutnum && clearTimeout(self.timeoutnum);
     },
+
+    //全局事件总线相关
+    //发送数据到睡眠监测
+    sendSleep(notice){
+      if((!isNaN(parseFloat(notice.heartRate)) && isFinite(notice.heartRate)) ||
+        (!isNaN(parseFloat(notice.respiratoryRate)) && isFinite(notice.respiratoryRate))) {
+        let data = {
+          "ts": notice.ts,
+          "ieee": notice.ieee,
+          "heartRate": notice.heartRate,
+          "respiratoryRate": notice.respiratoryRate
+        };
+        this.$bus.$emit('sleep', data)
+      }
+    },
+    //血压数据发送
+    sendBlpressure(notice){
+      if((!isNaN(parseFloat(notice.hbp)) && isFinite(notice.hbp))
+        || (!isNaN(parseFloat(notice.lbp)) && isFinite(notice.lbp))
+      ){
+        let data = {
+          "ts": notice.ts,
+          "ieee": notice.ieee,
+          "hbp": notice.hbp,
+          "lbp": notice.lbp,
+          "heartRate": notice.heartRate
+        };
+        this.$bus.$emit('blpressure', data)
+      }
+    },
+    //血糖数据发送
+    sendBlglucose(notice){
+      if(!isNaN(parseFloat(notice.glucose)) && isFinite(notice.glucose)){
+        let data = {
+          "ts": notice.ts,
+          "ieee": notice.ieee,
+          "glucose": notice.glucose
+        };
+        this.$bus.$emit('blglucose', data)
+      }
+    }
   },
   mounted(){
     this.initWs()

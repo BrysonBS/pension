@@ -43,7 +43,7 @@ public class SwaggerConfig {
     public GroupedOpenApi biolandApi() {
         return GroupedOpenApi.builder()
                 .group("bioland")
-                .pathsToMatch("/bioland/**")
+                .pathsToMatch("/bioland/data")
                 .packagesToScan("com.ruoyi.pension.bioland")
                 .build();
     }

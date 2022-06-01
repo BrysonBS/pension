@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +24,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BiolandDevice implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -30,6 +35,8 @@ public class BiolandDevice implements Serializable {
     private String name;
     private String serialNumber;
 
+    @TableField(exist = false)
+    private Map<String, String> params;
     @TableField(exist = false)
     private String deptName;
     @TableField(exist = false)

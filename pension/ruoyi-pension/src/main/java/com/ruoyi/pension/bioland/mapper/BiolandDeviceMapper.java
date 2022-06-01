@@ -15,7 +15,7 @@ import java.util.List;
 */
 public interface BiolandDeviceMapper extends BaseMapper<BiolandDevice> {
     List<BiolandDevice> getListByDeptIdsAndDevice(@Param("deptIds") Collection<Long> deptIds, @Param("device") BiolandDevice device);
-
+    List<BiolandDevice> getListByExample(BiolandDevice biolandDevice);
     List<String> getPhonesBySerialNumber(@Param("serialNumber") String serialNumber);
 
     BiolandDevice selectOneBySerialNumber(@Param("serialNumber") String serialNumber);

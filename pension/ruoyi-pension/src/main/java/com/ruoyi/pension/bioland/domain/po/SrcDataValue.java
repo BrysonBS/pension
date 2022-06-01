@@ -7,8 +7,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import com.ruoyi.pension.bioland.domain.enums.DeviceType;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.ruoyi.pension.common.domain.enums.DeviceType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -16,6 +21,10 @@ import lombok.Data;
  */
 @TableName(value ="bioland_srcdata")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SrcDataValue implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -31,6 +40,7 @@ public class SrcDataValue implements Serializable {
     private String data1;
     private String data2;
     private String data3;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private LocalDateTime checkTime;
     private String checkCode;
     private String separator43;

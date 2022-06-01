@@ -2,11 +2,12 @@ package com.ruoyi.pension.bioland.service;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.pension.common.aspect.annotation.PensionDataScope;
 import com.ruoyi.pension.bioland.domain.po.BiolandDevice;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.bioland.domain.po.BiolandDeviceCategories;
 import com.ruoyi.pension.bioland.mapper.BiolandDeviceMapper;
-import com.ruoyi.pension.owon.domain.enums.Platform;
+import com.ruoyi.pension.common.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import com.ruoyi.pension.owon.service.DevicePhoneService;
 import org.apache.logging.log4j.util.Strings;
@@ -33,6 +34,11 @@ public class BiolandDeviceService extends ServiceImpl<BiolandDeviceMapper, Biola
     public List<BiolandDevice> getListByDeptIdsAndDevice(Collection<Long> deptIds, BiolandDevice device) {
         if(deptIds.isEmpty()) deptIds = null;
         return this.baseMapper.getListByDeptIdsAndDevice(deptIds,device);
+    }
+
+    @PensionDataScope
+    public List<BiolandDevice> getListByExample(BiolandDevice biolandDevice){
+        return this.baseMapper.getListByExample(biolandDevice);
     }
     public List<String> getPhonesBySerialNumber(String serialNumber){
         return this.baseMapper.getPhonesBySerialNumber(serialNumber);

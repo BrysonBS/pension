@@ -13,6 +13,7 @@ import java.util.List;
 */
 public interface NursingPersonMapper extends BaseMapper<NursingPerson> {
     List<NursingPerson> getListByExample(NursingPerson person);
+    List<NursingPerson> getListPerson(NursingPerson person);
 }
 
 

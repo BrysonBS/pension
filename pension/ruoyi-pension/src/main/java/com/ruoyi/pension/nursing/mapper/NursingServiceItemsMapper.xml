@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.nursing.mapper.NursingServiceItemsMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.nursing.domain.po.NursingServiceItems">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="masterId" column="master_id" jdbcType="INTEGER"/>
+            <result property="masterName" column="master_name" jdbcType="VARCHAR"/>
+            <result property="relateId" column="relate_id" jdbcType="INTEGER"/>
+            <result property="serviceId" column="service_id" jdbcType="VARCHAR"/>
+            <result property="serviceName" column="service_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,master_id,master_name,
+        relate_id,service_id,service_name
+    </sql>
+    <select id="getAllByRelateId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from nursing_service_items
+        where
+        relate_id = #{relateId,jdbcType=NUMERIC}
+    </select>
+    <select id="getServiceIdsByRelateId" resultType="java.lang.String">
+        select service_id from nursing_service_items
+        where relate_id = #{relateId,jdbcType=NUMERIC}
+    </select>
+</mapper>

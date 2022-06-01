@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { parseStrEmpty } from '@/utils/ruoyi'
 
 export function listDeviceCategories() {
   return request({
@@ -22,6 +23,13 @@ export function listBiolandDeviceCategories() {
   return request({
     url: '/device/bioland/categories/typeList',
     method: 'get'
+  })
+}
+export function biolandDeviceList(query){
+  return request({
+    url: '/device/bioland/blpressureList',
+    method: 'get',
+    params: query
   })
 }
 

@@ -22,7 +22,6 @@ import lombok.ToString;
  */
 @TableName(value ="nursing_person")
 @Data
-@EqualsAndHashCode(callSuper = false)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NursingPerson implements Serializable {

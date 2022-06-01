@@ -1,8 +1,8 @@
 package com.ruoyi.pension.bioland.api;
 
 import com.ruoyi.pension.bioland.domain.po.SrcDataValue;
-import com.ruoyi.pension.owon.domain.enums.Operation;
-import com.ruoyi.pension.owon.domain.vo.NoticeVo;
+import com.ruoyi.pension.common.domain.enums.Operation;
+import com.ruoyi.pension.common.domain.vo.NoticeVo;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -47,6 +47,7 @@ public class SrcDataValueManager {
     private static void setBloodGlucose(NoticeVo noticeVo,SrcDataValue srcDataValue){
         int glucose = Integer.parseInt(srcDataValue.getData3());
         if(glucose > 0) noticeVo.setEnable(true);
+        noticeVo.setGlucose(glucose);
         noticeVo.setInfo("[血糖: " + new DecimalFormat("#.##").format(glucose/18D) + "]");
         noticeVo.setOperation(Operation.REPORT_BLOOD_GLUCOSE);
     }

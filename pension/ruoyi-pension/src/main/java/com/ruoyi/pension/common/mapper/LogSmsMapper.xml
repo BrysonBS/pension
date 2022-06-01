@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.common.mapper.LogSmsMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.common.domain.po.LogSms">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="phones" column="phones" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="templateCode" column="template_code" jdbcType="VARCHAR"/>
+            <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
+            <result property="requestId" column="request_id" jdbcType="VARCHAR"/>
+            <result property="resultMessage" column="result_message" jdbcType="VARCHAR"/>
+            <result property="resultBizid" column="result_bizId" jdbcType="VARCHAR"/>
+            <result property="resultCode" column="result_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,phones,content,
+        template_code,send_time,request_id,
+        result_message,result_bizId,result_code
+    </sql>
+    <delete id="deleteBySendTimeLessThan">
+        delete
+        from log_sms
+        where send_time <![CDATA[  < ]]> #{sendTime}
+    </delete>
+</mapper>

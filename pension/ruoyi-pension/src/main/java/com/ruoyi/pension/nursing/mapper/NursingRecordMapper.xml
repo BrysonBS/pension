@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.nursing.mapper.NursingRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.nursing.domain.po.NursingRecord">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="orderNumber" column="order_number" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="applyName" column="apply_name" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+            <result property="dictLevelId" column="dict_level_id" jdbcType="VARCHAR"/>
+            <result property="applyTime" column="apply_time" jdbcType="TIMESTAMP"/>
+            <result property="beginTime" column="begin_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="personId" column="person_id" jdbcType="INTEGER"/>
+            <result property="personName" column="person_name" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,order_number,user_id,apply_name,
+        phone,dept_id,dept_name,
+        dict_level_id,apply_time,
+        begin_time,end_time,person_id,
+        person_name,remark,del_flag
+    </sql>
+    <select id="getListByExample" resultType="com.ruoyi.pension.nursing.domain.po.NursingRecord">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM nursing_record
+        <where>
+            del_flag = '0'
+            <if test="personId != null">
+                AND person_id = #{personId}
+            </if>
+            <if test="beginTime != null">
+                AND apply_time <![CDATA[ >= ]]> #{beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                AND apply_time <![CDATA[ <= ]]> #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="applyName != null">
+                AND apply_name LIKE CONCAT('%',#{applyName},'%')
+            </if>
+            <if test="orderNumber != null">
+                AND order_number LIKE CONCAT('%',#{orderNumber},'%')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+    </select>
+</mapper>

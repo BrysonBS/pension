@@ -2,6 +2,10 @@ package com.ruoyi.pension.bioland.mapper;
 
 import com.ruoyi.pension.bioland.domain.po.SrcDataValue;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 * @author Administrator
@@ -10,7 +14,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.ruoyi.pension.bioland.domain.po.SrcDataValue
 */
 public interface SrcDataValueMapper extends BaseMapper<SrcDataValue> {
-
+    List<SrcDataValue> listLatest(@Param("serialNumber") String serialNumber,
+                                  @Param("beginTime") LocalDateTime beginTime,
+                                  @Param("endTime") LocalDateTime endTime);
 }
 
 

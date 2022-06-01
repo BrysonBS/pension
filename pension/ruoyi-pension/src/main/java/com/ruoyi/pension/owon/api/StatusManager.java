@@ -3,7 +3,7 @@ package com.ruoyi.pension.owon.api;
 import com.ruoyi.pension.owon.domain.dto.Argument;
 import com.ruoyi.pension.owon.domain.dto.Response;
 import com.ruoyi.pension.owon.domain.po.Device;
-import com.ruoyi.pension.owon.domain.vo.NoticeVo;
+import com.ruoyi.pension.common.domain.vo.NoticeVo;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
