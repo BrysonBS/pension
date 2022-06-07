@@ -103,6 +103,8 @@ public class DruidConfig
             public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
                     throws IOException, ServletException
             {
+                //增大缓冲区,避免自动flush导致无法resetBuffer
+                response.setBufferSize(10240);
                 chain.doFilter(request, response);
                 // 重置缓冲区，响应头不会被重置
                 response.resetBuffer();

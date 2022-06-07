@@ -34,3 +34,12 @@ export function addRecord(data) {
     data: data
   })
 }
+
+// 删除
+export function delRecord(id) {
+  if(id instanceof Array) id = id.join('&id=')
+  return request({
+    url: '/nursing/record/batch?id='+id,
+    method: 'delete'
+  })
+}

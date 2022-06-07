@@ -36,7 +36,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("owon")
                 .pathsToMatch("/owon/**")
-                .packagesToScan("com.ruoyi.pension.owon")
+                .packagesToScan("com.ruoyi.pension")
                 .build();
     }
     @Bean

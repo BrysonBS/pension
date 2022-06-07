@@ -84,4 +84,9 @@ public class NursingRecordController extends BaseController {
                 .put(AjaxResult.DATA_TAG,nursingServiceItemsService.getServiceIdsByRelateId(recordId))
                 .put("uploads",uploads);
     }
+
+    @DeleteMapping("/batch")
+    public AjaxResult delete(@RequestParam("id") List<Integer> ids){
+        return toAjax(nursingRecordService.removeBatchByIds(ids));
+    }
 }

@@ -64,6 +64,17 @@
           v-hasPermi="['nursing:record:add']"
         >新增</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+          v-hasPermi="['nursing:record:remove']"
+        >删除</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" :columns="columns"></right-toolbar>
     </el-row>
 
@@ -281,9 +292,9 @@
 
 <script>
 import { addTouchmove } from '@/api/tool/adaptor'
-import { addRecord, addRecordInit, getDetail, listRecord } from '@/api/nursing/record'
-import { listPersonAll } from '@/api/nursing/person'
+import { addRecord, addRecordInit, delRecord, getDetail, listRecord } from '@/api/nursing/record'
 import { download } from '@/utils/request'
+import { listPersonAll } from '@/api/nursing/person'
 
 export default {
   name: 'record',
@@ -506,6 +517,16 @@ export default {
 
       this.open = true;
       this.title = "添加记录";
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      const ids = row.id || this.ids;
+      this.$modal.confirm('是否确认删除序号为"' + this.num + '"的数据项？').then(function() {
+        return delRecord(ids);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => {});
     },
     /** 提交按钮 */
     submitForm: function() {
