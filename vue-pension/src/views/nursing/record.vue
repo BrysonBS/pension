@@ -75,6 +75,16 @@
           v-hasPermi="['nursing:record:remove']"
         >删除</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="warning"
+          plain
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          v-hasPermi="['nursing:person:export']"
+        >导出</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" :columns="columns"></right-toolbar>
     </el-row>
 
@@ -527,6 +537,10 @@ export default {
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('/nursing/record/export', this.queryParams, `护理记录_${new Date().getTime()}.xlsx`)
     },
     /** 提交按钮 */
     submitForm: function() {

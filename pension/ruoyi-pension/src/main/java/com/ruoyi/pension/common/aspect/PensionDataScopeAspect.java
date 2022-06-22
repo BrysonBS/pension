@@ -88,25 +88,27 @@ public class PensionDataScopeAspect {
         //非管理员用户则过滤
         String deptAlias = StringUtils.isBlank(deptAlias = pensionDataScope.deptAlias()) ? "" : deptAlias + ".";
         String userAlias = StringUtils.isBlank(userAlias = pensionDataScope.userAlias()) ? "" : userAlias + ".";
+        boolean ignoreDept = pensionDataScope.ignoreDept();//忽略部门权限过滤
+        boolean ignoreUser = pensionDataScope.ignoreUser();//忽略用户权限过滤
         StringBuilder builder = new StringBuilder();
 
         for(SysRole role : currentUser.getRoles()){
             String dataScope = role.getDataScope();
             if (DATA_SCOPE_ALL.equals(dataScope)) return; //所有权限
-            else if (DATA_SCOPE_CUSTOM.equals(dataScope)) {
-                builder.append(StringUtils.format(
-                        " OR {}dept_id IN ( SELECT dept_id FROM sys_role_dept WHERE role_id = {} ) ", deptAlias,
-                        role.getRoleId()));
+            if(!ignoreDept) {
+                if (DATA_SCOPE_CUSTOM.equals(dataScope)) {
+                    builder.append(StringUtils.format(
+                            " OR {}dept_id IN ( SELECT dept_id FROM sys_role_dept WHERE role_id = {} ) ", deptAlias,
+                            role.getRoleId()));
+                } else if (DATA_SCOPE_DEPT.equals(dataScope)) {
+                    builder.append(StringUtils.format(" OR {}dept_id = {} ", deptAlias, currentUser.getDeptId()));
+                } else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope)) {
+                    builder.append(StringUtils.format(
+                            " OR {}dept_id IN ( SELECT dept_id FROM sys_dept WHERE dept_id = {} or find_in_set( {} , ancestors ) )",
+                            deptAlias, currentUser.getDeptId(), currentUser.getDeptId()));
+                }
             }
-            else if (DATA_SCOPE_DEPT.equals(dataScope)) {
-                builder.append(StringUtils.format(" OR {}dept_id = {} ", deptAlias, currentUser.getDeptId()));
-            }
-            else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope)) {
-                builder.append(StringUtils.format(
-                        " OR {}dept_id IN ( SELECT dept_id FROM sys_dept WHERE dept_id = {} or find_in_set( {} , ancestors ) )",
-                        deptAlias, currentUser.getDeptId(), currentUser.getDeptId()));
-            }
-            else if (DATA_SCOPE_SELF.equals(dataScope)) {
+            if (!ignoreUser && DATA_SCOPE_SELF.equals(dataScope)) {
                 builder.append(StringUtils.format(" OR {}user_id = {} ", userAlias, currentUser.getUserId()));
             }
         }

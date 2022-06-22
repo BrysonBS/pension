@@ -16,11 +16,11 @@ import java.util.List;
 */
 @Service
 public class NursingPersonService extends ServiceImpl<NursingPersonMapper, NursingPerson> implements IService<NursingPerson> {
-   @PensionDataScope
+   @PensionDataScope(ignoreUser = true)
    public List<NursingPerson> getListByExample(NursingPerson person){
       return this.baseMapper.getListByExample(person);
    }
-   @PensionDataScope
+   @PensionDataScope(ignoreUser = true)
    public List<NursingPerson> getListPerson(NursingPerson nursingPerson){
       return this.baseMapper.getListPerson(nursingPerson);
    }

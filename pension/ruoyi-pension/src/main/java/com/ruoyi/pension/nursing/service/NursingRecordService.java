@@ -11,6 +11,7 @@ import com.ruoyi.pension.common.service.PensionUploadService;
 import com.ruoyi.pension.nursing.domain.po.NursingRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.nursing.domain.po.NursingServiceItems;
+import com.ruoyi.pension.nursing.domain.vo.NursingRecordVo;
 import com.ruoyi.pension.nursing.mapper.NursingRecordMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,5 +99,9 @@ public class NursingRecordService extends ServiceImpl<NursingRecordMapper, Nursi
     @PensionDataScope
     public List<NursingRecord> getListByExample(NursingRecord nursingRecord){
         return this.baseMapper.getListByExample(nursingRecord);
+    }
+    @PensionDataScope(deptAlias = "a",userAlias = "a")
+    public List<NursingRecordVo> getListVoByExample(NursingRecord nursingRecord){
+        return this.baseMapper.getListVoByExample(nursingRecord);
     }
 }

@@ -6,6 +6,7 @@ import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.pension.common.api.OrderNumberManager;
 import com.ruoyi.pension.common.api.OssManager;
 import com.ruoyi.pension.common.domain.consts.PensionBusiness;
@@ -13,6 +14,7 @@ import com.ruoyi.pension.common.domain.po.PensionUpload;
 import com.ruoyi.pension.common.service.PensionUploadService;
 import com.ruoyi.pension.nursing.domain.po.NursingRecord;
 import com.ruoyi.pension.nursing.domain.po.NursingServiceItems;
+import com.ruoyi.pension.nursing.domain.vo.NursingRecordVo;
 import com.ruoyi.pension.nursing.service.NursingRecordService;
 import com.ruoyi.pension.nursing.service.NursingPersonService;
 import com.ruoyi.pension.nursing.service.NursingServiceItemsService;
@@ -88,5 +90,11 @@ public class NursingRecordController extends BaseController {
     @DeleteMapping("/batch")
     public AjaxResult delete(@RequestParam("id") List<Integer> ids){
         return toAjax(nursingRecordService.removeBatchByIds(ids));
+    }
+    @PostMapping("/export")
+    public void export(HttpServletResponse response,NursingRecord nursingRecord){
+        List<NursingRecordVo> list =  nursingRecordService.getListVoByExample(nursingRecord);
+        ExcelUtil<NursingRecordVo> util = new ExcelUtil<>(NursingRecordVo.class);
+        util.exportExcel(response,list,"护理记录");
     }
 }

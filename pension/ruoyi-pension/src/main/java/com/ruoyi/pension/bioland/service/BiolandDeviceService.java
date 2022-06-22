@@ -36,7 +36,7 @@ public class BiolandDeviceService extends ServiceImpl<BiolandDeviceMapper, Biola
         return this.baseMapper.getListByDeptIdsAndDevice(deptIds,device);
     }
 
-    @PensionDataScope
+    @PensionDataScope(ignoreUser = true)
     public List<BiolandDevice> getListByExample(BiolandDevice biolandDevice){
         return this.baseMapper.getListByExample(biolandDevice);
     }

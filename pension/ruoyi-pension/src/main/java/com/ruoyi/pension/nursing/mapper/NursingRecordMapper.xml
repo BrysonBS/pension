@@ -21,6 +21,24 @@
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
     </resultMap>
+    <resultMap id="VoResultMap" type="com.ruoyi.pension.nursing.domain.vo.NursingRecordVo">
+        <result property="orderNumber" column="order_number" jdbcType="VARCHAR"/>
+        <result property="applyName" column="apply_name" jdbcType="VARCHAR"/>
+        <result property="applyPhone" column="apply_phone" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="applyTime" column="apply_time" jdbcType="TIMESTAMP"/>
+        <result property="beginTime" column="begin_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="levelName" column="level_name" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="medicalHistory" column="medical_history" jdbcType="VARCHAR"/>
+        <result property="guardian" column="guardian" jdbcType="VARCHAR"/>
+        <result property="guardianPhone" column="guardian_phone" jdbcType="VARCHAR"/>
+        <result property="items" column="items" jdbcType="VARCHAR"/>
+    </resultMap>
 
     <sql id="Base_Column_List">
         id,order_number,user_id,apply_name,
@@ -49,6 +67,42 @@
             </if>
             <if test="orderNumber != null">
                 AND order_number LIKE CONCAT('%',#{orderNumber},'%')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+    </select>
+    <select id="getListVoByExample" resultType="com.ruoyi.pension.nursing.domain.vo.NursingRecordVo"
+            parameterType="com.ruoyi.pension.nursing.domain.po.NursingRecord">
+        SELECT
+        a.order_number,a.apply_name,a.phone AS apply_phone,a.dept_name,a.apply_time,a.begin_time,a.end_time,a.remark,
+        b.`name`,b.phone,d.dict_label AS level_name,b.address,b.medical_history,b.guardian,b.guardian_phone,
+        c.items
+        FROM nursing_record a
+        INNER JOIN nursing_person b ON a.person_id = b.id
+        LEFT JOIN
+        (
+        SELECT aa.relate_id,GROUP_CONCAT(bb.dict_label) AS items FROM nursing_service_items aa
+        INNER JOIN sys_dict_data bb ON bb.dict_type = 'nusing_service_items' AND aa.service_id = bb.dict_value
+        WHERE aa.master_id = 1 GROUP BY aa.relate_id
+        ) c ON c.relate_id = a.id
+        LEFT JOIN sys_dict_data d ON d.dict_type = 'nursing_level' AND b.dict_level_id = d.dict_value
+        <where>
+            a.del_flag = '0'
+            <if test="personId != null">
+                AND a.person_id = #{personId}
+            </if>
+            <if test="beginTime != null">
+                AND a.apply_time <![CDATA[ >= ]]> #{beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                AND a.apply_time <![CDATA[ <= ]]> #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="applyName != null">
+                AND a.apply_name LIKE CONCAT('%',#{applyName},'%')
+            </if>
+            <if test="orderNumber != null">
+                AND a.order_number LIKE CONCAT('%',#{orderNumber},'%')
             </if>
             <!-- 数据范围过滤 -->
             ${params.dataScope}

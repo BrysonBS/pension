@@ -9,9 +9,19 @@ public @interface PensionDataScope {
     /**
      * 包含dept_id的表的别名
      */
-    public String deptAlias() default "";
+    String deptAlias() default "";
     /**
      * 包含user_id的表的别名
      */
-    public String userAlias() default "";
+    String userAlias() default "";
+
+    /**
+     * 忽略部门相关权限: 自定义数据权限/部门/部门及以下数据权限
+     */
+    boolean ignoreDept() default false;
+
+    /**
+     * 忽略用户相关权限: 仅本人数据权限
+     */
+    boolean ignoreUser() default false;
 }
