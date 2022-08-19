@@ -240,44 +240,45 @@ public class StatusManager {
         setContentOfStatus(status,statusValue,builder,noticeVo);
     }
     private static void setContentOfStatus(Integer status,Integer statusValue,StringBuilder builder,NoticeVo noticeVo){
-        if (status == null) return;
-        builder.append("[状态: ");
-        switch (status){
-            case 0x00 :
-                builder.append("正常]");
-                break;
-            case 0x01 :
-                builder.append("初始化]");
-                break;
-            case 0x02 :
-                noticeVo.setEnable(true);
-                builder.append("呼吸暂停,暂停时间: ")
-                        .append(statusValue)
-                        .append("]");
-                break;
-            case 0x03 :
-                noticeVo.setEnable(true);
-                builder.append("心跳暂停,暂停时间: ")
-                        .append(statusValue)
-                        .append("]");
-                break;
-            case 0x04 :
-                builder.append("体动,体动次数: ")
-                        .append(statusValue)
-                        .append("]");
-                break;
-            case 0x05 :
-                builder.append("离床,离床持续时间: ")
-                        .append(statusValue)
-                        .append("]");
-                break;
-            case 0x06 :
-                builder.append("翻身,翻身次数: ")
-                        .append(statusValue)
-                        .append("]");
-                break;
-            default:
-                break;
+        if (status != null) {
+            builder.append("[状态: ");
+            switch (status) {
+                case 0x00:
+                    builder.append("正常]");
+                    break;
+                case 0x01:
+                    builder.append("初始化]");
+                    break;
+                case 0x02:
+                    noticeVo.setEnable(true);
+                    builder.append("呼吸暂停,暂停时间: ")
+                            .append(statusValue)
+                            .append("]");
+                    break;
+                case 0x03:
+                    noticeVo.setEnable(true);
+                    builder.append("心跳暂停,暂停时间: ")
+                            .append(statusValue)
+                            .append("]");
+                    break;
+                case 0x04:
+                    builder.append("体动,体动次数: ")
+                            .append(statusValue)
+                            .append("]");
+                    break;
+                case 0x05:
+                    builder.append("离床,离床持续时间: ")
+                            .append(statusValue)
+                            .append("]");
+                    break;
+                case 0x06:
+                    builder.append("翻身,翻身次数: ")
+                            .append(statusValue)
+                            .append("]");
+                    break;
+                default:
+                    break;
+            }
         }
         noticeVo.setInfo(builder.toString());
     }

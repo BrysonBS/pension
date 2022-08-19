@@ -3,6 +3,7 @@ package com.ruoyi.pension.nursing.domain.po;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,10 +12,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ruoyi.common.core.domain.BaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import com.ruoyi.pension.common.domain.po.BasePensionEntity;
+import lombok.*;
 
 /**
  * 
@@ -22,17 +21,28 @@ import lombok.ToString;
  */
 @TableName(value ="nursing_person")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class NursingPerson implements Serializable {
+public class NursingPerson extends BasePensionEntity implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
+    private Long userId;
     private Long deptId;
+    private String dictDisabilityLevel;
     private String dictLevelId;
     private String guardian;
     private String guardianPhone;
     private String name;
+    private String province;
+    private String city;
+    private String district;
     private String address;
+    private String detailAddress;
+    private BigDecimal lat;
+    private BigDecimal lng;
     private String remark;
     private String idCardId;
     private String medicalHistory;
@@ -43,13 +53,9 @@ public class NursingPerson implements Serializable {
     @TableLogic(value = "0",delval = "2")
     private String delFlag;
 
-    private String createBy;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private LocalDateTime createTime;
-    private String updateBy;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private LocalDateTime updateTime;
 
+    @TableField(exist = false)
+    private String fullAddress;
     @TableField(exist = false)
     private Map<String, String> params;
     @TableField(exist = false)

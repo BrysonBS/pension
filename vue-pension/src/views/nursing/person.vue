@@ -118,7 +118,7 @@
               <span>{{ props.row.idCardId }}</span>
             </el-form-item>
             <el-form-item label="地址">
-              <span>{{ props.row.address }}</span>
+              <span>{{ (props.row.fullAddress || '').concat(props.row.detailAddress || '') }}</span>
             </el-form-item>
             <el-form-item label="病历信息">
               <span>{{ props.row.medicalHistory }}</span>
@@ -138,19 +138,26 @@
       </el-table-column>
       <el-table-column width="50"  label="编号" align="center" prop="id" v-if="columns[0].visible" />
       <el-table-column width="150" label="姓名" align="center" prop="name" v-if="columns[1].visible" :show-overflow-tooltip="true" />
-      <el-table-column width="180" label="电话" align="center" prop="phone" v-if="columns[2].visible" :show-overflow-tooltip="true" />
+      <el-table-column width="auto" label="电话" align="center" prop="phone" v-if="columns[2].visible" :show-overflow-tooltip="true" />
       <el-table-column width="180" label="监护人" align="center" prop="guardian" v-if="columns[3].visible" :show-overflow-tooltip="true" />
       <el-table-column width="auto" label="监护人电话" align="center" prop="guardianPhone" v-if="columns[4].visible" :show-overflow-tooltip="true" />
-      <el-table-column width="180" label="护理级别" align="center" v-if="columns[5].visible" :show-overflow-tooltip="true" >
+      <el-table-column width="100" label="失能等级" align="center" v-if="columns[5].visible" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
-               <el-tag type="success"
+          <el-tag size="small"
+                  v-for="dict in dict.type.disability_level"
+                  v-if="dict.value === scope.row.dictDisabilityLevel"
+          >{{dict.label}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="护理级别" align="center" v-if="columns[5].visible" :show-overflow-tooltip="true" >
+        <template slot-scope="scope">
+               <el-tag type="success" size="small"
                        v-for="dict in dict.type.nursing_level"
                        v-if="dict.value === scope.row.dictLevelId"
                >{{dict.label}}</el-tag>
         </template>
       </el-table-column>
     </el-table>
-
     <pagination
       v-show="total>0"
       :total="total"
@@ -160,8 +167,29 @@
     />
 
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="700px" :modal-append-to-body="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="绑定账号">
+              <el-select v-model="form.userId" filterable placeholder="请选择账号" style="width: 100%">
+                <el-option
+                  v-for="item in userOptions"
+                  :key="item.key"
+                  :label="item.label"
+                  :value="item.value">
+                  <span style="float: left">{{ item.label }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.info }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="归属" prop="deptId">
+              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="姓名" prop="name">
@@ -169,6 +197,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="电话" prop="phone">
+              <el-input v-model="form.phone" placeholder="请输入电话" maxlength="30" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
             <el-form-item label="身份证号" prop="idCardId">
               <el-input v-model="form.idCardId" placeholder="请输入身份证号" maxlength="30" />
             </el-form-item>
@@ -176,13 +211,20 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="电话" prop="phone">
-              <el-input v-model="form.phone" placeholder="请输入电话" maxlength="30" />
+            <el-form-item label="失能等级">
+              <el-select v-model="form.dictDisabilityLevel" filterable clearable  placeholder="请选择失能等级" style="width: 100%">
+                <el-option
+                  v-for="item in dict.type.disability_level"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="护理级别">
-              <el-select v-model="form.dictLevelId" filterable clearable  placeholder="请选择护理级别">
+              <el-select v-model="form.dictLevelId" filterable clearable  placeholder="请选择护理级别" style="width: 100%">
                 <el-option
                   v-for="item in dict.type.nursing_level"
                   :key="item.value"
@@ -208,7 +250,16 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="地址" prop="address">
-              <el-input v-model="form.address" type="textarea" placeholder="请输入地址"/>
+              <el-input v-model="form.fullAddress" disabled class="input-with-select">
+              <el-button slot="prepend" icon="el-icon-location" circle @click="innerOpen=true"></el-button>
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="详细地址" prop="address">
+              <el-input v-model="form.detailAddress" type="textarea" placeholder="请输入详细地址"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -232,17 +283,38 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+
+    <MapMaker :dialogVisible = "innerOpen" @map-confirm="handleMapConfirm" @map-cancel="handleMapCancel"></MapMaker>
+
   </div>
 </template>
 
 <script>
 import { addPerson, delPerson, getPerson, listPerson, updatePerson } from '@/api/nursing/person'
+import { treeselect } from '@/api/system/dept'
+import Treeselect from '@riophae/vue-treeselect'
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import { getUserOptions } from '@/api/device/selectOptions'
+import BaiduMap from 'vue-baidu-map/components/map/Map.vue'
+import {BmNavigation,BmGeolocation,BmView,BmControl,BmAutoComplete,BmLocalSearch} from 'vue-baidu-map'
+import MapMaker from '@/views/nursing/MapMaker'
 
 export default {
   name: 'person',
-  dicts: ['nursing_level'],
+  dicts: ['nursing_level','disability_level'],
+  components: {
+    MapMaker, Treeselect,BaiduMap,BmNavigation,BmGeolocation, BmView,BmControl,BmAutoComplete,BmLocalSearch
+
+  },
   data() {
     return {
+      keyword:'',
+      fullAddress: '',
+      //账号下拉菜单
+      userOptions:[],
+      // 部门树选项
+      deptOptions: [],
       num: undefined,
       // 遮罩层
       loading: true,
@@ -258,6 +330,7 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      innerOpen:false,
       // 总条数
       total: 0,
       // 表格数据
@@ -265,7 +338,7 @@ export default {
       // 表单参数
       form: {},
       // 默认排序
-      defaultSort: {prop: 'reportTime', order: 'descending'},
+      defaultSort: {prop: 'id', order: 'ascending'},
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -317,9 +390,37 @@ export default {
     }
   },
   created() {
-    this.getList();
+    this.getList()
+    this.getUserOptions()
+    this.getTreeselect()
   },
   methods:{
+    handleMapConfirm(choosedLocation){
+      this.innerOpen = false
+      this.form.province = choosedLocation.province
+      this.form.city = choosedLocation.city
+      this.form.district = choosedLocation.district
+      this.form.address = choosedLocation.addr
+      this.form.lat = choosedLocation.lat
+      this.form.lng = choosedLocation.lng
+      this.form.fullAddress = (this.form.province || '') + (this.form.city || '') + (this.form.district || '') + (this.form.address || '')
+    },
+    handleMapCancel(showMapComponent){
+      this.innerOpen = false
+    },
+
+    /** 获取账号下拉菜单 */
+    getUserOptions(){
+      getUserOptions({"type":"00"}).then(response => {
+        this.userOptions = response.data;
+      })
+    },
+    /** 查询部门下拉树结构 */
+    getTreeselect() {
+      treeselect().then(response => {
+        this.deptOptions = response.data;
+      });
+    },
     /** 查询设备列表 */
     getList() {
       this.loading = true;
@@ -414,6 +515,16 @@ export default {
 </script>
 
 <style>
+
+.map{
+  width: 100%;
+  height: 65vh;
+  max-height: 600px;
+}
+.tangram-suggestion {
+  z-index: 9999;
+}
+
 .demo-table-expand {
   font-size: 0;
 }

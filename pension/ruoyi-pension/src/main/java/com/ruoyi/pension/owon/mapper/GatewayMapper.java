@@ -2,6 +2,9 @@ package com.ruoyi.pension.owon.mapper;
 
 import com.ruoyi.pension.owon.domain.po.Gateway;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -10,7 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.ruoyi.pension.owon.domain.po.Gateway
 */
 public interface GatewayMapper extends BaseMapper<Gateway> {
-
+    List<String> selectAllByDeptIds(@Param("deptIds") List<Long> deptIds);
 }
 
 

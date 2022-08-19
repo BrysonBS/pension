@@ -63,6 +63,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/result',
+    component: () => import('@/views/payment/result'),
+    hidden: true
+  },
+  {
     path: '',
     component: Layout,
     redirect: 'index',
@@ -165,6 +170,20 @@ export const dynamicRoutes = [
         component: () => import('@/views/tool/gen/editTable'),
         name: 'GenEdit',
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
+      }
+    ]
+  },
+  {
+    path: '/nursing/worker-certificate',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:worker:list'],
+    children: [
+      {
+        path: ':workerId(\\d+)',
+        component: () => import('@/views/nursing/Certificate'),
+        name: 'worker',
+        meta: { title: '证书信息', activeMenu: '/nursing/worker' }
       }
     ]
   }

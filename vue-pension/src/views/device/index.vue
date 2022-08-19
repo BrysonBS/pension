@@ -146,6 +146,7 @@
           <el-table-column :label="columns[0].label" width="50" align="center" :key="columns[0].key" :prop="columns[0].prop" v-if="columns[0].visible" />
           <el-table-column :label="columns[1].label" align="center" :key="columns[1].key" :prop="columns[1].prop" v-if="columns[1].visible" :show-overflow-tooltip="true" />
           <el-table-column :label="columns[9].label" align="center" :key="columns[9].key" :prop="columns[9].prop" v-if="columns[9].visible" :show-overflow-tooltip="true"/>
+          <el-table-column :label="columns[10].label" align="center" :key="columns[10].key" :prop="columns[10].prop" v-if="columns[10].visible" :show-overflow-tooltip="true" />
           <el-table-column :label="columns[2].label" align="center" :key="columns[2].key" :prop="columns[2].prop" v-if="columns[2].visible" :show-overflow-tooltip="true" />
           <el-table-column :label="columns[3].label" align="center" :key="columns[3].key" :prop="columns[3].prop" v-if="columns[3].visible" :show-overflow-tooltip="true" />
           <el-table-column :label="columns[4].label" align="center" :key="columns[4].key" :prop="columns[4].prop" v-if="columns[4].visible" :show-overflow-tooltip="true" />
@@ -182,26 +183,33 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
-              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />
+            <el-form-item label="序列号" prop="serialNo">
+              <el-input v-model="form.serialNo" placeholder="序列号" maxlength="30" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-form-item label="设备类别"
-                        v-hasPermi="['device:device:edit:class']"
-          >
-            <el-select v-model="form.cid" filterable placeholder="请选择">
-              <el-option
-                v-for="item in classOptions"
-                :key="item.id"
-                :label="item.displayName"
-                :value="item.id">
-                <span style="float: left">{{ item.displayName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.info }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
+          <el-col :span="12">
+            <el-form-item label="归属部门" prop="deptId">
+              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="设备类别"
+                          v-hasPermi="['device:device:edit:class']"
+            >
+              <el-select v-model="form.cid" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in classOptions"
+                  :key="item.id"
+                  :label="item.displayName"
+                  :value="item.id">
+                  <span style="float: left">{{ item.displayName }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.info }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row :gutter="5">
           <el-form-item
@@ -321,6 +329,7 @@ export default {
         { key: 7,prop: 'deptFullName',overflow:true, label: `归属部门`, visible: true },
         { key: 8,prop: 'gwCode',overflow:true, label: `归属网关mac`, visible: false },
         { key: 9,prop: 'displayName',overflow:true, label: `设备类别`, visible: true },
+        { key: 10,prop: 'serialNo',overflow:true, label: `序列号`, visible: true },
       ],
       // 表单校验
       rules: {

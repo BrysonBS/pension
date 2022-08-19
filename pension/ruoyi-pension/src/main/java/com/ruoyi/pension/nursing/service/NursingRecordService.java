@@ -2,12 +2,12 @@ package com.ruoyi.pension.nursing.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.pension.common.api.OrderNumberManager;
-import com.ruoyi.pension.common.api.OssManager;
 import com.ruoyi.pension.common.aspect.annotation.PensionDataScope;
 import com.ruoyi.pension.common.domain.consts.PensionBusiness;
 import com.ruoyi.pension.common.domain.enums.TableEnum;
 import com.ruoyi.pension.common.domain.po.PensionUpload;
 import com.ruoyi.pension.common.service.PensionUploadService;
+import com.ruoyi.pension.nursing.domain.po.NursingOrder;
 import com.ruoyi.pension.nursing.domain.po.NursingRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.nursing.domain.po.NursingServiceItems;
@@ -19,12 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
 * @author Administrator
@@ -36,11 +34,11 @@ public class NursingRecordService extends ServiceImpl<NursingRecordMapper, Nursi
     @Autowired
     private OrderNumberManager orderNumberManager;
     @Autowired
-    private OssManager ossManager;
-    @Autowired
     private NursingServiceItemsService nursingServiceItemsService;
     @Autowired
     private PensionUploadService pensionUploadService;
+    @Autowired
+    private NursingOrderService nursingOrderService;
 
     @Transactional
     public boolean saveCascade(NursingRecord record, MultipartFile[] attachments) throws IOException {
@@ -85,16 +83,13 @@ public class NursingRecordService extends ServiceImpl<NursingRecordMapper, Nursi
                     .build()
             );
         }
-        //先存表
-        pensionUploadService.saveBatch(list);
-        //再将附件保存到oss云
-        for(PensionUpload upload : list){
-            try(InputStream input = upload.getAtt().getInputStream()){
-                if(!ossManager.uploadByStream(upload.getRootPath() + upload.getUri(),input))
-                    throw new RuntimeException("文件上传失败!");
-            }
-        }
-        return true;
+        //更新状态订单状态
+        NursingOrder order = nursingOrderService.getById(record.getOrderId());
+        order.setRecordId(record.getId());
+        if(pensionUploadService.saveBathEntity(list)
+                && nursingOrderService.updateRecordId(order)
+                && nursingOrderService.updateComplete(order)) return true;
+        throw new RuntimeException("保存失败");
     }
     @PensionDataScope
     public List<NursingRecord> getListByExample(NursingRecord nursingRecord){
@@ -103,5 +98,14 @@ public class NursingRecordService extends ServiceImpl<NursingRecordMapper, Nursi
     @PensionDataScope(deptAlias = "a",userAlias = "a")
     public List<NursingRecordVo> getListVoByExample(NursingRecord nursingRecord){
         return this.baseMapper.getListVoByExample(nursingRecord);
+    }
+    @Transactional
+    public boolean removeEntityBatch(List<Integer> ids){
+        //先删除附件,再更新订单护理记录状态,最后删除记录
+        if(ids != null && !ids.isEmpty()
+                && pensionUploadService.removeByTableEnumAndRelateIds(TableEnum.NURSING_RECORD,ids)
+                && nursingOrderService.updateRecordIdToNull(this.baseMapper.getListOrderIdByIds(ids))
+                && this.removeBatchByIds(ids)) return true;
+        throw new RuntimeException("删除失败");
     }
 }

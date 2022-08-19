@@ -159,7 +159,7 @@ public class OwonSwagger {
             @Parameter(name = "serialNo", description = "设备厂商序列号", schema = @Schema(name = "String",implementation = String.class))
     })
     @GetMapping("/scanBleDevice")
-    public AjaxResult scanBleDevice(String mac,String serialNo) throws ExecutionException, InterruptedException, JsonProcessingException {
-        return bleManager.scanBleDevice(mac,serialNo);
+    public AjaxResult scanBleDevice(String mac,String serialNo,Integer ep) throws ExecutionException, InterruptedException, JsonProcessingException {
+        return bleManager.scanBleDevice(mac,serialNo,ep);
     }
 }

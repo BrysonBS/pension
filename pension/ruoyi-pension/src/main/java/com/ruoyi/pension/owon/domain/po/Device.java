@@ -50,6 +50,8 @@ public class Device implements Serializable {
     private String delFlag;
     private Integer netState;
     private Integer categoriesId;
+    /** BLE设备序列号 */
+    private String serialNo;
 
     @TableField(exist = false)
     private Integer cid;

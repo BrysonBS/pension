@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.mapper.GatewayMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
 * @author Administrator
 * @description 针对表【owon_gateway】的数据库操作Service
@@ -13,5 +15,7 @@ import org.springframework.stereotype.Service;
 */
 @Service
 public class GatewayService extends ServiceImpl<GatewayMapper, Gateway> implements IService<Gateway> {
-
+    public List<String> selectAllByDeptIds(List<Long> deptIds){
+        return this.baseMapper.selectAllByDeptIds(deptIds);
+    }
 }

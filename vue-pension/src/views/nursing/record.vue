@@ -20,6 +20,15 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="订单号" prop="orderSn">
+        <el-input
+          v-model="queryParams.orderSn"
+          placeholder="订单号"
+          clearable
+          style="width: 240px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="护理人员" prop="personId">
         <el-select
           v-model="queryParams.personId"
@@ -136,12 +145,13 @@
         </template>
       </el-table-column>
       <el-table-column width="50"  label="编号" align="center" prop="id" v-if="columns[0].visible" />
-      <el-table-column width="150" label="单号" align="center" prop="orderNumber" v-if="columns[1].visible" :show-overflow-tooltip="true" />
+      <el-table-column width="180" label="单号" align="center" prop="orderNumber" v-if="columns[1].visible" :show-overflow-tooltip="true" />
+      <el-table-column width="210" label="订单号" align="center" prop="orderSn" v-if="columns[8].visible" :show-overflow-tooltip="true" />
       <el-table-column width="100" label="申请人" align="center" prop="applyName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
       <el-table-column width="180" label="申请时间" align="center" prop="applyTime" v-if="columns[3].visible" :show-overflow-tooltip="true" />
-      <el-table-column width="auto" label="电话" align="center" prop="phone" v-if="columns[4].visible" :show-overflow-tooltip="true" />
+      <el-table-column width="120" label="电话" align="center" prop="phone" v-if="columns[4].visible" :show-overflow-tooltip="true" />
       <el-table-column width="auto" label="归属" align="center" prop="deptName" v-if="columns[5].visible" :show-overflow-tooltip="true" />
-      <el-table-column width="auto" label="护理人员" align="center" prop="personName" v-if="columns[6].visible" :show-overflow-tooltip="true" />
+      <el-table-column width="auto" label="老人" align="center" prop="personName" v-if="columns[6].visible" :show-overflow-tooltip="true" />
       <el-table-column width="100" label="护理级别" align="center" v-if="columns[7].visible" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <el-tag type="success" size="small"
@@ -172,6 +182,7 @@
           <el-col :span="12">
             <el-form-item label="申请时间" prop="applyTime">
               <el-date-picker
+                style="width: 100%"
                 disabled
                 v-model="form.applyTime"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -194,9 +205,19 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="24">
+            <el-form-item label="订单号" prop="orderSn">
+              <el-input v-model="form.orderSn" disabled>
+                <el-button slot="prepend" icon="el-icon-search" @click="handleDataSelect"></el-button>
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="开始时间" prop="beginTime">
               <el-date-picker
+                style="width: 100%"
                 v-model="form.beginTime"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 type="datetime"
@@ -207,6 +228,7 @@
           <el-col :span="12">
             <el-form-item label="结束时间" prop="endTime">
               <el-date-picker
+                style="width: 100%"
                 v-model="form.endTime"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 type="datetime"
@@ -217,12 +239,12 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="护理人员">
+            <el-form-item label="老人">
               <el-select
                 value-key="id"
                 @change="changeSelect"
                 v-model="personOption"
-                filterable clearable  placeholder="请选择护理人员">
+                filterable clearable disabled placeholder="请选择老人">
                 <el-option
                   v-for="item in personOptions"
                   :key="item.id"
@@ -249,7 +271,7 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="护理项目">
+            <el-form-item label="护理项目" prop="dictServiceIds">
               <el-select style="width:100%"
                 @change="$forceUpdate()"
                 v-model="form.dictServiceIds" multiple filterable placeholder="请选择护理项目">
@@ -297,6 +319,9 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+    <OrderSelect :config="config" @select-data="handleOrderSelect"></OrderSelect>
+
   </div>
 </template>
 
@@ -305,12 +330,16 @@ import { addTouchmove } from '@/api/tool/adaptor'
 import { addRecord, addRecordInit, delRecord, getDetail, listRecord } from '@/api/nursing/record'
 import { download } from '@/utils/request'
 import { listPersonAll } from '@/api/nursing/person'
+import OrderSelect from '@/views/nursing/OrderSelect'
+import { listNursingOrderItems } from '@/api/nursing/order/list'
 
 export default {
   name: 'record',
+  components: { OrderSelect },
   dicts: ['nursing_level','nusing_service_items'],
   data(){
     return{
+      config:undefined,
       fileList:[],
       //护理人员下拉列表
       personOptions:[],
@@ -351,8 +380,9 @@ export default {
         { key: 3, label: `申请时间`, visible: true },
         { key: 4, label: `电话`, visible: true },
         { key: 5, label: `归属`, visible: true },
-        { key: 5, label: `护理人员`, visible: true },
-        { key: 5, label: `护理级别`, visible: true }
+        { key: 6, label: `护理人员`, visible: true },
+        { key: 7, label: `护理级别`, visible: true },
+        { key: 8, label: `订单号`, visible: true}
       ],
       // 表单校验
       rules: {
@@ -360,6 +390,10 @@ export default {
           { required: true, message: "姓名称不能为空", trigger: "blur" },
           { min: 2, max: 20, message: '姓名长度必须介于 2 和 20 之间', trigger: 'blur' }
         ],
+        orderSn:[{ required: true,message:"订单号必填!",trigger: "blur"}],
+        beginTime:[{ required: true,message:"开始时间必填!",trigger: "blur"}],
+        endTime:[{ required: true,message:"结束时间必填!",trigger: "blur"}],
+        dictServiceIds:[{required: true, message: "护理项目必填!", trigger: "blur"}],
       },
       // 查询参数
       queryParams: {
@@ -375,6 +409,34 @@ export default {
     }
   },
   methods:{
+    //单号选择
+    handleDataSelect(){
+      this.config = {
+        open:true,
+        title:"订单号选择",
+        searchHolder: '请输入单号',
+        url: '/nursing/order/listOptions',
+        style:{
+          minWidth:'700px'
+        }
+      }
+    },
+    //选择单号事件
+    async handleOrderSelect(row) {
+      this.form.orderId = row.id
+      this.$set(this.form, "orderSn", row.orderSn)
+      this.personOption = {
+        id: row.personId,
+        dictLevelId: row.dictLevelId,
+        name: row.name,
+        phone: row.phone
+      }
+      this.changeSelect(this.personOption)
+
+      //获取护理项目
+      let response = await listNursingOrderItems({ orderId: row.id })
+      this.$set(this.form, "dictServiceIds", response.data.map(e => e.dictValue))
+    },
     //上传附件相关
     handlePreview(file) {
       //预览
@@ -388,7 +450,6 @@ export default {
     },
     //自定义文件上传事件
     handleUpload(params){
-      console.log(params);
       this.formData.append('attachments',params.file);
       this.form.totalSize += params.file.size;
     },

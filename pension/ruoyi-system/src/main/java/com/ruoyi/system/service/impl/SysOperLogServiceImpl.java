@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.SysOperLog;
 import com.ruoyi.system.mapper.SysOperLogMapper;
 import com.ruoyi.system.service.ISysOperLogService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 操作日志 服务层处理

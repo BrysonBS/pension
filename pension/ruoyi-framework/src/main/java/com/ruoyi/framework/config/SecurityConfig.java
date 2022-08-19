@@ -99,10 +99,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 // 对于登录login 注册register 验证码captchaImage 允许匿名访问
                 .antMatchers("/login", "/register").anonymous()
                 .antMatchers("/captcha/get", "/captcha/check","/websocket/**").anonymous()
-                //放行owon和bioland上报
+                //放行owon和bioland上报和支付通知
                 .antMatchers(
                         "/owonReport",
-                        "/bioland/data"
+                        "/bioland/data",
+                        "/callback/notify/alipay/*",
+                        "/callback/notify/weChatPay/*",
+                        "/callback/refund/weChatPay/*"
                 ).anonymous()
                 .antMatchers(
                         HttpMethod.GET,

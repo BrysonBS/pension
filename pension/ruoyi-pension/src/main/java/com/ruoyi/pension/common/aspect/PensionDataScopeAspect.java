@@ -104,7 +104,7 @@ public class PensionDataScopeAspect {
                     builder.append(StringUtils.format(" OR {}dept_id = {} ", deptAlias, currentUser.getDeptId()));
                 } else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope)) {
                     builder.append(StringUtils.format(
-                            " OR {}dept_id IN ( SELECT dept_id FROM sys_dept WHERE dept_id = {} or find_in_set( {} , ancestors ) )",
+                            " OR {}dept_id IN ( SELECT dept_id FROM sys_dept WHERE dept_id = {} or find_in_set( {} , ancestors ) ) ",
                             deptAlias, currentUser.getDeptId(), currentUser.getDeptId()));
                 }
             }
@@ -116,7 +116,7 @@ public class PensionDataScopeAspect {
 
         //设置值
         consumerDataScope(point,map ->
-            map.put(DATA_SCOPE, " AND (" + builder.substring(4) + ")")
+            map.put(DATA_SCOPE, " AND (" + builder.substring(4) + ") ")
         );
     }
 

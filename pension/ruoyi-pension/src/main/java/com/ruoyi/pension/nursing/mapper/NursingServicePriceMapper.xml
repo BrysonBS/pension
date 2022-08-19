@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.nursing.mapper.NursingServicePriceMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.nursing.domain.po.NursingServicePrice">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="dictValue" column="dict_value" jdbcType="VARCHAR"/>
+            <result property="price" column="price" jdbcType="DECIMAL"/>
+            <result property="periodStart" column="period_start" jdbcType="TIMESTAMP"/>
+            <result property="periodEnd" column="period_end" jdbcType="TIMESTAMP"/>
+            <result property="discount" column="discount" jdbcType="DECIMAL"/>
+            <result property="status" column="status" jdbcType="CHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,dept_id,
+        dict_code,price,period_start,
+        period_end,discount,status,
+        create_by,create_time,update_by,
+        update_time,remark
+    </sql>
+    <select id="getListByExample" resultType="com.ruoyi.pension.nursing.domain.po.NursingServicePrice">
+        SELECT a.*,b.dept_name FROM nursing_service_price a
+        INNER JOIN sys_dept b ON a.dept_id = b.dept_id
+        <where>
+            <if test="deptId != null"> a.dept_id = #{deptId}</if>
+            <if test="dictValue != null">AND a.dict_value = #{dictValue}</if>
+            <if test="status != null">AND a.status = #{status}</if>
+            <if test="dictValues != null">
+                AND a.dict_value IN
+                <foreach collection="dictValues" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="periodStart != null">AND a.period_start <![CDATA[ <= ]]> #{periodStart,jdbcType=TIMESTAMP} </if>
+            <if test="periodEnd != null">AND a.period_end <![CDATA[ >= ]]> #{periodEnd,jdbcType=TIMESTAMP}</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+    </select>
+    <select id="getListByDeptIdAndNow" resultType="com.ruoyi.pension.nursing.domain.po.NursingServicePrice">
+        SELECT
+            a.id,a.dept_id,b.dict_label,a.dict_value,a.price,a.discount,a.period_start,a.period_end,
+            FORMAT(a.price * IFNULL(a.discount,10)/10,2) as discountPrice
+        FROM nursing_service_price a
+                 INNER JOIN sys_dict_data b ON b.dict_type = 'nusing_service_items' AND a.dict_value = b.dict_value
+        where a.status = 0
+        AND a.dept_id = #{deptId}
+        AND a.period_start <![CDATA[ < ]]> NOW()
+        AND a.period_end <![CDATA[ >= ]]> NOW()
+    </select>
+    <select id="getListByDeptIdsAndNow" resultType="com.ruoyi.pension.nursing.domain.po.NursingServicePrice">
+        SELECT
+            a.id,a.dept_id,b.dict_label,a.dict_value,a.price,a.discount,a.period_start,a.period_end,
+            FORMAT(a.price * IFNULL(a.discount,10)/10,2) as discountPrice
+        FROM nursing_service_price a
+                 INNER JOIN sys_dict_data b ON b.dict_type = 'nusing_service_items' AND a.dict_value = b.dict_value
+        where a.status = 0
+          AND a.dept_id IN
+          <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
+              #{deptId}
+          </foreach>
+          AND a.period_start <![CDATA[ < ]]> NOW()
+          AND a.period_end <![CDATA[ >= ]]> NOW()
+    </select>
+
+</mapper>

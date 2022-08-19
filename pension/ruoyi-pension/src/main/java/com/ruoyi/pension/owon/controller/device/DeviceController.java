@@ -14,6 +14,7 @@ import com.ruoyi.pension.owon.domain.po.Device;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import com.ruoyi.pension.owon.service.DevicePhoneService;
 import com.ruoyi.pension.owon.service.DeviceService;
+import com.ruoyi.pension.owon.service.GatewayService;
 import com.ruoyi.pension.owon.service.SysDeptOwonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,6 +38,8 @@ public class DeviceController extends BaseController {
     private DevicePhoneService devicePhoneService;
     @Autowired
     private BleManager bleManager;
+    @Autowired
+    private GatewayService gatewayService;
 
 
     @GetMapping("/list")
@@ -47,10 +50,11 @@ public class DeviceController extends BaseController {
         device.setDeptId(deptId);
         List<Long> deptIds = deptId == 100L ?
                 List.of(100L)
-                : deptOwonService.getListByDeptId(deptId);
+                : deptOwonService.getListDeptAndChildrenByDeptId(deptId);
 
         //获取网关mac列表更新列表
-        List<String> macs = deviceService.selectAllByDeptIds(deptIds);
+        List<String> macs = gatewayService.selectAllByDeptIds(deptIds);
+        //deviceService.selectAllByDeptIds(deptIds);
         for(String mac : macs){
             deviceList.getEpListByMac(mac);//EP列表
             bleManager.getBleListByMac(mac);//BLE列表

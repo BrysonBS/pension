@@ -28,8 +28,8 @@
         del_flag,create_by,create_time,
         update_by,update_time
     </sql>
-    <select id="getListByDeptId" resultType="java.lang.Long">
+    <select id="getListDeptAndChildrenByDeptId" resultType="java.lang.Long">
         SELECT dept_id  FROM sys_dept
-        WHERE dept_id = #{deptId} OR ancestors LIKE CONCAT('%',#{deptId},'%')
+        WHERE dept_id = #{deptId} or find_in_set( #{deptId} , ancestors )
     </select>
 </mapper>

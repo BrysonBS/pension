@@ -3,17 +3,38 @@ package com.ruoyi.pension.common.config;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ruoyi.pension.nursing.domain.po.NursingOrder;
 import com.ruoyi.pension.owon.domain.dto.Response;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 
+import javax.jms.ConnectionFactory;
 import java.util.Map;
 
 @Configuration
 public class MessageConfig {
-    //类为:org.springframework.jms.support.converter.MappingJackson2MessageConverter
 
+    @Bean
+    public JmsTemplate jmsTemplateDelay(ConnectionFactory connectionFactory){
+        JmsTemplate template = new JmsTemplate(connectionFactory);
+        template.setMessageConverter(messageConverter());
+        template.setExplicitQosEnabled(false);
+        template.setDeliveryPersistent(true);
+        return template;
+    }
+    @Bean
+    public JmsTemplate jmsTemplateTime(ConnectionFactory connectionFactory){
+        JmsTemplate template = new JmsTemplate(connectionFactory);
+        template.setMessageConverter(messageConverter());
+        template.setExplicitQosEnabled(true);
+        template.setTimeToLive(2200);//消息存活时间
+        template.setReceiveTimeout(2000);//接收消息最大等待时间
+        return template;
+    }
+
+    //类为:org.springframework.jms.support.converter.MappingJackson2MessageConverter
     //消息转换器
     @Bean
     public MappingJackson2MessageConverter messageConverter() {

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.common.mapper.PensionRefundWechatMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.common.domain.po.PensionRefundWechat">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="outTradeNo" column="out_trade_no" jdbcType="VARCHAR"/>
+            <result property="transactionId" column="transaction_id" jdbcType="VARCHAR"/>
+            <result property="outRefundNo" column="out_refund_no" jdbcType="VARCHAR"/>
+            <result property="refundId" column="refund_id" jdbcType="VARCHAR"/>
+            <result property="refundStatus" column="refund_status" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="successTime" column="success_time" jdbcType="TIMESTAMP"/>
+            <result property="total" column="total" jdbcType="BIGINT"/>
+            <result property="refund" column="refund" jdbcType="BIGINT"/>
+            <result property="payerTotal" column="payer_total" jdbcType="BIGINT"/>
+            <result property="payerRefund" column="payer_refund" jdbcType="BIGINT"/>
+            <result property="userReceivedAccount" column="user_received_account" jdbcType="VARCHAR"/>
+            <result property="channel" column="channel" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,dept_id,
+        out_trade_no,transaction_id,out_refund_no,
+        refund_id,refund_status,create_time,
+        success_time,total,refund,
+        payer_total,payer_refund,user_received_account,
+        channel
+    </sql>
+    <select id="getCountByRefundIdAndOutTradeNo" resultType="java.lang.Integer">
+        SELECT count(*) FROM pension_refund_wechat
+        WHERE refund_id = #{refundId,jdbcType=VARCHAR}
+        AND out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

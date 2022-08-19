@@ -7,8 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.mapper.SysDeptOwonMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,11 +22,11 @@ public class SysDeptOwonService extends ServiceImpl<SysDeptOwonMapper, SysDeptOw
      * @param deptId
      * @return
      */
-    public List<Long> getListByDeptId(Long deptId){
-        return this.baseMapper.getListByDeptId(deptId);
+    public List<Long> getListDeptAndChildrenByDeptId(Long deptId){
+        return this.baseMapper.getListDeptAndChildrenByDeptId(deptId);
     }
 
-    public String getFullNameByDeptId(long deptId){
+    public String getFullNameByDeptId(Long deptId){
         SysDeptOwon sysDeptOwon = this.baseMapper.selectById(deptId);
         String ancestors = sysDeptOwon.getAncestors();
         List<Long> deptIds = Arrays.stream(ancestors.split(","))
@@ -42,5 +41,37 @@ public class SysDeptOwonService extends ServiceImpl<SysDeptOwonMapper, SysDeptOw
                     (e1,e2) -> e1 + e2.getDeptName() + "/",
                     (e1,e2) -> null
                 )+sysDeptOwon.getDeptName();
+    }
+    public ArrayDeque<Long> getDeptIdAndAncestorsStack(Long deptId){
+        ArrayDeque<Long> stack = getAncestorsStack(deptId);
+        stack.push(deptId);
+        return stack;
+    }
+    public ArrayDeque<Long> getDeptIdAndAncestorsStack(SysDeptOwon sysDeptOwon){
+        ArrayDeque<Long> stack = getAncestorsStack(sysDeptOwon);
+        stack.push(sysDeptOwon.getDeptId());
+        return stack;
+    }
+    public ArrayDeque<Long> getAncestorsStack(Long deptId){
+        SysDeptOwon sysDeptOwon = getById(deptId);
+        return getAncestorsStack(sysDeptOwon);
+    }
+    public ArrayDeque<Long> getAncestorsStack(SysDeptOwon sysDeptOwon){
+        if(sysDeptOwon == null) throw new RuntimeException("部门不存在");
+        ArrayDeque<Long> stack = new ArrayDeque<>();
+        Arrays.stream(sysDeptOwon.getAncestors().split(","))
+                .mapToLong(Long::parseLong)
+                .filter(e -> e != 0)
+                .forEachOrdered(stack::push);
+        return stack;
+    }
+    public List<SysDeptOwon> getListByDeptIds(Collection<Long> deptIds){
+        if(deptIds == null || deptIds.isEmpty()) return List.of();
+        return super.list(new LambdaQueryWrapper<SysDeptOwon>()
+                .eq(SysDeptOwon::getDelFlag,"0")
+                .in(SysDeptOwon::getDeptId,deptIds));
+    }
+    public List<SysDeptOwon> getAndAncestorsListByDeptId(Long deptId){
+        return getListByDeptIds(getDeptIdAndAncestorsStack(deptId).stream().toList());
     }
 }

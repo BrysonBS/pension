@@ -44,4 +44,8 @@ public class NursingRecordVo {
     private String guardian;
     @Excel(name = "监护电话", type = Excel.Type.EXPORT)
     private String guardianPhone;
+    @Excel(name = "订单ID", type = Excel.Type.EXPORT)
+    private Integer orderId;
+    @Excel(name = "订单号", type = Excel.Type.EXPORT)
+    private String orderSn;
 }

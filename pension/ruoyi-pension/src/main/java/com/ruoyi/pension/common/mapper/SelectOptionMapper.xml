@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.common.mapper.SelectOptionMapper">
+    <select id="getUserOptions" parameterType="map" resultType="com.ruoyi.pension.common.domain.vo.SelectOptionVo">
+        SELECT
+            user_id 'key',user_name 'label',user_id 'value',phonenumber 'info'
+        FROM sys_user
+        WHERE del_flag = 0
+        <if test="type != null">AND user_type = #{type}</if>
+        <!-- 数据范围过滤 -->
+        ${dataScope}
+    </select>
+</mapper>

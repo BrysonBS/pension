@@ -135,12 +135,18 @@ export default {
     },
     onmessageWs(){
       let messageBody = event.data;
+      //console.log(messageBody);
       if(messageBody.charAt(0) !== '{'){//非NoticeVo对象
         if(messageBody === '登录过期' || messageBody === '用户认证失败') location.reload();
-        console.log(messageBody);
       }
       else {
         let notice = JSON.parse(messageBody);
+        //支付回调通知
+        if(notice.type === "PENSION_PAYMENT"){
+          this.sendPaymentInfo(notice);
+          return;
+        }
+        //设备上报通知
         let tags = notice.tags;
         let message = '';
         for(let tag of tags){
@@ -267,6 +273,12 @@ export default {
           "glucose": notice.glucose
         };
         this.$bus.$emit('blglucose', data)
+      }
+    },
+    //支付回调数据发送
+    sendPaymentInfo(notice){
+      if(notice.info !== undefined){
+        this.$bus.$emit('payment-notify',notice)
       }
     }
   },

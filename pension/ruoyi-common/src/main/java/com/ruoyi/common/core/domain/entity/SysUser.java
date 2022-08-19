@@ -28,6 +28,7 @@ public class SysUser extends BaseEntity
     /** 用户ID */
     @Excel(name = "用户序号", cellType = ColumnType.NUMERIC, prompt = "用户编号")
     private Long userId;
+    private String userType;
 
     /** 部门ID */
     @Excel(name = "部门编号", type = Type.IMPORT)
@@ -114,6 +115,14 @@ public class SysUser extends BaseEntity
     public void setUserId(Long userId)
     {
         this.userId = userId;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public boolean isAdmin()

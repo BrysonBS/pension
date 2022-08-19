@@ -20,6 +20,8 @@
             <result property="personName" column="person_name" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+            <result property="orderId" column="order_id" jdbcType="INTEGER"/>
+            <result property="orderSn" column="order_sn" jdbcType="VARCHAR"/>
     </resultMap>
     <resultMap id="VoResultMap" type="com.ruoyi.pension.nursing.domain.vo.NursingRecordVo">
         <result property="orderNumber" column="order_number" jdbcType="VARCHAR"/>
@@ -38,6 +40,8 @@
         <result property="guardian" column="guardian" jdbcType="VARCHAR"/>
         <result property="guardianPhone" column="guardian_phone" jdbcType="VARCHAR"/>
         <result property="items" column="items" jdbcType="VARCHAR"/>
+        <result property="orderId" column="order_id" jdbcType="INTEGER"/>
+        <result property="orderSn" column="order_sn" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -45,7 +49,7 @@
         phone,dept_id,dept_name,
         dict_level_id,apply_time,
         begin_time,end_time,person_id,
-        person_name,remark,del_flag
+        person_name,remark,del_flag,order_id,order_sn
     </sql>
     <select id="getListByExample" resultType="com.ruoyi.pension.nursing.domain.po.NursingRecord">
         SELECT
@@ -60,7 +64,10 @@
                 AND apply_time <![CDATA[ >= ]]> #{beginTime,jdbcType=TIMESTAMP}
             </if>
             <if test="endTime != null">
-                AND apply_time <![CDATA[ <= ]]> #{endTime,jdbcType=TIMESTAMP}
+                AND apply_time <![CDATA[ < ]]> #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="orderSn != null">
+                AND order_sn LIKE CONCAT('%',#{orderSn},'%')
             </if>
             <if test="applyName != null">
                 AND apply_name LIKE CONCAT('%',#{applyName},'%')
@@ -75,7 +82,7 @@
     <select id="getListVoByExample" resultType="com.ruoyi.pension.nursing.domain.vo.NursingRecordVo"
             parameterType="com.ruoyi.pension.nursing.domain.po.NursingRecord">
         SELECT
-        a.order_number,a.apply_name,a.phone AS apply_phone,a.dept_name,a.apply_time,a.begin_time,a.end_time,a.remark,
+        a.order_number,a.apply_name,a.phone AS apply_phone,a.dept_name,a.apply_time,a.begin_time,a.end_time,a.remark,a.order_id,a.order_sn
         b.`name`,b.phone,d.dict_label AS level_name,b.address,b.medical_history,b.guardian,b.guardian_phone,
         c.items
         FROM nursing_record a
@@ -107,5 +114,12 @@
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
+    </select>
+    <select id="getListOrderIdByIds" resultType="java.lang.Integer">
+        SELECT order_id FROM nursing_record
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </select>
 </mapper>

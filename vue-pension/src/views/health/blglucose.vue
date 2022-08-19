@@ -182,7 +182,6 @@ export default {
       this.handleQuery();
     },
     addBlglucose(e){
-      console.log(e)
       if(this.queryParams.ieee !== e.ieee) return;
       //相同设备,则更新
       this.chartData.init = false;

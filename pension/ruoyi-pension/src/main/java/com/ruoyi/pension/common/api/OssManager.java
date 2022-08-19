@@ -53,10 +53,8 @@ public class OssManager {
             String message = String.format("oss流式上传失败错误码:%s,Request ID:%s,Host ID:%s,错误信息: %s",
                     oe.getErrorCode(),oe.getRequestId(),oe.getHostId(),oe.getErrorMessage());
             log.error(message);
-            System.out.println(message);
         } catch (ClientException ce) {
             log.error("oss流式上传失败错误信息: {}", ce.getMessage());
-            System.out.println("oss流式上传失败错误信息:" + ce.getMessage());
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();
@@ -64,7 +62,6 @@ public class OssManager {
         }
         return result;
     }
-
     /**
      * 流式文件下载
      * @param uri OSS中文件的相对路径
@@ -90,16 +87,39 @@ public class OssManager {
 
             OutputStream output = response.getOutputStream();
             try(ossObject;input;output) {
-                input.transferTo(response.getOutputStream());
+                input.transferTo(output);
             }
         } catch (OSSException oe) {
             String message = String.format("oss流式下载失败错误码:%s,Request ID:%s,Host ID:%s,错误信息: %s",
                     oe.getErrorCode(),oe.getRequestId(),oe.getHostId(),oe.getErrorMessage());
             log.error(message);
-            System.out.println(message);
         } catch (Throwable ce) {
             log.error("oss流式下载失败错误信息: {}", ce.getMessage());
-            System.out.println("oss流式下载失败错误信息:" + ce.getMessage());
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+            }
+        }
+    }
+
+    /**
+     * 删除文件或者目录
+     * @param uri 文件或目录
+     */
+    public void removeObject(String uri){
+        // 创建OSSClient实例。
+        OSS ossClient = getOSSClient();
+        try {
+            // 删除文件或目录。如果要删除目录，目录必须为空。
+            ossClient.deleteObject(aliyunProps.getBucket(), uri);
+        } catch (OSSException oe) {
+            String message = String.format("删除文件或目录失败错误码:%s,Request ID:%s,Host ID:%s,错误信息: %s",
+                    oe.getErrorCode(),oe.getRequestId(),oe.getHostId(),oe.getErrorMessage());
+            log.error(message);
+            System.out.println(message);
+        } catch (ClientException ce) {
+            log.error("删除文件或目录失败错误信息: {}", ce.getMessage());
+            System.out.println("Error Message:" + ce.getMessage());
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();

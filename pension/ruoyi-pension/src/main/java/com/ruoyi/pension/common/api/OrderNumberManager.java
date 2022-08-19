@@ -1,5 +1,6 @@
 package com.ruoyi.pension.common.api;
 
+import com.ruoyi.pension.common.domain.consts.PensionBusiness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
@@ -16,14 +17,26 @@ public class OrderNumberManager {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    public String getOrderNumber(String key){
-        return getOrderNumber(key,6);
+    /** 获取微信支付订单号 */
+    public String getWeChatPayOrderNumber(Long deptId){
+        return getOrderNumber(PensionBusiness.PAYMENT_ORDER_PREFIX + "2" + deptId);
     }
-    public String getOrderNumber(String key,int length){
+    /** 获取支付宝支付订单号 */
+    public String getAlipayOrderNumber(Long deptId){
+        return getOrderNumber(PensionBusiness.PAYMENT_ORDER_PREFIX + "1" + deptId);
+    }
+    public String getRefundOrderNumber(String orderNumber){
+        return getOrderNumber(orderNumber,3);
+    }
+
+    public String getOrderNumber(String prefix){
+        return getOrderNumber(prefix,9);
+    }
+    public String getOrderNumber(String prefix,int length){
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        return getAndAppendKeyPrefix(key + date,length,25,TimeUnit.HOURS);
+        return getAndAppendKeyPrefix(prefix + date,length,25,TimeUnit.HOURS);
     }
-    public String getAndAppendKeyPrefix(String key,int length,long timeOut, TimeUnit timeUnit){
+    private String getAndAppendKeyPrefix(String key,int length,long timeOut, TimeUnit timeUnit){
         long incr = increment(key,timeOut,timeUnit);
         return key + String.format("%0" + length + "d",incr);
     }

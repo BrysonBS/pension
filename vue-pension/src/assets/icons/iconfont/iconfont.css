@@ -1,0 +1,35 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3581182 */
+  src: url('iconfont.woff2?t=1660183212795') format('woff2'),
+       url('iconfont.woff?t=1660183212795') format('woff'),
+       url('iconfont.ttf?t=1660183212795') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-refund:before {
+  content: "\e6a6";
+}
+
+.icon-alipay:before {
+  content: "\e634";
+}
+
+.icon-qrpay:before {
+  content: "\e60c";
+}
+
+.icon-wechatpay:before {
+  content: "\e607";
+}
+
+.icon-tuikuan:before {
+  content: "\e61c";
+}
+

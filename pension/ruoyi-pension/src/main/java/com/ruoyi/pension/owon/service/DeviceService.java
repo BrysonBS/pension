@@ -111,6 +111,7 @@ public class DeviceService extends ServiceImpl<DeviceMapper, Device> implements 
         LambdaUpdateWrapper<Device> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper
                 .set(device.getName() != null,Device::getName,device.getName())
+                .set(device.getSerialNo() != null,Device::getSerialNo,device.getSerialNo())
                 .set(device.getDeptId() != null,Device::getDeptId,device.getDeptId())
                 .set(device.getCid() != null,Device::getCategoriesId,device.getCid())
                 .eq(Device::getId,device.getId());
@@ -144,11 +145,11 @@ public class DeviceService extends ServiceImpl<DeviceMapper, Device> implements 
         return this.baseMapper.getOneById(id);
     }
     public List<Device> getListByDeptId(long deptId){
-        List<Long> deptIds = deptOwonService.getListByDeptId(deptId);
+        List<Long> deptIds = deptOwonService.getListDeptAndChildrenByDeptId(deptId);
         return this.baseMapper.getListByDeptIdsAndCids(deptIds,null);
     }
     public List<Device> getSleepListByDeptId(long deptId){
-        List<Long> deptIds = deptOwonService.getListByDeptId(deptId);
+        List<Long> deptIds = deptOwonService.getListDeptAndChildrenByDeptId(deptId);
         return this.baseMapper.getListByDeptIdsAndCids(deptIds,List.of(1));
     }
 

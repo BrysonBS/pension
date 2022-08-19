@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.common.mapper.PensionPaymentNotifyWechatMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.common.domain.po.PensionPaymentNotifyWechat">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="mchid" column="mchid" jdbcType="VARCHAR"/>
+            <result property="appid" column="appid" jdbcType="VARCHAR"/>
+            <result property="outTradeNo" column="out_trade_no" jdbcType="VARCHAR"/>
+            <result property="transactionId" column="transaction_id" jdbcType="VARCHAR"/>
+            <result property="tradeType" column="trade_type" jdbcType="VARCHAR"/>
+            <result property="tradeState" column="trade_state" jdbcType="VARCHAR"/>
+            <result property="tradeStateDesc" column="trade_state_desc" jdbcType="VARCHAR"/>
+            <result property="bankType" column="bank_type" jdbcType="VARCHAR"/>
+            <result property="attach" column="attach" jdbcType="VARCHAR"/>
+            <result property="successTime" column="success_time" jdbcType="TIMESTAMP"/>
+            <result property="openid" column="openid" jdbcType="VARCHAR"/>
+            <result property="total" column="total" jdbcType="BIGINT"/>
+            <result property="payerTotal" column="payer_total" jdbcType="BIGINT"/>
+            <result property="currency" column="currency" jdbcType="VARCHAR"/>
+            <result property="payerCurrency" column="payer_currency" jdbcType="VARCHAR"/>
+            <result property="notifyId" column="notify_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="eventType" column="event_type" jdbcType="VARCHAR"/>
+            <result property="resourceType" column="resource_type" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,mchid,appid,
+        out_trade_no,transaction_id,trade_type,
+        trade_state,trade_state_desc,bank_type,
+        attach,success_time,openid,
+        total,payer_total,currency,
+        payer_currency,notify_id,create_time,
+        event_type,resource_type
+    </sql>
+    <select id="getCountByNotifyIdAndOutTradeNo" resultType="java.lang.Integer">
+        select count(*) from pension_payment_notify_wechat
+        where notify_id = #{notifyId,jdbcType=VARCHAR}
+        AND out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

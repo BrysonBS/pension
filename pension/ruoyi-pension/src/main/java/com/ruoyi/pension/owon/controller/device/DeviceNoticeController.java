@@ -20,14 +20,12 @@ public class DeviceNoticeController extends BaseController {
     @Autowired
     private OwonNoticeService owonNoticeService;
     @GetMapping("/list")
-    public TableDataInfo list(LocalDateTime beginTime, LocalDateTime endTime, OwonNotice notice){
-        if(endTime != null) endTime = endTime.plusDays(1);
+    public TableDataInfo list(OwonNotice notice){
+        //设置归属部门
+        notice.setDeptId(getDeptId());
+        if(notice.getEndTime() != null) notice.setEndTime(notice.getEndTime().plusDays(1));
         startPage();
-        List<OwonNotice> list = owonNoticeService.getList(
-                getLoginUser().getUser().isAdmin(),
-                getLoginUser().getDeptId(), beginTime, endTime,
-                notice
-        );
+        List<OwonNotice> list = owonNoticeService.getListByExample(notice);
         return getDataTable(list);
     }
 

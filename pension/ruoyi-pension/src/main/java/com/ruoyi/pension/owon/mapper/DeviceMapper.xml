@@ -25,6 +25,7 @@
             <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
             <result property="netState" column="net_state" jdbcType="INTEGER"/>
             <result property="categoriesId" column="categories_id" jdbcType="INTEGER"/>
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -33,7 +34,7 @@
         device_type,ias_zone_type,profile_id,
         name,dev_model,cluster_flag,
         manu_code,option,duration,
-        status,del_flag,net_state,categories_id
+        status,del_flag,net_state,categories_id,serial_no
     </sql>
     <select id="getListByDeptIdsAndDevice" resultType="com.ruoyi.pension.owon.domain.po.Device">
         SELECT * FROM v_device_gw_categories a

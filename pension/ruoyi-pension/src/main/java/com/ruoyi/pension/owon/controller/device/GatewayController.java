@@ -70,7 +70,7 @@ public class GatewayController extends BaseController{
     @GetMapping("/list")
     public TableDataInfo list(Optional<Long> deptId, Gateway gateway){
         //不存在,从用户信息中获取
-        List<Long> deptIds = sysDeptOwonService.getListByDeptId(
+        List<Long> deptIds = sysDeptOwonService.getListDeptAndChildrenByDeptId(
                 deptId.orElse(getLoginUser().getDeptId())
         );
 

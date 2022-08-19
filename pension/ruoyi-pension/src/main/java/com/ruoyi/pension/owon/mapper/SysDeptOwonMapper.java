@@ -17,7 +17,7 @@ public interface SysDeptOwonMapper extends BaseMapper<SysDeptOwon> {
      * @param deptId
      * @return
      */
-    List<Long> getListByDeptId(Long deptId);
+    List<Long> getListDeptAndChildrenByDeptId(Long deptId);
 }
 
 

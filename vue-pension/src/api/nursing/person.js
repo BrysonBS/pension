@@ -14,6 +14,12 @@ export function listPersonAll() {
     method: 'get'
   })
 }
+export function listPersonOwn() {
+  return request({
+    url: '/nursing/person/listOwn',
+    method: 'get'
+  })
+}
 // 根据id查询
 export function getPerson(id) {
   return request({

@@ -87,6 +87,31 @@ public class FileUploadUtils
     }
 
     /**
+     * 文件上传: baseDir + 扩展后的fileName
+     * @param baseDir
+     * @param file
+     * @param allowedExtension
+     * @return 新的文件名
+     * @throws FileSizeLimitExceededException
+     * @throws IOException
+     * @throws FileNameLengthLimitExceededException
+     * @throws InvalidExtensionException
+     */
+    public static final String simpleUpload(String baseDir, MultipartFile file, String[] allowedExtension)
+            throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException,
+            InvalidExtensionException {
+        int fileNamelength = Objects.requireNonNull(file.getOriginalFilename()).length();
+        if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH) {
+            throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
+        }
+        assertAllowed(file, allowedExtension);
+        String fileName = simpleExtractFilename(file);
+        String absPath = getAbsoluteFile(baseDir, fileName).getAbsolutePath();
+        file.transferTo(Paths.get(absPath));
+        return fileName;
+    }
+
+    /**
      * 文件上传
      *
      * @param baseDir 相对应用的基目录
@@ -124,6 +149,13 @@ public class FileUploadUtils
     {
         return StringUtils.format("{}/{}_{}.{}", DateUtils.datePath(),
                 FilenameUtils.getBaseName(file.getOriginalFilename()), Seq.getId(Seq.uploadSeqType), getExtension(file));
+    }
+    /**
+     * 编码文件名: 初始文件名_XXX.扩展名
+     */
+    public static final String simpleExtractFilename(MultipartFile file)
+    {
+        return StringUtils.format("{}_{}.{}",FilenameUtils.getBaseName(file.getOriginalFilename()), Seq.getId(Seq.uploadSeqType), getExtension(file));
     }
 
     public static final File getAbsoluteFile(String uploadDir, String fileName) throws IOException

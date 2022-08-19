@@ -8,15 +8,12 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.pension.common.api.OrderNumberManager;
-import com.ruoyi.pension.common.api.OssManager;
 import com.ruoyi.pension.common.domain.consts.PensionBusiness;
 import com.ruoyi.pension.common.domain.po.PensionUpload;
 import com.ruoyi.pension.common.service.PensionUploadService;
 import com.ruoyi.pension.nursing.domain.po.NursingRecord;
-import com.ruoyi.pension.nursing.domain.po.NursingServiceItems;
 import com.ruoyi.pension.nursing.domain.vo.NursingRecordVo;
 import com.ruoyi.pension.nursing.service.NursingRecordService;
-import com.ruoyi.pension.nursing.service.NursingPersonService;
 import com.ruoyi.pension.nursing.service.NursingServiceItemsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +28,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/nursing/record")
 public class NursingRecordController extends BaseController {
-    @Autowired
-    private OssManager ossManager;
     @Autowired
     private OrderNumberManager orderNumberManager;
     @Autowired
@@ -89,7 +84,7 @@ public class NursingRecordController extends BaseController {
 
     @DeleteMapping("/batch")
     public AjaxResult delete(@RequestParam("id") List<Integer> ids){
-        return toAjax(nursingRecordService.removeBatchByIds(ids));
+        return toAjax(nursingRecordService.removeEntityBatch(ids));
     }
     @PostMapping("/export")
     public void export(HttpServletResponse response,NursingRecord nursingRecord){

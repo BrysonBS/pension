@@ -45,14 +45,14 @@ public class BleManager {
      * ble设备加网
      * @return
      */
-    public AjaxResult scanBleDevice(String mac,String serialNo) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public AjaxResult scanBleDevice(String mac,String serialNo,int ep) throws ExecutionException, InterruptedException, JsonProcessingException {
         AjaxResult ajaxResult = accessToken.getAccessToken();
         if((int)(ajaxResult.get(AjaxResult.CODE_TAG)) != HttpStatus.OK.value())
             return ajaxResult; //获取失败直接返回
         //没取到再查询
         Argument<?,?> argument = Argument
                 .builder()
-                .ep(1)
+                .ep(ep)
                 .connectType(1)
                 .serialNo(serialNo)
                 .build();

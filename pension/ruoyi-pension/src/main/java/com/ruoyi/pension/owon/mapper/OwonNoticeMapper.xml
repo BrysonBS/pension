@@ -26,33 +26,28 @@
         notice_content,description,create_time,del_flag,
         display_name,dept_id,`source`
     </sql>
-    <select id="getListByLoginUserDeptId" resultType="com.ruoyi.pension.owon.domain.po.OwonNotice">
-        SELECT a.* FROM owon_notice a
-        WHERE a.del_flag = 0
-        <if test="!isAdmin">
-            AND a.dept_id != 100
+    <select id="getListByDeptId" resultType="com.ruoyi.pension.owon.domain.po.OwonNotice">
+        SELECT * FROM owon_notice
+        WHERE del_flag = 0
+        <if test="beginTime != null">
+            AND report_time &gt;= #{beginTime,jdbcType=TIMESTAMP}
         </if>
-          <if test="beginTime != null">
-              AND a.report_time &gt;= #{beginTime,jdbcType=TIMESTAMP}
-          </if>
-          <if test="endTime != null">
-              AND a.report_time &lt; #{endTime,jdbcType=TIMESTAMP}
-          </if>
-        <if test="!isAdmin">
-            AND find_in_set (a.dept_id,(
-            SELECT CONCAT_WS(',',aa.ancestors,aa.dept_id) FROM sys_dept aa
-            WHERE aa.dept_id = #{deptId,jdbcType=BIGINT}
-            ))
+        <if test="endTime != null">
+            AND report_time &lt; #{endTime,jdbcType=TIMESTAMP}
         </if>
-          <if test="notice.deviceIeee != null">
-              AND a.device_ieee LIKE CONCAT('%',#{notice.deviceIeee},'%')
-          </if>
-          <if test="notice.deviceName != null">
-              AND a.device_name LIKE CONCAT('%',#{notice.deviceName},'%')
-          </if>
-          <if test="notice.noticeContent != null">
-              AND a.notice_content LIKE CONCAT('%',#{notice.noticeContent},'%')
-          </if>
-          order by a.report_time desc
+        <if test="deviceIeee != null">
+            AND device_ieee LIKE CONCAT('%',#{deviceIeee},'%')
+        </if>
+        <if test="deviceName != null">
+            AND device_name LIKE CONCAT('%',#{deviceName},'%')
+        </if>
+        <if test="noticeContent != null">
+            AND notice_content LIKE CONCAT('%',#{noticeContent},'%')
+        </if>
+
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+
+        order by report_time desc
     </select>
 </mapper>

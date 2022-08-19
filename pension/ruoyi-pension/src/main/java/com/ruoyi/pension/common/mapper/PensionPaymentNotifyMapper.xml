@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.common.mapper.PensionPaymentNotifyMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.common.domain.po.PensionPaymentNotify">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="gmtPayment" column="gmt_payment" jdbcType="TIMESTAMP"/>
+            <result property="notifyTime" column="notify_time" jdbcType="TIMESTAMP"/>
+            <result property="subject" column="subject" jdbcType="VARCHAR"/>
+            <result property="buyerId" column="buyer_id" jdbcType="VARCHAR"/>
+            <result property="invoiceAmount" column="invoice_amount" jdbcType="DECIMAL"/>
+            <result property="version" column="version" jdbcType="VARCHAR"/>
+            <result property="notifyId" column="notify_id" jdbcType="VARCHAR"/>
+            <result property="notifyType" column="notify_type" jdbcType="VARCHAR"/>
+            <result property="outTradeNo" column="out_trade_no" jdbcType="VARCHAR"/>
+            <result property="totalAmount" column="total_amount" jdbcType="DECIMAL"/>
+            <result property="tradeStatus" column="trade_status" jdbcType="VARCHAR"/>
+            <result property="tradeNo" column="trade_no" jdbcType="VARCHAR"/>
+            <result property="authAppId" column="auth_app_id" jdbcType="VARCHAR"/>
+            <result property="receiptAmount" column="receipt_amount" jdbcType="DECIMAL"/>
+            <result property="pointAmount" column="point_amount" jdbcType="DECIMAL"/>
+            <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+            <result property="buyerPayAmount" column="buyer_pay_amount" jdbcType="DECIMAL"/>
+            <result property="signType" column="sign_type" jdbcType="VARCHAR"/>
+            <result property="sellerId" column="seller_id" jdbcType="VARCHAR"/>
+            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+            <result property="gmtRefund" column="gmt_refund" jdbcType="TIMESTAMP"/>
+            <result property="charset" column="charset" jdbcType="VARCHAR"/>
+            <result property="outBizNo" column="out_biz_no" jdbcType="VARCHAR"/>
+            <result property="refundFee" column="refund_fee" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,gmt_payment,notify_time,
+        subject,buyer_id,invoice_amount,
+        version,notify_id,notify_type,
+        out_trade_no,total_amount,trade_status,
+        trade_no,auth_app_id,receipt_amount,
+        point_amount,app_id,buyer_pay_amount,
+        sign_type,seller_id,gmt_create,gmt_refund,
+        charset,out_biz_no,refund_fee
+    </sql>
+    <select id="getByExample" resultType="com.ruoyi.pension.common.domain.po.PensionPaymentNotify">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM pension_payment_notify
+        <where>
+            out_trade_no = #{outTradeNo}
+            AND trade_no = #{tradeNo}
+            AND total_amount = #{totalAmount}
+            <choose>
+                <when test="gmtRefund != null">AND gmt_refund = #{gmtRefund}</when>
+                <otherwise>AND gmt_refund IS NULL</otherwise>
+            </choose>
+            <choose>
+                <when test="refundFee != null">AND refund_fee = #{refundFee}</when>
+                <otherwise>AND refund_fee IS NULL</otherwise>
+            </choose>
+            <if test="authAppId != null">AND auth_app_id = #{authAppId}</if>
+            <if test="app_id != null">AND app_id = #{appId}</if>
+            <if test="sellerId != null">AND seller_id = #{sellerId}</if>
+        </where>
+    </select>
+</mapper>

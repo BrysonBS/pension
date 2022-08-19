@@ -155,4 +155,17 @@ export function download(url, params, filename) {
   })
 }
 
+export function downloadBlob(url,params){
+  return service.post(url, params, {
+    transformRequest: [(params) => { return tansParams(params) }],
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    responseType: 'blob'
+  }).then(async (data) => {
+    const isLogin = await blobValidate(data);
+    if (isLogin) {
+      return new Blob([data])
+    }
+  })
+}
+
 export default service

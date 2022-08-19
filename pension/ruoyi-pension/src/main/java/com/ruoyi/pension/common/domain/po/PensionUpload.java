@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -39,9 +40,10 @@ public class PensionUpload implements Serializable {
     private Long fileSize;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private LocalDateTime uploadTime;
-    @TableLogic(value = "0",delval = "2")
+    //@TableLogic(value = "0",delval = "2")
     private String delFlag;
 
+    @JsonIgnore
     @TableField(exist = false)
     private MultipartFile att;
     @TableField(exist = false)

@@ -14,12 +14,7 @@ import java.util.List;
 * @Entity com.ruoyi.pension.owon.domain.po.OwonNotice
 */
 public interface OwonNoticeMapper extends BaseMapper<OwonNotice> {
-    List<OwonNotice> getListByLoginUserDeptId(
-            @Param("isAdmin") boolean isAdmin,
-            @Param("deptId") Long deptId,
-            @Param("beginTime") LocalDateTime beginTime,
-            @Param("endTime") LocalDateTime endTime,
-            @Param("notice") OwonNotice notice);
+    List<OwonNotice> getListByDeptId(OwonNotice notice);
 }
 
 

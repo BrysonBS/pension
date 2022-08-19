@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.common.mapper.PensionPaymentMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.common.domain.po.PensionPayment">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="payType" column="pay_type" jdbcType="INTEGER"/>
+            <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+            <result property="merchantId" column="merchant_id" jdbcType="VARCHAR"/>
+            <result property="merchantKey" column="merchant_key" jdbcType="VARCHAR"/>
+            <result property="merchantKeyV3" column="merchant_key_v3" jdbcType="VARCHAR"/>
+            <result property="slAppId" column="sl_app_id" jdbcType="VARCHAR"/>
+            <result property="slMerchantId" column="sl_merchant_id" jdbcType="VARCHAR"/>
+            <result property="payUrl" column="pay_url" jdbcType="VARCHAR"/>
+            <result property="queryUrl" column="query_url" jdbcType="VARCHAR"/>
+            <result property="returnUrl" column="return_url" jdbcType="VARCHAR"/>
+            <result property="notifyUrl" column="notify_url" jdbcType="VARCHAR"/>
+            <result property="appPrivateKey" column="app_private_key" jdbcType="VARCHAR"/>
+            <result property="alipayPublicKey" column="alipay_public_key" jdbcType="VARCHAR"/>
+            <result property="charset" column="charset" jdbcType="VARCHAR"/>
+            <result property="signType" column="sign_type" jdbcType="VARCHAR"/>
+            <result property="format" column="format" jdbcType="VARCHAR"/>
+            <result property="certModel" column="cert_model" jdbcType="TINYINT"/>
+            <result property="appCertPath" column="app_cert_path" jdbcType="VARCHAR"/>
+            <result property="appCertContent" column="app_cert_content" jdbcType="VARCHAR"/>
+            <result property="alipayCertPath" column="alipay_cert_path" jdbcType="VARCHAR"/>
+            <result property="alipayCertContent" column="alipay_cert_content" jdbcType="VARCHAR"/>
+            <result property="alipayRootCertPath" column="alipay_root_cert_path" jdbcType="VARCHAR"/>
+            <result property="alipayRootCertContent" column="alipay_root_cert_content" jdbcType="VARCHAR"/>
+            <result property="wechatpayKeyPemPath" column="wechatpay_key_pem_path" jdbcType="VARCHAR"/>
+            <result property="wechatpayCertPemPath" column="wechatpay_cert_pem_path" jdbcType="VARCHAR"/>
+            <result property="wechatpayCertP12Path" column="wechatpay_cert_p12_path" jdbcType="VARCHAR"/>
+            <result property="wechatpayRootCertPath" column="wechatpay_root_cert_path" jdbcType="VARCHAR"/>
+            <result property="merchantSerialNumber" column="merchant_serial_number" jdbcType="VARCHAR"/>
+            <result property="apiV3Key" column="api_v3_key" jdbcType="VARCHAR"/>
+            <result property="refundNotifyUrl" column="refund_notify_url" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,dept_id,
+        pay_type,app_id,merchant_id,
+        merchant_key,merchant_key_v3,sl_app_id,
+        sl_merchant_id,pay_url,query_url,return_url,
+        notify_url,app_private_key,alipay_public_key,
+        charset,sign_type,format,
+        cert_model,app_cert_path,app_cert_content,
+        alipay_cert_path,alipay_cert_content,alipay_root_cert_path,
+        alipay_root_cert_content,wechatpay_key_pem_path,wechatpay_cert_pem_path,wechatpay_cert_p12_path
+        remark,del_flag,create_by,
+        create_time,update_by,update_time,
+        wechatpay_root_cert_path,merchant_serial_number,api_v3_key,refund_notify_url
+    </sql>
+    <sql id="AliPay_Column_List">
+        id,dept_id,pay_type,app_id,return_url,notify_url,
+        app_private_key,alipay_public_key,charset,sign_type,format,
+        cert_model,app_cert_path,app_cert_content,
+        alipay_cert_path,alipay_cert_content,alipay_root_cert_path,
+        alipay_root_cert_content,create_by,create_time,update_by,update_time
+    </sql>
+    <sql id="WeChatPay_Column_List">
+        id,dept_id,pay_type,app_id,merchant_id,cert_model,
+        wechatpay_key_pem_path,wechatpay_cert_p12_path,wechatpay_cert_pem_path,
+        merchant_serial_number,api_v3_key,
+        remark,create_by,create_time,update_by,update_time
+    </sql>
+    <select id="listByExample" resultType="com.ruoyi.pension.common.domain.po.PensionPayment">
+        SELECT a.*,b.dept_name FROM pension_payment a
+        LEFT JOIN sys_dept b ON a.dept_id = b.dept_id
+        <where>
+            a.del_flag = 0
+            <if test="userId != null">AND a.user_id = #{userId}</if>
+            <if test="deptId != null">AND a.dept_id = #{deptId}</if>
+            <if test="payType != null">AND a.pay_type = #{payType}</if>
+            <if test="certModel != null">AND a.cert_model = #{certModel}</if>
+            <if test="status != null">AND a.status = #{status}</if>
+            <if test="appId != null">AND a.app_id LIKE CONCAT('%',#{appId},'%')</if>
+            <if test="remark != null">AND a.remark LIKE CONCAT('%',#{remark},'%')</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+    </select>
+    <select id="getOneByDeptIdAndPayType" resultType="com.ruoyi.pension.common.domain.po.PensionPayment">
+        SELECT
+        <choose>
+            <when test="payType == 1"><include refid="AliPay_Column_List"/></when>
+            <when test="payType == 2"><include refid="WeChatPay_Column_List"/></when>
+            <otherwise><include refid="Base_Column_List"/></otherwise>
+        </choose>
+        FROM pension_payment
+        <where>
+            del_flag = 0 AND status = 0
+            AND dept_id = #{deptId}
+            AND pay_type = #{payType}
+        </where>
+        ORDER BY update_time,create_time DESC limit 1
+    </select>
+    <select id="getListByDeptIdAndPayType" resultType="com.ruoyi.pension.common.domain.po.PensionPayment">
+        select
+        <include refid="Base_Column_List"/>
+        from pension_payment
+        where del_flag = 0
+        AND dept_id = #{deptId,jdbcType=NUMERIC}
+    </select>
+</mapper>

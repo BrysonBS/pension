@@ -12,6 +12,7 @@ import com.ruoyi.pension.common.domain.enums.Operation;
 import com.ruoyi.pension.common.utils.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
@@ -29,13 +30,16 @@ public class OwonHttp {
     private AccessToken accessToken;
     @Autowired
     private ObjectMapper objectMapper;
-    private JmsTemplate jmsTemplate;
 
+    @Qualifier("jmsTemplateTime")
+    @Autowired
+    private JmsTemplate jmsTemplate;
+/*
     @Autowired
     public void setJmsTemplate(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
         this.jmsTemplate.setReceiveTimeout(1000);
-    }
+    }*/
 
     public String post(String mac, AjaxResult accessToken, Datapacket<?,?> datapacket) throws JsonProcessingException, ExecutionException, InterruptedException {
         com.ruoyi.pension.owon.domain.dto.OwonRequest request = com.ruoyi.pension.owon.domain.dto.OwonRequest.builder()
@@ -47,6 +51,9 @@ public class OwonHttp {
                 .build();
         String jsonParams = objectMapper.writeValueAsString(request);
         String url = owonProps.getServer_china() + owonProps.getUri_sendGwData();
+
+        log.info("post: " + jsonParams + "/n url: " + url);
+
         //发送请求
         return HttpClientUtil.postOfBody(jsonParams,url);
     }
@@ -82,7 +89,8 @@ public class OwonHttp {
                 .put(AjaxResult.CODE_TAG,HttpStatus.BAD_REQUEST.value())
                 .put(AjaxResult.DATA_TAG, operation.getDescription()+" : "+body);
         //失败记录日志
-        log.error("失败: "+objectMapper.writeValueAsString(result));
+
+        log.error("失败: 请求===mac:" + mac + "accessToken: " + accessToken + "datapacket: " + objectMapper.writeValueAsString(datapacket) + "/n返回===" + objectMapper.writeValueAsString(result));
         return result;
     }
     public AjaxResult postOfCache(String mac, AjaxResult accessToken, Datapacket<?,?> datapacket, Operation operation, List<String> keys) throws ExecutionException, JsonProcessingException, InterruptedException {

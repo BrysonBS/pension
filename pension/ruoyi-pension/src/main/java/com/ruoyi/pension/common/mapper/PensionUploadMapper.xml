@@ -24,11 +24,42 @@
         file_name,file_type,file_size,
         upload_time,del_flag
     </sql>
+    <delete id="removeByTableEnumAndRelateIds">
+        DELETE FROM pension_upload
+        <where>
+            master_id = #{tableEnum.code,jdbcType=INTEGER}
+            AND relate_id IN
+            <foreach collection="relateIds" item="relateId" open="(" close=")" separator=",">
+                #{relateId,jdbcType=INTEGER}
+            </foreach>
+        </where>
+    </delete>
     <select id="getAllByRelateId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from pension_upload
-        where
-        relate_id = #{relateId,jdbcType=NUMERIC}
+        where del_flag = 0
+        AND relate_id = #{relateId,jdbcType=INTEGER}
+    </select>
+    <select id="getByTableEnumAndRelateId" resultType="com.ruoyi.pension.common.domain.po.PensionUpload">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM pension_upload
+        <where>
+            del_flag = 0  AND master_id = #{tableEnum.code,jdbcType=INTEGER}
+            <if test="relateId != null">AND relate_id = #{relateId,jdbcType=INTEGER}</if>
+        </where>
+    </select>
+    <select id="getByTableEnumAndRelateIds" resultType="com.ruoyi.pension.common.domain.po.PensionUpload">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM pension_upload
+        <where>
+            del_flag = 0 AND master_id = #{tableEnum.code,jdbcType=INTEGER}
+            AND relate_id IN
+            <foreach collection="relateIds" item="relateId" open="(" close=")" separator="," nullable="false">
+                    #{relateId,jdbcType=INTEGER}
+            </foreach>
+        </where>
     </select>
 </mapper>

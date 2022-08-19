@@ -28,4 +28,12 @@
         del_flag,create_by,create_time,
         update_by,update_time
     </sql>
+
+    <select id="selectAllByDeptIds" resultType="java.lang.String">
+        SELECT DISTINCT gw_code FROM owon_gateway
+        where status = 0 AND dept_id in
+        <foreach collection="deptIds" item="deptId" open="(" close=")" separator=",">
+            #{deptId}
+        </foreach>
+    </select>
 </mapper>

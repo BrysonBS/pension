@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.nursing.mapper.NursingOrderItemsMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.nursing.domain.po.NursingOrderItems">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="orderId" column="order_id" jdbcType="INTEGER"/>
+            <result property="dictLabel" column="dict_label" jdbcType="VARCHAR"/>
+            <result property="dictValue" column="dict_value" jdbcType="VARCHAR"/>
+            <result property="price" column="price" jdbcType="DECIMAL"/>
+            <result property="discount" column="discount" jdbcType="DECIMAL"/>
+            <result property="discountPrice" column="discount_price" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,order_id,dict_label,dict_value,
+        price,discount,discount_price
+    </sql>
+</mapper>

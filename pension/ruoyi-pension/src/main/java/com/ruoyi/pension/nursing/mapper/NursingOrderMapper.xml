@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.nursing.mapper.NursingOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.nursing.domain.po.NursingOrder">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="couponId" column="coupon_id" jdbcType="INTEGER"/>
+            <result property="orderSn" column="order_sn" jdbcType="VARCHAR"/>
+            <result property="totalAmount" column="total_amount" jdbcType="DECIMAL"/>
+            <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
+            <result property="couponAmount" column="coupon_amount" jdbcType="DECIMAL"/>
+            <result property="discountAmount" column="discount_amount" jdbcType="DECIMAL"/>
+            <result property="refundAmount" column="refund_amount" jdbcType="DECIMAL"/>
+            <result property="payType" column="pay_type" jdbcType="INTEGER"/>
+            <result property="sourceType" column="source_type" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="province" column="province" jdbcType="VARCHAR"/>
+            <result property="city" column="city" jdbcType="VARCHAR"/>
+            <result property="district" column="district" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="detailAddress" column="detail_address" jdbcType="VARCHAR"/>
+            <result property="lat" column="lat" jdbcType="DECIMAL"/>
+            <result property="lng" column="lng" jdbcType="DECIMAL"/>
+            <result property="commentTime" column="comment_time" jdbcType="TIMESTAMP"/>
+            <result property="commentText" column="comment_text" jdbcType="VARCHAR"/>
+            <result property="star" column="star" jdbcType="INTEGER"/>
+            <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="beginTime" column="begin_time" jdbcType="TIMESTAMP"/>
+            <result property="personId" column="person_id" jdbcType="INTEGER"/>
+            <result property="workerId" column="worker_id" jdbcType="INTEGER"/>
+            <result property="qrCode" column="qr_code" jdbcType="VARCHAR"/>
+            <result property="recordId" column="record_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,dept_id,
+        coupon_id,order_sn,total_amount,
+        pay_amount,coupon_amount,discount_amount,refund_amount,
+        pay_type,source_type,status,
+        province,city,region,district,address,
+        detail_address,lat,lng,
+        comment_time,comment_text,star,
+        del_flag,create_by,create_time,
+        update_by,update_time,remark,begin_time,
+        person_id,worker_id,qrCode,record_id
+    </sql>
+    <update id="updateStatusByIdAndStatus">
+        UPDATE nursing_order SET status = #{newStatus}
+        WHERE id = #{id} AND status = #{oldStatus}
+    </update>
+    <update id="commentFinishedOrder">
+        UPDATE nursing_order SET comment_time = now() ,comment_text=#{comment},star = #{star}
+        WHERE id = #{id} AND status = 3
+    </update>
+    <update id="updateStatusByOrderSn">
+        update nursing_order
+        set status = #{status,jdbcType=NUMERIC}
+        where order_sn = #{orderSn,jdbcType=VARCHAR}
+    </update>
+    <update id="updateOrderRefundAmountByOrderNo">
+        update nursing_order
+        set refund_amount = #{refundAmount,jdbcType=DECIMAL}
+        where order_sn = #{outTradeNo,jdbcType=VARCHAR}
+    </update>
+    <update id="updateRecordIdToNull">
+        UPDATE nursing_order SET record_id = NULL
+        WHERE id IN
+        <if test="ids != null">
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </update>
+
+    <select id="getListByExample" resultType="com.ruoyi.pension.nursing.domain.po.NursingOrder">
+        SELECT
+        d.user_name,b.dept_name,c.dict_disability_level,c.dict_level_id,c.`name`,c.phone,c.guardian,c.guardian_phone
+        ,CONCAT(IFNULL(a.province,''),IFNULL(a.city,''),IFNULL(a.district,''),IFNULL(a.address,'')) fullAddress
+        ,a.*
+        FROM nursing_order a
+        INNER JOIN sys_user d ON a.user_id = d.user_id
+        INNER JOIN sys_dept b ON a.dept_id = b.dept_id
+        INNER JOIN nursing_person c ON a.person_id = c.id
+        WHERE a.del_flag = 0
+        <if test="deptId != null">AND a.dept_id = #{deptId}</if>
+        <if test="status != null">AND a.`status` = #{status}</if>
+        <if test="workerId != null">AND a.worker_id = #{workerId}</if>
+        <if test="statusList != null">
+            AND a.status IN
+            <foreach collection="statusList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="workerIds != null">
+            AND a.worker_id IN
+            <foreach collection="workerIds" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="recordId != null ">
+            <choose>
+                <when test="recordId != -1">AND a.record_id = #{recordId}</when>
+                <otherwise>AND a.record_id IS NULL</otherwise>
+            </choose>
+        </if>
+        <if test="startTime != null">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endTime != null">
+            AND a.create_time <![CDATA[ < ]]> #{endTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="userName != null">AND d.user_name LIKE CONCAT('%',#{userName},'%')</if>
+        <if test="orderSn != null">AND a.order_sn LIKE CONCAT('%',#{orderSn},'%')</if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+        ORDER BY a.id desc
+    </select>
+    <select id="getOneByOrderSn" resultType="com.ruoyi.pension.nursing.domain.po.NursingOrder">
+        SELECT * FROM nursing_order
+        WHERE order_sn = #{orderSn,jdbcType=VARCHAR}
+        LIMIT 1
+    </select>
+</mapper>

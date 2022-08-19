@@ -22,6 +22,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,13 +42,15 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
     private DatapacketService datapacketService;
     @Autowired
     private DeviceService deviceService;
-    private JmsTemplate jmsTemplate;
+    @Qualifier("jmsTemplateTime")
     @Autowired
+    private JmsTemplate jmsTemplate;
+/*    @Autowired
     public void setJmsTemplate(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
         this.jmsTemplate.setExplicitQosEnabled(true);
         this.jmsTemplate.setTimeToLive(1100);
-    }
+    }*/
     @Autowired
     private OwonNoticeService owonNoticeService;
     @Autowired
@@ -57,13 +61,15 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
     @Transactional
     public boolean saveCascade(OwonReport owonReport) throws Exception {
         OwonNotice owonNotice = setNotice(owonReport);//先通知前端
+
+        setUpdate(owonReport);//更新部分信息
+        setMessage(owonReport);//请求返回消息设置
+
         if(Boolean.TRUE.equals(owonReport.getSjson().getIgnore())) {
             log.info("ignore: {}",objectMapper.writeValueAsString(owonReport));
             return true; //忽略数据不进行持久化
         }
 
-        setUpdate(owonReport);//更新部分信息
-        setMessage(owonReport);//请求返回消息设置
         boolean result = this.save(owonReport);
         Datapacket<?,?> datapacket = owonReport.getSjson();
         if(datapacket != null) {
@@ -163,8 +169,8 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
             DeviceEp deviceEp = redisCache.getCacheObject(ieeeArg);
             if(deviceEp != null){
                 deviceEp.setNetState(arg.getNetState());
+                redisCache.setCacheObject(deviceEp.getIeee(),deviceEp,1,TimeUnit.DAYS);
             }
-            redisCache.setCacheObject(deviceEp.getIeee(),deviceEp,1,TimeUnit.DAYS);
         }
     }
     //通知设置
@@ -246,6 +252,7 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
                 .build();
         //先通知设备所属用户
         String noticeString = objectMapper.writeValueAsString(noticeVo);
+
         sysUserOwonService.getUsersByDeptIdOfSuperiors(device.getDeptId())
                 .forEach(user -> WebSocketUsers.sendMessageToUsersByText(user.getUserId() + "", noticeString));
         //短信通知

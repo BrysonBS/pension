@@ -34,7 +34,7 @@ public class BiolandDeviceController extends BaseController {
         device.setDeptId(deptId);
         List<Long> deptIds = deptId == 100L ?
                 List.of(100L)
-                : deptOwonService.getListByDeptId(deptId);
+                : deptOwonService.getListDeptAndChildrenByDeptId(deptId);
 
         startPage();
         List<BiolandDevice> list = biolandDeviceService.getListByDeptIdsAndDevice(deptIds,device);

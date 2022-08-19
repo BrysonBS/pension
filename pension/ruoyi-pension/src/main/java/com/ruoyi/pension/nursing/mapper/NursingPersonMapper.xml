@@ -6,12 +6,20 @@
 
     <resultMap id="BaseResultMap" type="com.ruoyi.pension.nursing.domain.po.NursingPerson">
             <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="dictDisabilityLevel" column="dict_disability_level" jdbcType="VARCHAR"/>
             <result property="dictLevelId" column="dict_level_id" jdbcType="VARCHAR"/>
             <result property="guardian" column="guardian" jdbcType="VARCHAR"/>
             <result property="guardianPhone" column="guardian_phone" jdbcType="VARCHAR"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="province" column="province" jdbcType="VARCHAR"/>
+            <result property="city" column="city" jdbcType="VARCHAR"/>
+            <result property="district" column="district" jdbcType="VARCHAR"/>
             <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="detailAddress" column="detail_address" jdbcType="VARCHAR"/>
+            <result property="lat" column="lat" jdbcType="DECIMAL"/>
+            <result property="lng" column="lng" jdbcType="DECIMAL"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="idCardId" column="id_card_id" jdbcType="VARCHAR"/>
             <result property="medicalHistory" column="medical_history" jdbcType="VARCHAR"/>
@@ -24,25 +32,27 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,dept_id,dict_level_id,
-        guardian,guardian_phone,name,
-        address,remark,id_card_id,
+        id,user_id,dept_id,dict_disability_level,dict_level_id,
+        guardian,guardian_phone,`name`,province,city,district,
+        address,detail_address,lat,lng,remark,id_card_id,
         medical_history,phone,
         del_flag,create_by,create_time,
         update_by,update_time
     </sql>
     <sql id="Select_List">
-        id,dept_id,dict_level_id,
-        guardian,guardian_phone,`name`,
-        address,remark,id_card_id,
+        id,dept_id,dict_disability_level,dict_level_id,
+        guardian,guardian_phone,`name`,province,city,district,
+        address,detail_address,lat,lng,remark,id_card_id,
         medical_history,phone
     </sql>
     <sql id="Select_List_Person">
-        id,dict_level_id,`name`,`phone`,dept_id
+        id,dict_level_id,`name`,`phone`,dept_id,province,city,district,
+        address,detail_address,lat,lng
     </sql>
     <select id="getListByExample" resultType="com.ruoyi.pension.nursing.domain.po.NursingPerson">
         SELECT
         <include refid="Select_List"/>
+        ,CONCAT(IFNULL(province,''),IFNULL(city,''),IFNULL(district,''),IFNULL(address,'')) fullAddress
         FROM `nursing_person`
         <where>
             del_flag = '0'
@@ -60,7 +70,12 @@
                 AND id_card_id LIKE CONCAT('%',#{idCardId},'%')
             </if>
             <if test="address != null">
-                AND address LIKE CONCAT('%',#{address},'%')
+                AND (
+                    province LIKE CONCAT('%',#{address},'%')
+                    OR city LIKE CONCAT('%',#{address},'%')
+                    OR district LIKE CONCAT('%',#{address},'%')
+                    OR address LIKE CONCAT('%',#{address},'%')
+                )
             </if>
             <!-- 数据范围过滤 -->
             ${params.dataScope}
@@ -71,6 +86,15 @@
         <include refid="Select_List_Person"/>
         FROM `nursing_person`
         WHERE del_flag = '0'
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </select>
+    <select id="getListOwnByUserId" resultType="com.ruoyi.pension.nursing.domain.po.NursingPerson">
+        SELECT
+        <include refid="Select_List_Person"/>
+        FROM `nursing_person`
+        WHERE del_flag = '0'
+        <if test="userId != -1">AND user_id = #{userId}</if>
         <!-- 数据范围过滤 -->
         ${params.dataScope}
     </select>
