@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import echarts from 'echarts'
+import * as echarts from 'echarts';
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 
@@ -93,13 +93,12 @@ export default {
           data: ['expected', 'actual']
         },
         series: [{
-          name: 'expected', itemStyle: {
-            normal: {
+          name: 'expected',
+          itemStyle: {
+            color: '#FF005A',
+            lineStyle: {
               color: '#FF005A',
-              lineStyle: {
-                color: '#FF005A',
-                width: 2
-              }
+              width: 2
             }
           },
           smooth: true,

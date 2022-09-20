@@ -70,12 +70,8 @@
                 AND id_card_id LIKE CONCAT('%',#{idCardId},'%')
             </if>
             <if test="address != null">
-                AND (
-                    province LIKE CONCAT('%',#{address},'%')
-                    OR city LIKE CONCAT('%',#{address},'%')
-                    OR district LIKE CONCAT('%',#{address},'%')
-                    OR address LIKE CONCAT('%',#{address},'%')
-                )
+                AND CONCAT(IFNULL(province,''),IFNULL(city,''),IFNULL(district,''),IFNULL(address,''),IFNULL(detail_address,''))
+                LIKE CONCAT('%',#{address},'%')
             </if>
             <!-- 数据范围过滤 -->
             ${params.dataScope}
@@ -96,6 +92,13 @@
         WHERE del_flag = '0'
         <if test="userId != -1">AND user_id = #{userId}</if>
         <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </select>
+    <select id="getListScreen" resultType="com.ruoyi.pension.nursing.domain.po.NursingPerson">
+        SELECT CONCAT(b.dict_label,'失能') dictDisableLabel,a.city,a.lat,a.lng FROM nursing_person a
+        INNER JOIN sys_dict_data b ON b.dict_type = 'disability_level' AND a.dict_disability_level = b.dict_value
+        WHERE a.lat IS NOT NULL AND a.lng IS NOT NULL AND a.city IS NOT NULL
+        AND a.del_flag = '0'
         ${params.dataScope}
     </select>
 </mapper>

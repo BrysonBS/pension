@@ -2,6 +2,7 @@ package com.ruoyi.pension.bioland.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.websocket.WebSocketUsers;
 import com.ruoyi.pension.bioland.api.SrcDataValueManager;
@@ -10,7 +11,10 @@ import com.ruoyi.pension.bioland.domain.po.SrcDataValue;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.bioland.mapper.SrcDataValueMapper;
 import com.ruoyi.pension.common.api.SendSms;
+import com.ruoyi.pension.common.domain.consts.PensionBusiness;
+import com.ruoyi.pension.common.domain.enums.Operation;
 import com.ruoyi.pension.common.domain.enums.Platform;
+import com.ruoyi.pension.common.domain.vo.ExampleVo;
 import com.ruoyi.pension.owon.domain.po.OwonNotice;
 import com.ruoyi.pension.common.domain.vo.NoticeVo;
 import com.ruoyi.pension.owon.service.OwonNoticeService;
@@ -33,8 +37,6 @@ public class SrcDataValueService extends ServiceImpl<SrcDataValueMapper, SrcData
     private BiolandDeviceService biolandDeviceService;
     @Autowired
     private SysUserOwonService sysUserOwonService;
-    @Autowired
-    private ObjectMapper objectMapper;
     @Autowired
     private OwonNoticeService owonNoticeService;
 
@@ -88,9 +90,11 @@ public class SrcDataValueService extends ServiceImpl<SrcDataValueMapper, SrcData
                 .build();
 
         //先通知设备所属用户
-        String noticeString = objectMapper.writeValueAsString(noticeVo);
         sysUserOwonService.getUsersByDeptIdOfSuperiors(biolandDevice.getDeptId())
-                .forEach(user -> WebSocketUsers.sendMessageToUsersByText(user.getUserId() + "", noticeString));
+                .forEach(user -> WebSocketUsers.sendMessageToUsers(user.getUserId() + "",
+                        AjaxResult.success()
+                                .put(AjaxResult.OPERATE_TAG, noticeVo.getType())
+                                .put(AjaxResult.DATA_TAG,noticeVo)));
         //短信通知
         List<String> phones = biolandDeviceService.getPhonesBySerialNumber(biolandDevice.getSerialNumber());
         if(phones != null && phones.size() > 0)

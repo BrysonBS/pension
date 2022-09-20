@@ -8,6 +8,23 @@ export function listNotice(query) {
     params: query
   })
 }
+//查询公告列表
+export function listShowNotices(query) {
+  return request({
+    url: '/system/notice/listNotices',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询最新公告列表
+export function listNoticeLatest(total){
+  return request({
+    url: '/system/notice/listLatest',
+    method: 'get',
+    params:{ total: total }
+  })
+}
 
 // 查询公告详细
 export function getNotice(noticeId) {

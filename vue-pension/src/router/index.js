@@ -68,10 +68,24 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/screen',
+    component: () => import('@/views/dashboard/screen/index'),
+    hidden: true,
+    params: { target: '_blank' },
+    meta: { title: '大屏', icon: 'big-screen'}
+  },
+  {
     path: '',
     component: Layout,
     redirect: 'index',
     children: [
+      {
+        path: '/notice/show/more',
+        component: () => import('@/views/system/notice/show-more'),
+        hidden: true,
+        name: 'show-more',
+        meta: { title: '通知公告' },
+      },
       {
         path: 'index',
         component: () => import('@/views/index'),
@@ -98,11 +112,16 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
-  }
+  },
 ]
 
 // 动态路由，基于用户权限动态去加载
 export const dynamicRoutes = [
+  {
+    path: '/notice/show/:noticeId(\\d+)',
+    component: () => import('@/views/system/notice/show'),
+    hidden: true,
+  },
   {
     path: '/system/user-auth',
     component: Layout,

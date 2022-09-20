@@ -117,6 +117,7 @@ export function filterDynamicRoutes(routes) {
         res.push(route)
       }
     }
+    else res.push(route)
   })
   return res
 }

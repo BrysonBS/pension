@@ -98,13 +98,13 @@ export default {
       this.notifyInfo = e.info
     }
   },
-  mounted() {
-    //全局事件总线绑定事件
-    this.$bus.$on('payment-notify', this.paymentNotify)
+  created() {
+    //注册事件
+    this.$socket.registerCallBack(this.$socket.OPERATE.PENSION_PAYMENT, this.paymentNotify);
   },
   beforeDestroy() {
     //解绑事件
-    this.$bus.$off('payment-notify');
+    this.$socket.unRegisterCallBack(this.$socket.OPERATE.PENSION_PAYMENT);
   }
 }
 </script>

@@ -2,6 +2,7 @@ package com.ruoyi.pension.common.domain.po;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import lombok.Data;
 
 import java.time.LocalDateTime;

@@ -35,7 +35,7 @@ public class SysNoticeController extends BaseController
     /**
      * 获取通知公告列表
      */
-    @PreAuthorize("@ss.hasPermi('system:notice:list')")
+    //@PreAuthorize("@ss.hasPermi('system:notice:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysNotice notice)
     {
@@ -44,10 +44,22 @@ public class SysNoticeController extends BaseController
         return getDataTable(list);
     }
 
+    @GetMapping("/listLatest")
+    public AjaxResult listLatest(Integer total){
+        return AjaxResult.success()
+                .put(AjaxResult.DATA_TAG,noticeService.listLatest(total));
+    }
+    @GetMapping("/listNotices")
+    public TableDataInfo listNotices(SysNotice notice) {
+        startPage();
+        List<SysNotice> list = noticeService.listNotices(notice);
+        return getDataTable(list);
+    }
+
     /**
      * 根据通知公告编号获取详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:notice:query')")
+    //@PreAuthorize("@ss.hasPermi('system:notice:query')")
     @GetMapping(value = "/{noticeId}")
     public AjaxResult getInfo(@PathVariable Long noticeId)
     {

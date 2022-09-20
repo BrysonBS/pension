@@ -5,7 +5,7 @@
 <script>
 import resize from '@/views/dashboard/mixins/resize'
 require('echarts/theme/macarons') // echarts theme
-import echarts from 'echarts'
+import * as echarts from 'echarts';
 
 export default {
   name: 'Blglucose',
@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(this.$el, 'macarons')
+      this.chart = echarts.init(this.$el)
       this.setOptions(this.chartData)
     },
     setOptions({ xAxisData,data3 } = {}) {
@@ -93,12 +93,10 @@ export default {
           },
           series: [{
             name: '血糖', itemStyle: {
-              normal: {
+              color: '#ff8800',
+              lineStyle: {
                 color: '#ff8800',
-                lineStyle: {
-                  color: '#ff8800',
-                  width: 2
-                }
+                width: 2
               }
             },
             smooth: true,

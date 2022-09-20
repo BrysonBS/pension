@@ -1,6 +1,7 @@
 package com.ruoyi.pension.bioland.api;
 
 import com.ruoyi.pension.bioland.domain.po.SrcDataValue;
+import com.ruoyi.pension.common.domain.consts.PensionBusiness;
 import com.ruoyi.pension.common.domain.enums.Operation;
 import com.ruoyi.pension.common.domain.vo.NoticeVo;
 
@@ -42,6 +43,7 @@ public class SrcDataValueManager {
         noticeVo.setHeartRate(heartRate);
         noticeVo.setInfo(builder.toString());
         noticeVo.setOperation(Operation.REPORT_BLOOD_PRESSURE);
+        noticeVo.setType(PensionBusiness.BIOLAND_BLOOD_PRESSURE);
     }
     //血糖仪信息设置
     private static void setBloodGlucose(NoticeVo noticeVo,SrcDataValue srcDataValue){
@@ -50,5 +52,6 @@ public class SrcDataValueManager {
         noticeVo.setGlucose(glucose);
         noticeVo.setInfo("[血糖: " + new DecimalFormat("#.##").format(glucose/18D) + "]");
         noticeVo.setOperation(Operation.REPORT_BLOOD_GLUCOSE);
+        noticeVo.setType(PensionBusiness.BIOLAND_BLOOD_GLUCOSE);
     }
 }

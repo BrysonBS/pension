@@ -143,7 +143,7 @@
       <el-table-column width="auto" label="监护人电话" align="center" prop="guardianPhone" v-if="columns[4].visible" :show-overflow-tooltip="true" />
       <el-table-column width="100" label="失能等级" align="center" v-if="columns[5].visible" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
-          <el-tag size="small"
+          <el-tag :type="dict.raw.listClass" size="small"
                   v-for="dict in dict.type.disability_level"
                   v-if="dict.value === scope.row.dictDisabilityLevel"
           >{{dict.label}}</el-tag>
@@ -151,7 +151,7 @@
       </el-table-column>
       <el-table-column width="100" label="护理级别" align="center" v-if="columns[5].visible" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
-               <el-tag type="success" size="small"
+               <el-tag :type="dict.raw.listClass" size="small"
                        v-for="dict in dict.type.nursing_level"
                        v-if="dict.value === scope.row.dictLevelId"
                >{{dict.label}}</el-tag>

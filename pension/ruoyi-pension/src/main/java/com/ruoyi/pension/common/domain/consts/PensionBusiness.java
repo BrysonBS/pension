@@ -16,6 +16,12 @@ public class PensionBusiness {
 
     public static String PENSION_PAYMENT = "PENSION_PAYMENT";
 
+    /** 通知相关 */
+    public static String NOTIFICATION = "NOTIFICATION";
+    public static String OWON_SLEEPACE = "OWON_SLEEPACE";//睡眠带通知
+    public static String BIOLAND_BLOOD_PRESSURE = "BIOLAND_BLOOD_PRESSURE";//血压计通知
+    public static String BIOLAND_BLOOD_GLUCOSE = "BIOLAND_BLOOD_GLUCOSE";//血糖仪通知
+
     /**
      * 支付宝支付配置类缓存key
      * @param deptId 机构ID

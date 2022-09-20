@@ -1,7 +1,10 @@
 package com.ruoyi.framework.websocket;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
+import java.util.function.BiFunction;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -10,7 +13,12 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.StringUtils;
@@ -28,7 +36,8 @@ import org.springframework.stereotype.Component;
  * @author ruoyi
  */
 @Component
-@ServerEndpoint("/websocket/message/{token}")//多实例,每个链接创建一个对象
+//多实例,每个链接创建一个对象
+@ServerEndpoint(value = "/websocket/message/{token}",encoders = { ServerEncoder.class })
 public class WebSocketServer {
     /**
      * WebSocketServer 日志控制器
@@ -60,13 +69,13 @@ public class WebSocketServer {
         semaphoreFlag = SemaphoreUtils.tryAcquire(socketSemaphore);
         if (!semaphoreFlag || loginUser == null) {
             if(semaphoreFlag){
-                LOGGER.info("\n 用户认证失败");
-                WebSocketUsers.sendMessageToUserByText(session, "用户认证失败");
+                LOGGER.info("\n websocket用户认证失败");
+                WebSocketUsers.sendMessageToUser(session, AjaxResult.error("用户认证失败"));
             }
             else {
                 // 未获取到信号量
                 LOGGER.error("\n 当前在线人数超过限制数- {}", socketMaxOnlineCount);
-                WebSocketUsers.sendMessageToUserByText(session, "当前在线人数超过限制数：" + socketMaxOnlineCount);
+                WebSocketUsers.sendMessageToUser(session,AjaxResult.error("当前在线人数超过限制数：" + socketMaxOnlineCount));
             }
             session.close();
         }
@@ -78,7 +87,7 @@ public class WebSocketServer {
             LOGGER.info("\n 建立连接 - {}", session);
             //LOGGER.info("\n 当前连接数 - {}",socketMaxOnlineCount - socketSemaphore.availablePermits());
             LOGGER.info("\n 当前人数 - {}", WebSocketUsers.getUsers().size());
-            WebSocketUsers.sendMessageToUserByText(session, "连接成功");
+            WebSocketUsers.sendMessageToUser(session,AjaxResult.success("连接成功"));
         }
     }
 
@@ -124,10 +133,27 @@ public class WebSocketServer {
     public void onMessage(String message) {
         LoginUser user = getLoginUser(this.token);
         if(user == null)
-            WebSocketUsers.sendMessageToUserByText(session, "登录过期");
+            WebSocketUsers.sendMessageToUser(session,AjaxResult.error("登录过期"));
         else {
-            String msg = message.replace("你", "我").replace("吗", "");
-            WebSocketUsers.sendMessageToUserByText(session, msg);
+            ObjectMapper objectMapper = SpringUtils.getBean(ObjectMapper.class);
+            JsonNode jsonNode = null;
+            try {
+                jsonNode = objectMapper.readTree(message);
+            } catch (JsonProcessingException e) {
+                LOGGER.error("前端传入websocket数据无法转为json",e);
+                e.printStackTrace();
+            }
+            String operate = jsonNode.at("/operate").asText();
+            //心跳
+            if("0".equals(operate)){
+                WebSocketUsers.sendMessageToUser(session,AjaxResult.success().put(AjaxResult.OPERATE_TAG,"0"));
+                return;
+            }
+
+            //其他
+            BiFunction<LoginUser,JsonNode,AjaxResult> messageHandler = SpringUtils.getBean(operate);
+            WebSocketUsers.sendMessageToUser(session,messageHandler.apply(user,jsonNode));
+
         }
     }
 
@@ -135,7 +161,7 @@ public class WebSocketServer {
     private LoginUser getLoginUser(String token) {
         Environment environment = SpringUtils.getBean(Environment.class);
         String secret = environment.getProperty("token.secret");
-        if (StringUtils.isNotEmpty(token)){
+        if (StringUtils.isNotEmpty(token) && !"undefined".equalsIgnoreCase(token)){
             try {
                 Claims claims = Jwts.parser()
                         .setSigningKey(secret)

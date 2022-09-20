@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.pension.common.domain.po.BasePensionEntity;
 import lombok.*;
 
@@ -55,9 +56,13 @@ public class NursingPerson extends BasePensionEntity implements Serializable {
 
 
     @TableField(exist = false)
+    private LoginUser loginUser;
+    @TableField(exist = false)
+    private String dictDisableLabel;
+    @TableField(exist = false)
     private String fullAddress;
     @TableField(exist = false)
-    private Map<String, String> params;
+    private Map<String, Object> params;
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

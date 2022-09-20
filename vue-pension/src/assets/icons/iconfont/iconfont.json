@@ -6,6 +6,139 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2080215",
+      "name": "dkw_金额",
+      "font_class": "amount",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "1137",
+      "name": "折线图",
+      "font_class": "expand-line",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "3978028",
+      "name": "统计",
+      "font_class": "expand-pie",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "6302527",
+      "name": "金额-填充",
+      "font_class": "expand-amount",
+      "unicode": "e670",
+      "unicode_decimal": 58992
+    },
+    {
+      "icon_id": "8441737",
+      "name": "警报",
+      "font_class": "expand-alert",
+      "unicode": "e68c",
+      "unicode_decimal": 59020
+    },
+    {
+      "icon_id": "17190754",
+      "name": "通知公告",
+      "font_class": "expand-notice",
+      "unicode": "e69e",
+      "unicode_decimal": 59038
+    },
+    {
+      "icon_id": "31313036",
+      "name": "统计2",
+      "font_class": "tongji2",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "15351474",
+      "name": "大屏展示",
+      "font_class": "big-screen",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "31508439",
+      "name": "compress-alt",
+      "font_class": "compress-alt",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "31508440",
+      "name": "arrow-up",
+      "font_class": "arrow-up",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "31508441",
+      "name": "arrow-right",
+      "font_class": "arrow-right",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "31508442",
+      "name": "sorting",
+      "font_class": "sorting",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "31508443",
+      "name": "sort-line",
+      "font_class": "sort-line",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "31508444",
+      "name": "expand-alt",
+      "font_class": "expand-alt",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "31508445",
+      "name": "arrow-lift",
+      "font_class": "arrow-lift",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "31508446",
+      "name": "switch",
+      "font_class": "switch",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "31508447",
+      "name": "arrow-down",
+      "font_class": "arrow-down",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "31508448",
+      "name": "move",
+      "font_class": "move",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "31508449",
+      "name": "exchangerate",
+      "font_class": "exchangerate",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
       "icon_id": "21302963",
       "name": "退款2",
       "font_class": "refund",

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import echarts from 'echarts'
+import * as echarts from 'echarts';
 require('echarts/theme/macarons') // echarts theme
 import resize from '@/views/dashboard/mixins/resize'
 export default {
@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(this.$el, 'macarons')
+      this.chart = echarts.init(this.$el)
       this.setOptions(this.chartData)
     },
     setOptions({ xAxisData,data1,data2,data3 } = {}) {
@@ -91,12 +91,10 @@ export default {
           },
           series: [{
             name: '血高压', itemStyle: {
-              normal: {
+              color: '#ff8800',
+              lineStyle: {
                 color: '#ff8800',
-                lineStyle: {
-                  color: '#ff8800',
-                  width: 2
-                }
+                width: 2
               }
             },
             smooth: true,
@@ -110,15 +108,13 @@ export default {
               smooth: true,
               type: 'line',
               itemStyle: {
-                normal: {
-                  color: '#38a9fa',
-                  lineStyle: {
-                    color: '#3888fa',
-                    width: 2
-                  },
-                  areaStyle: {
-                    color: '#f3f8ff'
-                  }
+                color: '#38a9fa',
+                lineStyle: {
+                  color: '#3888fa',
+                  width: 2
+                },
+                areaStyle: {
+                  color: '#f3f8ff'
                 }
               },
               data: data2,
@@ -127,12 +123,10 @@ export default {
             },
             {
               name: '心率', itemStyle: {
-                normal: {
+                color: '#FF005A',
+                lineStyle: {
                   color: '#FF005A',
-                  lineStyle: {
-                    color: '#FF005A',
-                    width: 2
-                  }
+                  width: 2
                 }
               },
               smooth: true,

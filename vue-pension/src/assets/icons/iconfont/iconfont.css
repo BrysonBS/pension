@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3581182 */
-  src: url('iconfont.woff2?t=1660183212795') format('woff2'),
-       url('iconfont.woff?t=1660183212795') format('woff'),
-       url('iconfont.ttf?t=1660183212795') format('truetype');
+  src: url('iconfont.woff2?t=1663038715541') format('woff2'),
+       url('iconfont.woff?t=1663038715541') format('woff'),
+       url('iconfont.ttf?t=1663038715541') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,82 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-amount:before {
+  content: "\e60f";
+}
+
+.icon-expand-line:before {
+  content: "\e600";
+}
+
+.icon-expand-pie:before {
+  content: "\e629";
+}
+
+.icon-expand-amount:before {
+  content: "\e670";
+}
+
+.icon-expand-alert:before {
+  content: "\e68c";
+}
+
+.icon-expand-notice:before {
+  content: "\e69e";
+}
+
+.icon-tongji2:before {
+  content: "\e61f";
+}
+
+.icon-big-screen:before {
+  content: "\e628";
+}
+
+.icon-compress-alt:before {
+  content: "\e602";
+}
+
+.icon-arrow-up:before {
+  content: "\e603";
+}
+
+.icon-arrow-right:before {
+  content: "\e604";
+}
+
+.icon-sorting:before {
+  content: "\e605";
+}
+
+.icon-sort-line:before {
+  content: "\e606";
+}
+
+.icon-expand-alt:before {
+  content: "\e608";
+}
+
+.icon-arrow-lift:before {
+  content: "\e609";
+}
+
+.icon-switch:before {
+  content: "\e60a";
+}
+
+.icon-arrow-down:before {
+  content: "\e60b";
+}
+
+.icon-move:before {
+  content: "\e60d";
+}
+
+.icon-exchangerate:before {
+  content: "\e60e";
 }
 
 .icon-refund:before {

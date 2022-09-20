@@ -1,7 +1,7 @@
 <template>
   <div v-if="!item.hidden">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
-      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
+      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)" :params="onlyOneChild.params">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
           <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
         </el-menu-item>
@@ -90,7 +90,7 @@ export default {
         return this.basePath
       }
       if (routeQuery) {
-        let query = JSON.parse(routeQuery);
+        let query = typeof routeQuery === 'object' ? routeQuery : JSON.parse(routeQuery);
         return { path: path.resolve(this.basePath, routePath), query: query }
       }
       return path.resolve(this.basePath, routePath)

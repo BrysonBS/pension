@@ -118,7 +118,13 @@
         <if test="endTime != null">
             AND a.create_time <![CDATA[ < ]]> #{endTime,jdbcType=TIMESTAMP}
         </if>
-        <if test="userName != null">AND d.user_name LIKE CONCAT('%',#{userName},'%')</if>
+        <if test="userName != null">
+          AND (
+            d.user_name LIKE CONCAT('%',#{userName},'%')
+            OR c.`name` LIKE CONCAT('%',#{userName},'%')
+            OR c.guardian LIKE CONCAT('%',#{userName},'%')
+            )
+          </if>
         <if test="orderSn != null">AND a.order_sn LIKE CONCAT('%',#{orderSn},'%')</if>
         <!-- 数据范围过滤 -->
         ${params.dataScope}

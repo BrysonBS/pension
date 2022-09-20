@@ -15,6 +15,7 @@ public interface NursingPersonMapper extends BaseMapper<NursingPerson> {
     List<NursingPerson> getListByExample(NursingPerson person);
     List<NursingPerson> getListPerson(NursingPerson person);
     List<NursingPerson> getListOwnByUserId(NursingPerson person);
+    List<NursingPerson> getListScreen(NursingPerson nursingPerson);
 }
 
 

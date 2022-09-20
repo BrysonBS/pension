@@ -78,6 +78,7 @@
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
+        ORDER BY id DESC
     </select>
     <select id="getListVoByExample" resultType="com.ruoyi.pension.nursing.domain.vo.NursingRecordVo"
             parameterType="com.ruoyi.pension.nursing.domain.po.NursingRecord">

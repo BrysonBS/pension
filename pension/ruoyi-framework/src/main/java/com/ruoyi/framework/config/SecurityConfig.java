@@ -1,5 +1,6 @@
 package com.ruoyi.framework.config;
 
+import com.ruoyi.framework.security.filter.SwaggerFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -55,6 +56,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
      */
     @Autowired
     private CorsFilter corsFilter;
+    /**
+     * swagger 过滤器
+     */
+    @Autowired
+    private SwaggerFilter swaggerFilter;
     
     /**
      * 解决 无法直接注入 AuthenticationManager
@@ -134,6 +140,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         // 添加CORS filter
         httpSecurity.addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class);
         httpSecurity.addFilterBefore(corsFilter, LogoutFilter.class);
+        //添加swagger filter
+        httpSecurity.addFilterBefore(swaggerFilter,CorsFilter.class);
     }
 
     /**

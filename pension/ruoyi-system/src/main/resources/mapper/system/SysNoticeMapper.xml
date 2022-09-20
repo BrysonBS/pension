@@ -16,6 +16,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"     column="update_time"     />
         <result property="remark"         column="remark"          />
     </resultMap>
+
+    <resultMap id="SysNoticeMap" type="SysNotice">
+        <result property="noticeId"       column="notice_id"       />
+        <result property="noticeTitle"    column="notice_title"    />
+        <result property="noticeType"     column="notice_type"     />
+        <result property="noticeTime"     column="noticeTime"     />
+    </resultMap>
     
     <sql id="selectNoticeVo">
         select notice_id, notice_title, notice_type, cast(notice_content as char) as notice_content, status, create_by, create_time, update_by, update_time, remark 
@@ -41,7 +48,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 		</where>
     </select>
-    
+    <select id="selectNoticeListLatest" parameterType="Integer" resultMap="SysNoticeMap">
+        SELECT notice_id, notice_title, notice_type, DATE_FORMAT(create_time,'%y-%m-%d %H:%i') noticeTime FROM sys_notice
+        WHERE `status` = 0
+        ORDER BY notice_id DESC
+        <if test="total != null">
+            LIMIT  #{total}
+        </if>
+    </select>
+    <select id="listNotices" parameterType="SysNotice" resultMap="SysNoticeMap">
+        SELECT notice_id, notice_title,create_by, notice_type, create_time FROM sys_notice
+        <where>
+            `status` = 0
+            <if test="noticeTitle != null and noticeTitle != ''">
+                AND notice_title like concat('%', #{noticeTitle}, '%')
+            </if>
+            <if test="noticeType != null and noticeType != ''">
+                AND notice_type = #{noticeType}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                AND create_by like concat('%', #{createBy}, '%')
+            </if>
+        </where>
+        ORDER BY notice_id DESC
+    </select>
+
     <insert id="insertNotice" parameterType="SysNotice">
         insert into sys_notice (
 			<if test="noticeTitle != null and noticeTitle != '' ">notice_title, </if>

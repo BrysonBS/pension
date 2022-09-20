@@ -1,98 +1,265 @@
 <template>
-  <div class="dashboard-editor-container">
+  <div v-if="!$isMobile" class="app-container">
+    <el-row :span="24" :gutter="10">
+      <el-col :xs="14" :sm="15" :md="17" :lg="18" :xl="20">
+        <el-card class="box-card" :body-style="{ padding: '0px',height: '400px' }">
+          <div slot="header" class="clearfix">
+            <el-link icon="icon-amount" disabled> 订单金额统计</el-link>
+          </div>
+          <AmountBar/>
+        </el-card>
+      </el-col>
+      <el-col :xs="10" :sm="9" :md="7" :lg="6" :xl="4">
+        <el-card class="box-card" :body-style="{ height: '400px' }">
+          <div slot="header" class="clearfix">
+            <el-link style="width: 70px;float: left;" icon="icon-expand-notice" disabled> 通知公告</el-link>
+            <el-link v-if="total > limit" style="width: 40px;font-size: 10px;margin-top: 2px;float: right">
+              <app-link to="/notice/show/more">
+                更多
+              </app-link>
+              <i class="el-icon-arrow-right"></i></el-link>
+          </div>
 
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
+          <el-table :data="notices"
+                    :cell-style="{ padding: '5px 0 0 0' }"
+                    :show-header="false"
+                    style="width: 100%;font-size: 12px">
+            <el-table-column prop="noticeTitle" label="标题" width="auto" :show-overflow-tooltip="true">
+              <template v-slot="scope">
+                <app-link :to="'/notice/show/' + scope.row.noticeId" :params="{target:'_blank'}">
+                  <el-link :underline="false">
+                    {{ scope.row.noticeTitle }}
+                  </el-link>
+                </app-link>
+              </template>
+            </el-table-column>
+            <el-table-column prop="noticeTime" label="时间" width="110" :show-overflow-tooltip="true"/>
+          </el-table>
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData" />
+        </el-card>
+      </el-col>
     </el-row>
-
-    <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <raddar-chart />
-        </div>
+    <el-row :gutter="10">
+      <el-col :xs="12" :sm="8" :lg="6">
+        <el-card class="box-card" :body-style="{ padding: '0px' }">
+          <div slot="header" class="clearfix">
+            <el-link icon="icon-tongji2" disabled> 护理统计</el-link>
+          </div>
+          <OrderPie/>
+        </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <pie-chart />
-        </div>
+      <el-col :xs="12" :sm="8" :lg="6">
+        <el-card class="box-card" :body-style="{ padding: '0px' }">
+          <div slot="header" class="clearfix">
+            <el-link icon="icon-expand-pie" disabled> 订单状态统计</el-link>
+          </div>
+          <OrderStatusPie/>
+        </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
-        </div>
+      <el-col :xs="12" :sm="8" :lg="6">
+        <el-card class="box-card" :body-style="{ height: '280px' }">
+          <div slot="header" class="clearfix">
+            <el-link icon="icon-expand-line" disabled> 月订单统计</el-link>
+          </div>
+          <OrderTrendLine/>
+        </el-card>
+      </el-col>
+      <el-col :xs="12" :sm="8" :lg="6">
+        <el-card class="box-card" :body-style="{ height: '280px' }">
+          <div slot="header" class="clearfix">
+            <el-link icon="icon-expand-alert" disabled> 报警信息</el-link>
+          </div>
+          <el-timeline>
+            <el-timeline-item
+              v-for="(activity, index) in activities"
+              :key="index"
+              :icon="activity.icon"
+              :type="activity.type"
+              :color="activity.color"
+              :size="activity.size"
+              :timestamp="activity.timestamp">
+              {{activity.content}}
+            </el-timeline-item>
+          </el-timeline>
+        </el-card>
       </el-col>
     </el-row>
+  </div>
+  <div v-else class="app-container">
+    <el-row :span="24">
+      <el-col>
+        <el-card class="box-card" :body-style="{ padding: '0px',height: '400px' }">
+          <div slot="header" class="clearfix">
+            <el-link icon="icon-amount" disabled> 订单金额统计</el-link>
+          </div>
+          <AmountBar/>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-row :span="24" :gutter="10">
+      <el-col>
+        <el-card class="box-card" :body-style="{ height: '400px' }">
+          <div slot="header" class="clearfix">
+            <el-link style="width: 70px;float: left;" icon="icon-expand-notice" disabled> 通知公告</el-link>
+            <el-link v-if="total > limit" style="width: 40px;font-size: 10px;margin-top: 2px;float: right">
+              <app-link to="/notice/show/more">
+                更多
+              </app-link>
+              <i class="el-icon-arrow-right"></i></el-link>
+          </div>
 
+          <el-table :data="notices"
+                    :cell-style="{ padding: '5px 0 0 0' }"
+                    :show-header="false"
+                    style="width: 100%;font-size: 12px">
+            <el-table-column prop="noticeTitle" label="标题" width="auto" :show-overflow-tooltip="true">
+              <template v-slot="scope">
+                <app-link :to="'/notice/show/' + scope.row.noticeId" :params="{target:'_blank'}">
+                  <el-link :underline="false">
+                    {{ scope.row.noticeTitle }}
+                  </el-link>
+                </app-link>
+              </template>
+            </el-table-column>
+            <el-table-column prop="noticeTime" label="时间" width="110" :show-overflow-tooltip="true"/>
+          </el-table>
 
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-row :span="24" :gutter="10">
+      <el-col>
+        <el-card class="box-card" :body-style="{ padding: '0px' }">
+          <div slot="header" class="clearfix">
+            <el-link icon="icon-tongji2" disabled> 护理统计</el-link>
+          </div>
+          <OrderPie/>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-row :span="24" :gutter="10">
+      <el-col>
+        <el-card class="box-card" :body-style="{ padding: '0px' }">
+          <div slot="header" class="clearfix">
+            <el-link icon="icon-expand-pie" disabled> 订单状态统计</el-link>
+          </div>
+          <OrderStatusPie/>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-row :span="24" :gutter="10">
+      <el-col>
+        <el-card class="box-card" :body-style="{ height: '280px' }">
+          <div slot="header" class="clearfix">
+            <el-link icon="icon-expand-line" disabled> 月订单统计</el-link>
+          </div>
+          <OrderTrendLine/>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-row :span="24" :gutter="10">
+      <el-col>
+        <el-card class="box-card" :body-style="{ height: '280px' }">
+          <div slot="header" class="clearfix">
+            <el-link icon="icon-expand-alert" disabled> 报警信息</el-link>
+          </div>
+          <el-timeline>
+            <el-timeline-item
+              v-for="(activity, index) in activities"
+              :key="index"
+              :icon="activity.icon"
+              :type="activity.type"
+              :color="activity.color"
+              :size="activity.size"
+              :timestamp="activity.timestamp">
+              {{activity.content}}
+            </el-timeline-item>
+          </el-timeline>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import PanelGroup from './dashboard/PanelGroup'
-import LineChart from './dashboard/LineChart'
-import RaddarChart from './dashboard/RaddarChart'
-import PieChart from './dashboard/PieChart'
-import BarChart from './dashboard/BarChart'
-
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
-}
+import OrderPie from '@/views/dashboard/index/OrderPie'
+import OrderStatusPie from '@/views/dashboard/index/OrderStatusPie'
+import AmountBar from '@/views/dashboard/index/AmountBar'
+import OrderTrendLine from '@/views/dashboard/index/OrderTrendLine'
+import AppLink from '@/layout/components/Sidebar/Link'
+import { listNoticeLatest } from '@/api/system/notice'
+import { deviceLatest } from '@/api/dashboard/dashboard'
 
 export default {
-  name: 'Index',
-  components: {
-    PanelGroup,
-    LineChart,
-    RaddarChart,
-    PieChart,
-    BarChart
-  },
+  name: 'index',
+  components: { AppLink, OrderTrendLine, AmountBar, OrderStatusPie, OrderPie},
   data() {
     return {
-      lineChartData: lineChartData.newVisitis
-    }
+      notices: undefined,
+      total: undefined,
+      limit: 13,//13,
+      activities: []
+    };
   },
-  methods: {
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
-    }
-  }
+  mounted() {
+    listNoticeLatest(this.limit + 1).then(response => {
+     this.notices = response.data.slice(0,this.limit)
+     this.total = this.notices ? response.data.length : 0;
+    })
+    deviceLatest({ limit: 5 }).then(response => {
+      this.activities = response.data.map(item => {
+        return {
+          content: item.value,
+          type: 'warning',
+          timestamp: item.name
+        }
+      })
+    })
+  },
 }
 </script>
 
-<style lang="scss" scoped>
-.dashboard-editor-container {
-  padding: 32px;
-  background-color: rgb(240, 242, 245);
-  position: relative;
+<style>
 
-  .chart-wrapper {
-    background: #fff;
-    padding: 16px 16px 0;
-    margin-bottom: 32px;
-  }
+.el-table__body-wrapper::-webkit-scrollbar {
+  /*width: 0;宽度为0隐藏*/
+  width: 0px;
 }
 
-@media (max-width:1024px) {
-  .chart-wrapper {
-    padding: 8px;
-  }
+.el-table__body-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  height: 50px;
+  background: #eee;
+}
+.el-table__body-wrapper::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.el-table--scrollable-y .el-table__body-wrapper {
+  overflow: hidden !important;
+}
+
+.el-table--scrollable-x .el-table__body-wrapper {
+  overflow: hidden !important;
+}
+
+.el-card__header{
+  border: none;
+}
+.el-card__body{
+  padding-top: 0;
+}
+.el-card{
+  margin-bottom: 10px;
+}
+.el-link{
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  line-height: 12px;
 }
 </style>

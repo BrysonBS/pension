@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.framework.websocket.WebSocketUsers;
 import com.ruoyi.pension.common.api.AlipayManager;
 import com.ruoyi.pension.common.api.WeChatPayManager;
@@ -117,8 +118,11 @@ public class PensionPaymentCallbackController {
 
             //支付成功则更新订单状态
             if(success) baseOrderServiceList.forEach(e -> e.updateOrderStatusToPaidByOrderNo(outTradeNo));
-                //nursingOrderService.updateOrderStatusToPaidByOrderNo(outTradeNo);
-            WebSocketUsers.sendMessageToUsersByText(params.get("body"), objectMapper.writeValueAsString(noticeVo));
+
+            WebSocketUsers.sendMessageToUsers(params.get("body"),
+                    AjaxResult.success()
+                            .put(AjaxResult.OPERATE_TAG,PensionBusiness.PENSION_PAYMENT)
+                            .put(AjaxResult.DATA_TAG,noticeVo));
         }
 
         //保存到数据库
@@ -220,8 +224,10 @@ public class PensionPaymentCallbackController {
         //更新订单状态为已支付
         if("SUCCESS".equalsIgnoreCase(tradeState))
             baseOrderServiceList.forEach(e -> e.updateOrderStatusToPaidByOrderNo(outTradeNo));
-            //nursingOrderService.updateOrderStatusToPaidByOrderNo(outTradeNo);
-        WebSocketUsers.sendMessageToUsersByText(notifyWechat.getAttach(),objectMapper.writeValueAsString(noticeVo));
+        WebSocketUsers.sendMessageToUsers(notifyWechat.getAttach(),
+                AjaxResult.success()
+                        .put(AjaxResult.OPERATE_TAG,PensionBusiness.PENSION_PAYMENT)
+                        .put(AjaxResult.DATA_TAG,noticeVo));
         //存储:保证幂等性
         return pensionPaymentNotifyWechatService.saveIfAbsent(notifyWechat);
     }

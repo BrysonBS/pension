@@ -7,7 +7,15 @@
 <script>
 export default  {
   name:  'App',
-    metaInfo() {
+  watch: {
+    $route(to, from){
+      //重置重连时间
+      this.$socket.connectRetryCount = 1;
+      //连接
+      this.$socket.connect();
+    },
+  },
+  metaInfo() {
         return {
             title: this.$store.state.settings.dynamicTitle && this.$store.state.settings.title,
             titleTemplate: title => {

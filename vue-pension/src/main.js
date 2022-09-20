@@ -9,6 +9,8 @@ import '@/assets/styles/index.scss' // global css
 import '@/assets/styles/ruoyi.scss' // ruoyi css
 
 import '@/assets/icons/iconfont/iconfont.css'
+//字体引入
+import '@/assets/font/fonts.css'
 
 import App from './App'
 import store from './store'
@@ -40,6 +42,21 @@ import DictTag from '@/components/DictTag'
 import VueMeta from 'vue-meta'
 // 字典数据组件
 import DictData from '@/components/DictData'
+
+// echarts组件
+import * as echarts from 'echarts';
+//import SocketService from '@/utils/screen/socket_service'
+import SocketService from '@/utils/socketService'
+// 对服务端进行websocket的连接
+SocketService.Instance.connect()
+// 将SocketService对象挂载到Vue的原型对象上
+// 在别的组件中使用 this.$socket
+Vue.prototype.$socket = SocketService.Instance;
+// 将全局的echarts对象挂载到Vue的原型对象上
+// 在别的组件中使用 this.$echarts
+Vue.prototype.$echarts = echarts
+/** 手机端判断 */
+Vue.prototype.$isMobile = !!navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts

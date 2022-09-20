@@ -42,6 +42,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class OwonSwagger {
     @Autowired
     private OwonReportService owonReportService;
+    @Autowired
+    private AccessToken accessToken;
+    @Autowired
+    private DeviceList deviceList;
+    @Autowired
+    private ZigBeeManager zigBeeManager;
+    @Autowired
+    private SirenSensorManager sirenSensorManager;
+    @Autowired
+    private BleManager bleManager;
+
     @io.swagger.v3.oas.annotations.Operation(summary = "欧万上报",security = { @SecurityRequirement(name = "Authorization") },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(examples = @ExampleObject(
@@ -81,18 +92,6 @@ public class OwonSwagger {
         // 测试接口只打印日志不保存
         return OwonResult.success();
     }
-
-    @Autowired
-    private AccessToken accessToken;
-    @Autowired
-    private DeviceList deviceList;
-    @Autowired
-    private ZigBeeManager zigBeeManager;
-    @Autowired
-    private SirenSensorManager sirenSensorManager;
-    @Autowired
-    private BleManager bleManager;
-
     @io.swagger.v3.oas.annotations.Operation(summary = "获取AccessToken",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/getAccessToken")
     public AjaxResult getAccessToken() throws ExecutionException, InterruptedException, JsonProcessingException {

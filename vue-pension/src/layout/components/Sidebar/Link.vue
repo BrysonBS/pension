@@ -1,5 +1,5 @@
 <template>
-  <component :is="type" v-bind="linkProps(to)">
+  <component :is="type" :params="params" v-bind="linkProps(to)">
     <slot />
   </component>
 </template>
@@ -8,10 +8,15 @@
 import { isExternal } from '@/utils/validate'
 
 export default {
+  name: 'app-link',
   props: {
     to: {
       type: [String, Object],
       required: true
+    },
+    params:{
+      type: Object,
+      default: undefined
     }
   },
   computed: {
@@ -33,6 +38,9 @@ export default {
           target: '_blank',
           rel: 'noopener'
         }
+      }
+      else if(this.params){
+        return {...this.params,to:to}
       }
       return {
         to: to

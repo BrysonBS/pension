@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.common.mapper.ScreenMapper">
+    <resultMap id="ReportCountMap" type="com.ruoyi.pension.common.domain.vo.ExampleVo">
+        <result property="name" column="created" jdbcType="VARCHAR"/>
+        <result property="value" column="count" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="ItemsTotalMap" type="com.ruoyi.pension.common.domain.vo.ExampleVo">
+        <result property="name" column="created" jdbcType="VARCHAR"/>
+        <result property="value" column="total" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="StatusCountMap" type="com.ruoyi.pension.common.domain.vo.ExampleVo">
+        <result property="name" column="dict_label" jdbcType="VARCHAR"/>
+        <result property="value" column="count" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="NursingCountMap" type="com.ruoyi.pension.common.domain.vo.ExampleVo">
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="label" column="label" jdbcType="VARCHAR"/>
+        <result property="value" column="count" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="OrderAmountCountMap" type="com.ruoyi.pension.common.domain.vo.ExampleVo">
+        <result property="name" column="created" jdbcType="VARCHAR"/>
+        <result property="label" column="dict_label" jdbcType="VARCHAR"/>
+        <result property="value" column="count" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="NoticeListMap" type="com.ruoyi.pension.common.domain.vo.ExampleVo">
+        <result property="name" column="report_time" jdbcType="VARCHAR"/>
+        <result property="value" column="notice_type" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getListReportCount" resultMap="ReportCountMap">
+        SELECT DATE_FORMAT(a.ts,'%m-%d') created,count(*) `count`  FROM (
+            SELECT ts FROM owon_report
+            UNION ALL
+            SELECT check_time ts FROM bioland_srcdata
+         ) a
+        WHERE a.ts > DATE_SUB(curdate(),INTERVAL 1 MONTH)
+        GROUP BY YEAR(a.ts),MONTH(a.ts),DAY(a.ts)
+        ORDER BY a.ts
+    </select>
+    <select id="getListItemsTotal" resultMap="ItemsTotalMap">
+        SELECT DATE_FORMAT(create_time,'%m-%d') created,sum(pay_amount) total
+        FROM nursing_order
+        WHERE create_time > DATE_SUB(curdate(),INTERVAL 1 MONTH)
+          AND `status` = 3 ${params.dataScope}
+        GROUP BY YEAR(create_time),MONTH(create_time),DAY(create_time)
+        ORDER BY created
+    </select>
+    <select id="getListStatusCount" resultMap="StatusCountMap">
+        SELECT b.dict_label,count(*) count FROM nursing_order a
+        INNER JOIN sys_dict_data b ON b.dict_type = 'order_status' AND a.`status` = b.dict_value
+        WHERE a.del_flag = '0' AND DATE_ADD(a.create_time,INTERVAL 1 YEAR) > NOW()
+        ${params.dataScope}
+        GROUP BY b.dict_label
+        ORDER BY a.`status`
+    </select>
+    <select id="getListNursingCount" resultMap="NursingCountMap">
+        SELECT '设备' `name`,'device' label,
+               (SELECT count(*) FROM owon_device WHERE del_flag = '0') +
+               (SELECT count(*) FROM bioland_device WHERE del_flag = '0') count
+        UNION ALL
+        SELECT '床位' `name`,'bed' label, count(*) count FROM sys_dept
+        WHERE del_flag = '0' AND dept_name LIKE '%床'
+        UNION ALL
+        SELECT '用户' `name`,'user' label, count(*) count FROM sys_user
+        WHERE del_flag = '0'
+        UNION ALL
+        SELECT '护工' `name`,'worker' label, count(*) count FROM nursing_worker
+        WHERE del_flag = '0'
+        UNION ALL
+        SELECT '老人' `name`,'elder' label, count(*) count FROM nursing_person
+        WHERE del_flag = '0'
+    </select>
+    <select id="getListOrderAmountCount" resultMap="OrderAmountCountMap">
+        SELECT DATE_FORMAT(a.create_time,'%Y-%m') created,b.dict_label,sum(b.discount_price) count FROM nursing_order a
+            INNER JOIN nursing_order_items b ON a.`status` = 3 AND a.id = b.order_id
+        WHERE a.del_flag = '0' AND DATE_ADD(a.create_time,INTERVAL 1 YEAR) > NOW()
+        ${params.dataScope}
+        GROUP BY created,b.dict_label
+        ORDER BY created
+    </select>
+    <select id="getListNursingCountOfDashBoard" resultMap="NursingCountMap">
+        SELECT '设备' `name`,'device' label,
+               (SELECT count(*) FROM owon_device WHERE del_flag = '0' ${params.dataScope} ) +
+               (SELECT count(*) FROM bioland_device WHERE del_flag = '0' ${params.dataScope} ) count
+        UNION ALL
+        SELECT '床位' `name`,'bed' label, count(*) count FROM sys_dept
+        WHERE del_flag = '0' AND dept_name LIKE '%床' ${params.dataScope}
+        UNION ALL
+        SELECT '护工' `name`,'worker' label, count(*) count FROM nursing_worker
+        WHERE del_flag = '0' ${params.dataScope}
+        UNION ALL
+        SELECT '老人' `name`,'elder' label, count(*) count FROM nursing_person
+        WHERE del_flag = '0' ${params.dataScope}
+    </select>
+    <select id="getListOrderOfDay" resultMap="NursingCountMap">
+        SELECT DATE_FORMAT(create_time,'%m-%d') `name`,COUNT(id) `count` FROM nursing_order
+        WHERE create_time > DATE_SUB(curdate(),INTERVAL 1 MONTH)
+        ${params.dataScope}
+        GROUP BY YEAR(create_time),MONTH(create_time),DAY(create_time)
+    </select>
+    <select id="getListNotice" resultMap="NoticeListMap">
+        SELECT report_time,notice_type FROM owon_notice
+        WHERE 1 = 1 ${params.dataScope}
+        ORDER BY id DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+</mapper>

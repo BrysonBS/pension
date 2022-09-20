@@ -64,19 +64,6 @@ export default {
     RuoYiDoc,
     Notification,
   },
-  data() {
-    return {
-      //websocket配置
-      uri: "/wss/websocket/message",
-      ws: null,
-      lockReconnect: false, //是否真正建立连接
-      timeout: 60 * 1000, //60秒一次心跳
-      timeoutObj: null, //心跳心跳倒计时
-      serverTimeoutObj: null, //心跳倒计时
-      timeoutNum: null, //断开 重连倒计时
-      heartbeat:'1' //心跳信息
-    }
-  },
   computed: {
     ...mapGetters([
       'sidebar',
@@ -115,142 +102,29 @@ export default {
         })
       }).catch(() => {});
     },
-    //websocket相关
-    initWs(){
-      const protocol = window.location.protocol == 'http:' ? 'ws://' : 'wss://';
-      const wsuri = protocol+window.location.host +this.uri+'/'+getToken();
-      this.ws = new WebSocket(wsuri);
-      this.ws.onopen = this.onopenWs;
-      this.ws.onerror = this.onerrorWs;
-      this.ws.onmessage = this.onmessageWs;
-      this.ws.onclose = this.oncloseWs;
-    },
-    onopenWs(){
-      //开启心跳
-      this.start();
-    },
-    onerrorWs(){
-      //失败进行重连
-      this.reconnect();
-    },
-    onmessageWs(){
-      let messageBody = event.data;
-      //console.log(messageBody);
-      if(messageBody.charAt(0) !== '{'){//非NoticeVo对象
-        if(messageBody === '登录过期' || messageBody === '用户认证失败') location.reload();
+
+    //通知
+    setNotification(notice){
+      //设备上报通知
+      let tags = notice.tags;
+      let message = '';
+      for(let tag of tags){
+        message += `<span class="notice-tag">${tag}</span>`
       }
-      else {
-        let notice = JSON.parse(messageBody);
-        //支付回调通知
-        if(notice.type === "PENSION_PAYMENT"){
-          this.sendPaymentInfo(notice);
-          return;
-        }
-        //设备上报通知
-        let tags = notice.tags;
-        let message = '';
-        for(let tag of tags){
-          message += `<span class="notice-tag">${tag}</span>`
-        }
-        message += `<div class="notice-info">${notice.info}</div>
+      message += `<div class="notice-info">${notice.info}</div>
         <div class="notice-time">${notice.time}</div class="notice-time">`;
 
-        //通知
-        Notification.warning({
-          title: notice.name,
-          dangerouslyUseHTMLString: true,
-          message: message,
-          duration: 0
-        })
-
-        //全局事件总线相关
-        //发送数据到睡眠检测
-        this.sendSleep(notice)
-        //发送数据到血压
-        this.sendBlpressure(notice)
-        //发送数据到血糖
-        this.sendBlglucose(notice)
-      }
-      //收到信息,心跳重置
-      this.reset();
+      //通知
+      Notification.warning({
+        title: notice.name,
+        dangerouslyUseHTMLString: true,
+        message: message,
+        duration: 0
+      })
     },
-    oncloseWs(){
-      //关闭进行重连
-      this.reconnect();
-    },
-    closeWs(){
-      if (this.ws) {
-        this.ws.close();
-        this.ws = null;
-      }
-    },
-    //重连
-    reconnect(){
-      let that = this;
-      if(that.lockReconnect) return;
-      that.lockReconnect = true;
-      //没连接上会一直重连，设置延迟避免请求过多
-      that.timeoutnum && clearTimeout(that.timeoutnum);
-      that.timeoutnum = setTimeout(function() {
-        //新连接
-        that.initWs();
-        that.lockReconnect = false;
-      }, 5000);
-    },
-    //重置心跳
-    reset(){
-      //重置心跳
-      let that = this;
-      //清除时间
-      clearTimeout(that.timeoutObj);
-      clearTimeout(that.serverTimeoutObj);
-      //重启心跳
-      that.start();
-    },
-    start() {
-      //开启心跳
-      let self = this;
-      self.timeoutObj && clearTimeout(self.timeoutObj);
-      self.serverTimeoutObj && clearTimeout(self.serverTimeoutObj);
-      self.timeoutObj = setTimeout(function() {
-        //这里发送一个心跳，后端收到后，返回一个心跳消息
-        if (self.ws.readyState == 1) {
-          //如果连接正常
-          self.ws.send(self.heartbeat);
-        } else {
-          //否则重连
-          self.reconnect();
-        }
-        self.serverTimeoutObj = setTimeout(function() {
-          //超时关闭
-          self.ws.close();
-        }, self.timeout);
-      }, self.timeout);
-    },
-    //关闭心跳
-    stop(){
-      let self = this;
-      self.timeoutObj && clearTimeout(self.timeoutObj);
-      self.serverTimeoutObj && clearTimeout(self.serverTimeoutObj);
-      self.timeoutnum && clearTimeout(self.timeoutnum);
-    },
-
-    //全局事件总线相关
-    //发送数据到睡眠监测
-    sendSleep(notice){
-      if((!isNaN(parseFloat(notice.heartRate)) && isFinite(notice.heartRate)) ||
-        (!isNaN(parseFloat(notice.respiratoryRate)) && isFinite(notice.respiratoryRate))) {
-        let data = {
-          "ts": notice.ts,
-          "ieee": notice.ieee,
-          "heartRate": notice.heartRate,
-          "respiratoryRate": notice.respiratoryRate
-        };
-        this.$bus.$emit('sleep', data)
-      }
-    },
-    //血压数据发送
-    sendBlpressure(notice){
+    //血压通知
+    setBlpressure(notice){
+      this.setNotification(notice)
       if((!isNaN(parseFloat(notice.hbp)) && isFinite(notice.hbp))
         || (!isNaN(parseFloat(notice.lbp)) && isFinite(notice.lbp))
       ){
@@ -264,8 +138,9 @@ export default {
         this.$bus.$emit('blpressure', data)
       }
     },
-    //血糖数据发送
-    sendBlglucose(notice){
+    //血糖通知
+    setBlglucose(notice){
+      this.setNotification(notice)
       if(!isNaN(parseFloat(notice.glucose)) && isFinite(notice.glucose)){
         let data = {
           "ts": notice.ts,
@@ -275,19 +150,33 @@ export default {
         this.$bus.$emit('blglucose', data)
       }
     },
-    //支付回调数据发送
-    sendPaymentInfo(notice){
-      if(notice.info !== undefined){
-        this.$bus.$emit('payment-notify',notice)
+    setSleepace(notice){
+      this.setNotification(notice)
+      if((!isNaN(parseFloat(notice.heartRate)) && isFinite(notice.heartRate)) ||
+        (!isNaN(parseFloat(notice.respiratoryRate)) && isFinite(notice.respiratoryRate))) {
+        let data = {
+          "ts": notice.ts,
+          "ieee": notice.ieee,
+          "heartRate": notice.heartRate,
+          "respiratoryRate": notice.respiratoryRate
+        };
+        this.$bus.$emit('sleep', data)
       }
     }
   },
-  mounted(){
-    this.initWs()
+  created() {
+    //注册事件
+    this.$socket.registerCallBack(this.$socket.OPERATE.NOTIFICATION, this.setNotification);
+    this.$socket.registerCallBack(this.$socket.OPERATE.BIOLAND_BLOOD_PRESSURE,this.setBlpressure)
+    this.$socket.registerCallBack(this.$socket.OPERATE.BIOLAND_BLOOD_GLUCOSE,this.setBlglucose)
+    this.$socket.registerCallBack(this.$socket.OPERATE.OWON_SLEEPACE,this.setSleepace)
   },
-  destroyed() {
-    this.stop()
-    this.closeWs()
+  beforeDestroy() {
+    //解绑事件
+    this.$socket.unRegisterCallBack(this.$socket.OPERATE.NOTIFICATION)
+    this.$socket.unRegisterCallBack(this.$socket.OPERATE.BIOLAND_BLOOD_PRESSURE)
+    this.$socket.unRegisterCallBack(this.$socket.OPERATE.BIOLAND_BLOOD_GLUCOSE)
+    this.$socket.unRegisterCallBack(this.$socket.OPERATE.OWON_SLEEPACE)
   }
 }
 </script>

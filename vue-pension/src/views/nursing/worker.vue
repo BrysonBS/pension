@@ -133,7 +133,7 @@
       <el-table-column width="150" label="电话" align="center" prop="phone" v-if="columns[5].visible" :show-overflow-tooltip="true" />
       <el-table-column width="80" label="状态" align="center" v-if="columns[6].visible" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
-          <el-tag type="success" size="small"
+          <el-tag :type="dict.raw.listClass" size="small"
                   v-for="dict in dict.type.worker_status"
                   v-if="dict.value === scope.row.status"
           >{{dict.label}}</el-tag>

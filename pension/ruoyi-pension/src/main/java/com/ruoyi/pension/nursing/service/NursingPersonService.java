@@ -44,4 +44,15 @@ public class NursingPersonService extends ServiceImpl<NursingPersonMapper, Nursi
                                       .collect(Collectors.joining()));
       return nursingPerson;
    }
+
+
+   /**
+    * 大屏展示查询: 失能等级,城市,坐标
+    * @param nursingPerson
+    * @return
+    */
+   @PensionDataScope(deptAlias = "a",userAlias = "a")
+   public List<NursingPerson> getListScreen(NursingPerson nursingPerson){
+      return this.baseMapper.getListScreen(nursingPerson);
+   }
 }

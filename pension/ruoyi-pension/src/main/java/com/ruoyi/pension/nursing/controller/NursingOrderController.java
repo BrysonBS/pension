@@ -135,9 +135,9 @@ public class NursingOrderController extends BaseController {
                 .detailAddress(nursingOrder.getDetailAddress())
                 .lat(nursingOrder.getLat())
                 .lng(nursingOrder.getLng())
-
                 .beginTime(nursingOrder.getBeginTime())
                 .personId(nursingOrder.getPersonId())
+                .workerId(nursingOrder.getWorkerId())
                 .build();
         order.setCreateBy(getUsername());
         order.setCreateTime(LocalDateTime.now());

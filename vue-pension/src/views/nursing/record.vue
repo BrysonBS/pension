@@ -29,10 +29,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="护理人员" prop="personId">
+      <el-form-item label="老人" prop="personId">
         <el-select
           v-model="queryParams.personId"
-          placeholder="护理人员"
+          placeholder="老人"
           filterable clearable
           style="width: 240px">
           <el-option

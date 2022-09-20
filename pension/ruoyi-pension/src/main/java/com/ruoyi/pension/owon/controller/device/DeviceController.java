@@ -21,7 +21,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/device/device")
@@ -55,10 +57,24 @@ public class DeviceController extends BaseController {
         //获取网关mac列表更新列表
         List<String> macs = gatewayService.selectAllByDeptIds(deptIds);
         //deviceService.selectAllByDeptIds(deptIds);
-        for(String mac : macs){
+        if(!macs.isEmpty()){
+            CompletableFuture.allOf(macs.stream().flatMap(mac ->
+                    Stream.of(
+                            CompletableFuture.runAsync(() -> {
+                                    deviceList.getEpListByMac(mac);//EP列表
+                            }),
+                            CompletableFuture.runAsync(() -> {
+                                    bleManager.getBleListByMac(mac);//BLE列表
+                            })
+                    )
+            ).toArray(CompletableFuture[]::new))
+                    .join();
+        }
+
+/*        for(String mac : macs){
             deviceList.getEpListByMac(mac);//EP列表
             bleManager.getBleListByMac(mac);//BLE列表
-        }
+        }*/
         startPage();
         List<Device> list = deviceService.getListByDeptIdsAndDevice(deptIds,device);
         return getDataTable(list);

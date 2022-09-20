@@ -1,6 +1,7 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
 import com.ruoyi.system.domain.SysNotice;
 
 /**
@@ -57,4 +58,8 @@ public interface ISysNoticeService
      * @return 结果
      */
     public int deleteNoticeByIds(Long[] noticeIds);
+
+    List<SysNotice> listLatest(Integer total);
+
+    List<SysNotice> listNotices(SysNotice notice);
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 @Component
@@ -79,9 +80,23 @@ public class PensionDataScopeAspect {
             consumer.accept(map);
         }
     }
+    private LoginUser getLoginUser(final JoinPoint point) throws IllegalAccessException {
+        Object obj = point.getArgs()[0];
+        Class<?> clazz = obj.getClass();
+        Field field = null;
+        try {
+            field = clazz.getDeclaredField("loginUser");
+        } catch (NoSuchFieldException e) {
+            //不存在字段直接返回
+            return SecurityUtils.getLoginUser();
+        }
+        field.setAccessible(true);
+        if(field.get(obj) instanceof LoginUser loginUser) return loginUser;
+        return SecurityUtils.getLoginUser();
+    }
     private void handleDataScope(JoinPoint point,PensionDataScope pensionDataScope) throws NoSuchFieldException, IllegalAccessException {
         // 获取当前的用户
-        LoginUser loginUser = SecurityUtils.getLoginUser();
+        LoginUser loginUser = getLoginUser(point);
         if(loginUser == null) return;
         SysUser currentUser = loginUser.getUser();
         if(currentUser == null || currentUser.isAdmin()) return;

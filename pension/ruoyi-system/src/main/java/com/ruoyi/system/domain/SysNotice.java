@@ -2,6 +2,10 @@ package com.ruoyi.system.domain;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -12,6 +16,8 @@ import com.ruoyi.common.xss.Xss;
  * 
  * @author ruoyi
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SysNotice extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -30,6 +36,17 @@ public class SysNotice extends BaseEntity
 
     /** 公告状态（0正常 1关闭） */
     private String status;
+
+    @TableField(exist = false)
+    private String noticeTime;
+
+    public String getNoticeTime() {
+        return noticeTime;
+    }
+
+    public void setNoticeTime(String noticeTime) {
+        this.noticeTime = noticeTime;
+    }
 
     public Long getNoticeId()
     {

@@ -68,14 +68,16 @@ public class GeneralTestController extends BaseController {
     private JmsTemplate jmsTemplateTime;
     @Operation(summary = "websocket测试",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/wstest")
-    public AjaxResult websocketTest() throws JsonProcessingException {
+    public AjaxResult websocketTest(String userId) throws JsonProcessingException {
         NoticeVo noticeVo = NoticeVo.builder()
                 .tags(List.of("标签1","标签2"))
                 .info("[测试][测试][测试][心率:10]")
                 .time(LocalDateTime.now())
                 .name("测试设备")
                 .build();
-        WebSocketUsers.sendMessageToUsersByText(getLoginUser().getUserId()+"",objectMapper.writeValueAsString(noticeVo));
+        WebSocketUsers.sendMessageToUsers(userId,AjaxResult.success()
+                .put(AjaxResult.OPERATE_TAG,PensionBusiness.NOTIFICATION)
+                .put(AjaxResult.DATA_TAG,noticeVo));
         return AjaxResult.success();
     }
 
@@ -102,6 +104,7 @@ public class GeneralTestController extends BaseController {
                   .put(AjaxResult.DATA_TAG,
                           pensionPaymentService.getOneOrAncestorByDeptIdAndPayType(deptId,payType));
     }
+    @Operation(summary = "支付宝二维码支付",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/alipayQR")
     public void alipayQR(HttpServletResponse response) throws IOException {
         BigDecimal totalAmount = BigDecimal.valueOf(1.02D);
@@ -162,6 +165,8 @@ public class GeneralTestController extends BaseController {
         QRCodeUtil.createCodeAndLogoToOutputStream(code, "E:/wechat.png", response.getOutputStream());
 
     }
+
+    @Operation(summary = "微信支付回调测试",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/weChatPay/notify")
     public void notifyTest() throws IOException {
         String notify = """
@@ -196,7 +201,9 @@ public class GeneralTestController extends BaseController {
                 .name("微信支付")
                 .info("支付成功!")
                 .build();
-        WebSocketUsers.sendMessageToUsersByText(notifyWechat.getAttach(),objectMapper.writeValueAsString(noticeVo));
+        WebSocketUsers.sendMessageToUsers(notifyWechat.getAttach(),AjaxResult.success()
+                .put(AjaxResult.OPERATE_TAG,PensionBusiness.PENSION_PAYMENT)
+                .put(AjaxResult.DATA_TAG,noticeVo));
     }
 
     @Operation(summary = "延迟消息队列测试",security = { @SecurityRequirement(name = "Authorization") })

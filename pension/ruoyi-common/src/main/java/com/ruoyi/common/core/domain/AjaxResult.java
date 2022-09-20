@@ -21,6 +21,9 @@ public class AjaxResult extends HashMap<String, Object>
     /** 数据对象 */
     public static final String DATA_TAG = "data";
 
+    /** 操作 */
+    public static final String OPERATE_TAG = "operate";
+
     /**
      * 初始化一个新创建的 AjaxResult 对象，使其表示一个空消息。
      */

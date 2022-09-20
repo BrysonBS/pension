@@ -2,6 +2,7 @@ package com.ruoyi.pension.owon.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.websocket.WebSocketUsers;
@@ -45,12 +46,6 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
     @Qualifier("jmsTemplateTime")
     @Autowired
     private JmsTemplate jmsTemplate;
-/*    @Autowired
-    public void setJmsTemplate(JmsTemplate jmsTemplate) {
-        this.jmsTemplate = jmsTemplate;
-        this.jmsTemplate.setExplicitQosEnabled(true);
-        this.jmsTemplate.setTimeToLive(1100);
-    }*/
     @Autowired
     private OwonNoticeService owonNoticeService;
     @Autowired
@@ -251,10 +246,11 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
                 .noticeContent(content)
                 .build();
         //先通知设备所属用户
-        String noticeString = objectMapper.writeValueAsString(noticeVo);
-
         sysUserOwonService.getUsersByDeptIdOfSuperiors(device.getDeptId())
-                .forEach(user -> WebSocketUsers.sendMessageToUsersByText(user.getUserId() + "", noticeString));
+                .forEach(user -> WebSocketUsers.sendMessageToUsers(user.getUserId() + "",
+                        AjaxResult.success()
+                                .put(AjaxResult.OPERATE_TAG, noticeVo.getType())
+                                .put(AjaxResult.DATA_TAG,noticeVo)));
         //短信通知
         List<String> phones = deviceService.getPhonesByIeeeAndEp(device.getIeee(),device.getEp());
         if(phones != null && phones.size() > 0)

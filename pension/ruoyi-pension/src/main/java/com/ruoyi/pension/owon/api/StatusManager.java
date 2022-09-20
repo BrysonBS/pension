@@ -1,5 +1,7 @@
 package com.ruoyi.pension.owon.api;
 
+import com.ruoyi.pension.common.domain.consts.PensionBusiness;
+import com.ruoyi.pension.common.domain.enums.Operation;
 import com.ruoyi.pension.owon.domain.dto.Argument;
 import com.ruoyi.pension.owon.domain.dto.Response;
 import com.ruoyi.pension.owon.domain.po.Device;
@@ -15,6 +17,7 @@ public class StatusManager {
    public static <T> NoticeVo getNoticeInfo(Device device, T object){
        Integer cid = device.getCid();
        NoticeVo noticeVo = NoticeVo.builder()
+               .type(PensionBusiness.NOTIFICATION)
                .tags(new ArrayList<>())
                .enable(false)//默认无需报警
                .build();
@@ -190,6 +193,7 @@ public class StatusManager {
      * @return
      */
     public static void setSleepace(Argument<?,?> argument,NoticeVo noticeVo){
+        noticeVo.setType(PensionBusiness.OWON_SLEEPACE);
         StringBuilder builder = new StringBuilder();
         Integer heartRate = argument.getHeartRate();
         Integer respiratoryRate = argument.getRespiratoryRate();

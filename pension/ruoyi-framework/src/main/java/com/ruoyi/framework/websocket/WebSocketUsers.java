@@ -4,9 +4,16 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import javax.websocket.EncodeException;
 import javax.websocket.Session;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.spring.SpringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 
 /**
  * websocket 客户端用户集
@@ -23,7 +30,7 @@ public class WebSocketUsers
     /**
      * 用户集
      */
-    private static Map<String, CopyOnWriteArraySet<Session>> USERS = new ConcurrentHashMap<>();
+    private static final Map<String, CopyOnWriteArraySet<Session>> USERS = new ConcurrentHashMap<>();
     private static final CopyOnWriteArraySet<Session> delFlag = new CopyOnWriteArraySet<>();//用于删除标记
 
     /**
@@ -65,6 +72,40 @@ public class WebSocketUsers
      */
     public static Map<String, CopyOnWriteArraySet<Session>> getUsers() {
         return USERS;
+    }
+
+    /**
+     * 发送消息到指定账号
+     * @param userId 账号
+     * @param message 消息内容
+     */
+    public static void sendMessageToUsers(String userId, AjaxResult message){
+        CopyOnWriteArraySet<Session> values = USERS.get(userId);
+        if(values == null) return;
+        for (Session value : values) {
+            sendMessageToUser(value, message);
+        }
+    }
+
+    /**
+     * 发送消息到会话
+     * @param session 会话
+     * @param message 消息内容
+     */
+    public static void sendMessageToUser(Session session,AjaxResult message){
+        if(session != null) {
+            try{
+                session.getBasicRemote().sendObject(message);
+            }
+            catch(IOException e){
+                LOGGER.error("\n[发送消息异常]", e);
+            } catch (EncodeException e) {
+                LOGGER.info("\n[websocket消息转换字符串失败]",e);
+            }
+        }
+        else {
+            LOGGER.info("\n[你已离线]");
+        }
     }
 
     /**

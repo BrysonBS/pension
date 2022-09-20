@@ -13,7 +13,7 @@
                 mode="vertical"
             >
                 <sidebar-item
-                    v-for="(route, index) in sidebarRouters"
+                    v-for="(route, index) in updateSidebarRouters()"
                     :key="route.path  + index"
                     :item="route"
                     :base-path="route.path"
@@ -52,6 +52,18 @@ export default {
         isCollapse() {
             return !this.sidebar.opened;
         }
+    },
+    methods:{
+      updateSidebarRouters(){
+        const map = new Map();
+        this.sidebarRouters.map(e => {
+          if(e.params) map.set(e.path,e.params)
+        })
+        this.sidebarRouters.map(e => {
+          if(map.has(e.path)) e.params = map.get(e.path)
+        })
+        return this.sidebarRouters
+      }
     }
 };
 </script>

@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/pension/download")
-public class PensionUploadController {
+public class
+PensionUploadController {
     @Autowired
     private PensionUploadService pensionUploadService;
     @PostMapping

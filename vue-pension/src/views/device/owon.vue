@@ -62,7 +62,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="设备类别" prop="cid"
-                        v-hasPermi="['device:device:edit:class']"
+                        v-hasPermi="['device:owon:edit:class']"
           >
             <el-select
               v-model="queryParams.cid"
@@ -119,7 +119,7 @@
               size="mini"
               :disabled="single"
               @click="handleUpdate"
-              v-hasPermi="['device:device:edit']"
+              v-hasPermi="['device:owon:edit']"
             >修改</el-button>
           </el-col>
           <el-col :span="1.5">
@@ -130,7 +130,7 @@
               size="mini"
               :disabled="multiple"
               @click="handleDelete"
-              v-hasPermi="['device:device:remove']"
+              v-hasPermi="['device:owon:remove']"
             >删除</el-button>
           </el-col>
           <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" :columns="columns"></right-toolbar>
@@ -196,7 +196,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="设备类别"
-                          v-hasPermi="['device:device:edit:class']"
+                          v-hasPermi="['device:owon:edit:class']"
             >
               <el-select v-model="form.cid" filterable placeholder="请选择">
                 <el-option

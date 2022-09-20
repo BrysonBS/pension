@@ -29,8 +29,8 @@ public class MessageConfig {
         JmsTemplate template = new JmsTemplate(connectionFactory);
         template.setMessageConverter(messageConverter());
         template.setExplicitQosEnabled(true);
-        template.setTimeToLive(2200);//消息存活时间
-        template.setReceiveTimeout(2000);//接收消息最大等待时间
+        template.setTimeToLive(2000);//消息存活时间
+        template.setReceiveTimeout(1500);//接收消息最大等待时间
         return template;
     }
 
