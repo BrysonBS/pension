@@ -23,6 +23,7 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.framework.web.service.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public class WebSocketServer {
     @OnOpen
     public void onOpen(Session session, @PathParam("token") String token) throws IOException {
         this.session = session;
-        this.loginUser = getLoginUser(token);
+        this.loginUser = SpringUtils.getBean(TokenService.class).getLoginUser(token);//getLoginUser(token);
         this.token = token;
         boolean semaphoreFlag = false;
         // 尝试获取信号量
@@ -131,7 +132,7 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
-        LoginUser user = getLoginUser(this.token);
+        LoginUser user = SpringUtils.getBean(TokenService.class).getLoginUser(token);//getLoginUser(this.token);
         if(user == null)
             WebSocketUsers.sendMessageToUser(session,AjaxResult.error("登录过期"));
         else {
@@ -155,30 +156,5 @@ public class WebSocketServer {
             WebSocketUsers.sendMessageToUser(session,messageHandler.apply(user,jsonNode));
 
         }
-    }
-
-
-    private LoginUser getLoginUser(String token) {
-        Environment environment = SpringUtils.getBean(Environment.class);
-        String secret = environment.getProperty("token.secret");
-        if (StringUtils.isNotEmpty(token) && !"undefined".equalsIgnoreCase(token)){
-            try {
-                Claims claims = Jwts.parser()
-                        .setSigningKey(secret)
-                        .parseClaimsJws(token)
-                        .getBody();
-                // 解析对应的权限以及用户信息
-                String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
-                String userKey = Constants.LOGIN_TOKEN_KEY + uuid;
-                RedisCache redisCache = SpringUtils.getBean(RedisCache.class);
-                LoginUser user = redisCache.getCacheObject(userKey);
-                return user;
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 }

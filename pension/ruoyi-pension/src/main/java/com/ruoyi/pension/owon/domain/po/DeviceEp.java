@@ -28,6 +28,8 @@ import lombok.NoArgsConstructor;
 public class DeviceEp implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
+    @TableField(exist = false)
+    private Long deptId;
     private Integer respId;
     private String ieee;
     private Integer ep;

@@ -1,6 +1,7 @@
 package com.ruoyi.framework.websocket;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -113,12 +114,12 @@ public class WebSocketUsers
      *
      * @param message 消息内容
      */
-    public static void sendMessageToUsersByText(String userId,String message) {
-        CopyOnWriteArraySet<Session> values = USERS.get(userId);
-        if(values == null) return;
-        for (Session value : values) {
-            sendMessageToUserByText(value, message);
-        }
+    public static void sendMessageToUsersByText(String message) {
+        if(USERS.isEmpty()) return;
+        USERS.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .forEach(session -> sendMessageToUserByText(session, message));
     }
 
     /**

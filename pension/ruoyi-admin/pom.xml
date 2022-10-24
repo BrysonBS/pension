@@ -61,6 +61,10 @@
                             <artifactId>spring-boot-configuration-processor</artifactId>
                         </exclude>
                     </excludes>
+                    <mainClass>com.ruoyi.RuoYiApplication</mainClass>
+                    <jvmArguments>
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                    </jvmArguments>
                 </configuration>
                 <executions>
                     <execution>
@@ -78,7 +82,7 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <warName>${project.artifactId}</warName>
                 </configuration>   
-           </plugin>   
+           </plugin>
         </plugins>
         <finalName>${project.artifactId}</finalName>
     </build>

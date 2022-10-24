@@ -13,12 +13,14 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
-    private static final String TOKEN_KEY = "Authorization";
+    @Value("${token.header}")
+    private String header;
 
 /** 系统基础配置 */
 
@@ -35,7 +37,7 @@ public class SwaggerConfig {
     public GroupedOpenApi owonApi() {
         return GroupedOpenApi.builder()
                 .group("owon")
-                .pathsToMatch("/owon/**")
+                .pathsToMatch("/swagger/owon/**")
                 .packagesToScan("com.ruoyi.pension")
                 .build();
     }
@@ -43,15 +45,15 @@ public class SwaggerConfig {
     public GroupedOpenApi biolandApi() {
         return GroupedOpenApi.builder()
                 .group("bioland")
-                .pathsToMatch("/bioland/data")
-                .packagesToScan("com.ruoyi.pension.bioland")
+                .pathsToMatch("/swagger/bioland/data")
+                .packagesToScan("com.ruoyi.pension")
                 .build();
     }
     @Bean
     public GroupedOpenApi generalApi() {
         return GroupedOpenApi.builder()
                 .group("general")
-                .pathsToMatch("/general/**")
+                .pathsToMatch("/swagger/general/**")
                 .packagesToScan("com.ruoyi.pension")
                 .build();
     }
@@ -62,19 +64,20 @@ public class SwaggerConfig {
                 .info(info())
                 .externalDocs(externalDocumentation())
                 .components(new Components()
-                        .addSecuritySchemes(TOKEN_KEY, new SecurityScheme()
+                        .addSecuritySchemes(header, new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
+                                //.name("Authorization")
                         )
-                        .addHeaders(TOKEN_KEY, new Header().required(true)
+                        .addHeaders(header, new Header().required(true)
                                 .description("token")
                                 .schema(new StringSchema()).required(true)
                         )
                 )
                 //全局请求头参数添加: knife4j无法识别,需在api中单独添加
                 // @Operation(security = { @SecurityRequirement(name = "bearer-key") })
-                .addSecurityItem(new SecurityRequirement().addList(TOKEN_KEY));
+                .addSecurityItem(new SecurityRequirement().addList(header));
 
     }
 

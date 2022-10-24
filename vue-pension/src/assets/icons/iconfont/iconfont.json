@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "15343002",
+      "name": "连接",
+      "font_class": "connect",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "15468556",
+      "name": "断开状态",
+      "font_class": "duankaizhuangtai",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "26393497",
+      "name": "icon_断开链接",
+      "font_class": "disconnect",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
       "icon_id": "2080215",
       "name": "dkw_金额",
       "font_class": "amount",

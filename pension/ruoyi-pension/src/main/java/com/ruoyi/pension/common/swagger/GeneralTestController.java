@@ -15,26 +15,37 @@ import com.ruoyi.pension.common.domain.po.PensionPaymentNotifyWechat;
 import com.ruoyi.pension.common.domain.vo.NoticeVo;
 import com.ruoyi.pension.common.service.PensionPaymentService;
 import com.ruoyi.pension.nursing.domain.po.NursingOrder;
-import com.ruoyi.pension.owon.domain.dto.Response;
+import com.ruoyi.pension.tuya.service.TuyaDeviceService;
+import com.wechat.pay.contrib.apache.httpclient.exception.HttpCodeException;
+import com.wechat.pay.contrib.apache.httpclient.exception.NotFoundException;
 import com.wechat.pay.contrib.apache.httpclient.notification.Notification;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.ParameterStyle;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.activemq.artemis.api.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.security.GeneralSecurityException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,7 +54,7 @@ import java.util.*;
 
 @Tag(name = "一般接口Api")
 @RestController
-@RequestMapping("/general")
+@RequestMapping("/swagger/general")
 public class GeneralTestController extends BaseController {
     @Autowired
     private ObjectMapper objectMapper;
@@ -66,6 +77,29 @@ public class GeneralTestController extends BaseController {
     @Qualifier("jmsTemplateTime")
     @Autowired
     private JmsTemplate jmsTemplateTime;
+    @Autowired
+    private TuyaDeviceService tuyaDeviceService;
+
+
+    @Operation(summary = "tuya设备列表",security = { @SecurityRequirement(name = "Authorization") })
+    @GetMapping("/tuya/deviceList")
+    public AjaxResult tuyaDeviceList(String uid){
+        return AjaxResult.success()
+                .put(AjaxResult.DATA_TAG,tuyaDeviceService.getAllDeviceList(uid));
+    }
+    @Operation(summary = "关闭应用",security = { @SecurityRequirement(name = "Authorization") })
+    @Parameter(description = "Content-Type", required = true,
+            style = ParameterStyle.SIMPLE,
+            schema = @Schema(implementation = String.class),
+            name = "Content-Type", in = ParameterIn.HEADER,
+            example = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/system/shutdown")
+    public void shutdown(HttpServletRequest request,HttpServletResponse response) throws IOException, ServletException {
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            request.getRequestDispatcher("/monitor/shutdown").forward(request,response);
+    }
+
+
     @Operation(summary = "websocket测试",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/wstest")
     public AjaxResult websocketTest(String userId) throws JsonProcessingException {
@@ -130,10 +164,15 @@ public class GeneralTestController extends BaseController {
         response.addHeader("pay-order",objectNode.get("outTradeNo").asText());
         QRCodeUtil.createCodeAndLogoToOutputStream(objectNode.get("qr_code").asText(), "E:/wechat.png", response.getOutputStream());
     }
-    @Operation(summary = "退款测试",security = { @SecurityRequirement(name = "Authorization") })
-    @GetMapping("/refund")
+    @Operation(summary = "支付宝退款测试",security = { @SecurityRequirement(name = "Authorization") })
+    @GetMapping("/alipay/refund")
     public void alipayRefund(Long deptId,Long userId,String outTradeNo,BigDecimal refund){
         alipayManager.refundOutTradeNo(deptId,userId,outTradeNo,refund);
+    }
+    @Operation(summary = "微信退款测试",security = { @SecurityRequirement(name = "Authorization") })
+    @GetMapping("/weChatPay/refund")
+    public AjaxResult weChatPayRefund(Long deptId,Long userId,String outTradeNo,BigDecimal total,BigDecimal refund) throws GeneralSecurityException, NotFoundException, IOException, HttpCodeException {
+        return toAjax(weChatPayManager.refundOutTradeNo(deptId,userId,outTradeNo,total,refund));
     }
     @Operation(summary = "微信支付测试",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/wxpay")

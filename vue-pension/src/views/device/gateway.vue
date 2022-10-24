@@ -290,7 +290,8 @@ export default {
         pageSize: 10,
         gwName: undefined,
         gwCode: undefined,
-        status: undefined
+        status: undefined,
+        deptId: undefined,
       },
       // 列信息
       columns: [
@@ -375,6 +376,10 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams = {
+        pageNum: 1,
+        pageSize: 10,
+      }
       this.resetForm("queryForm");
       this.handleQuery();
     },

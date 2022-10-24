@@ -10,6 +10,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.pension.common.domain.po.BasePensionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Device implements Serializable {
+public class Device extends BasePensionEntity implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private Long deptId;

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.ruoyi.pension.common.domain.po.BasePensionEntity;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BiolandDevice implements Serializable {
+public class BiolandDevice extends BasePensionEntity implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private Long deptId;
@@ -35,8 +36,7 @@ public class BiolandDevice implements Serializable {
     private String name;
     private String serialNumber;
 
-    @TableField(exist = false)
-    private Map<String, String> params;
+
     @TableField(exist = false)
     private String deptName;
     @TableField(exist = false)

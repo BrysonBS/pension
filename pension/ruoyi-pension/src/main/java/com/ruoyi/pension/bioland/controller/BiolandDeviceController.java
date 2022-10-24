@@ -28,16 +28,8 @@ public class BiolandDeviceController extends BaseController {
     //获取列表
     @GetMapping("/list")
     public TableDataInfo getListByExample(BiolandDevice device){
-        //不存则默认所属部门id
-        Long deptId = (deptId = device.getDeptId()) == null ?
-                getLoginUser().getDeptId() : deptId;
-        device.setDeptId(deptId);
-        List<Long> deptIds = deptId == 100L ?
-                List.of(100L)
-                : deptOwonService.getListDeptAndChildrenByDeptId(deptId);
-
         startPage();
-        List<BiolandDevice> list = biolandDeviceService.getListByDeptIdsAndDevice(deptIds,device);
+        List<BiolandDevice> list = biolandDeviceService.getListByExample(device);
         return getDataTable(list);
     }
     //下拉选择列表

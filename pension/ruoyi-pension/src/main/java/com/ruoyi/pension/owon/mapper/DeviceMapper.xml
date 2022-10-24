@@ -131,6 +131,44 @@
             </foreach>
         </if>
     </select>
+    <select id="listByExample" resultType="com.ruoyi.pension.owon.domain.po.Device">
+        SELECT * FROM v_device_gw_categories a
+        <where>
+            <if test="gwCode != null">
+                AND a.gw_code = #{gwCode}
+            </if>
+            <if test="deptId == 100">
+                AND a.dept_id = 100
+            </if>
+            <if test="cid != null">
+                <choose>
+                    <when test="cid != 0">
+                        AND a.`cid` = #{cid}
+                    </when>
+                    <otherwise>
+                        AND a.`cid` IS NULL
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="linkStatus != null">
+                AND (a.link_status = #{linkStatus,jdbcType=BIT}
+                OR a.net_state =
+                <choose>
+                    <when test="linkStatus">1</when>
+                    <otherwise>0</otherwise>
+                </choose>
+                )
+            </if>
+
+            <if test="name != null">
+                AND a.`name` LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="ieee != null">
+                AND a.ieee LIKE CONCAT('%',#{ieee},'%')
+            </if>
+            ${params.dataScope}
+        </where>
+    </select>
     <insert id="saveOrUpdateByIeeeAndEp" keyColumn="id" keyProperty="id" useGeneratedKeys="true"
             parameterType="com.ruoyi.pension.owon.domain.po.DeviceEp">
         <selectKey keyProperty="id" resultType="com.ruoyi.pension.owon.domain.po.Device" order="BEFORE">
@@ -196,6 +234,7 @@
     <insert id="insertByDeviceEp" parameterType="com.ruoyi.pension.owon.domain.po.DeviceEp">
         insert into owon_device
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">dept_id,</if>
             <if test="ieee != null">ieee, </if>
             <if test="ep != null">ep, </if>
             <if test="gwCode != null">gw_code, </if>
@@ -213,6 +252,7 @@
             <if test="netState != null">net_state,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">#{deptId},</if>
             <if test="ieee != null">#{ieee}, </if>
             <if test="ep != null">#{ep}, </if>
             <if test="gwCode != null">#{gwCode}, </if>

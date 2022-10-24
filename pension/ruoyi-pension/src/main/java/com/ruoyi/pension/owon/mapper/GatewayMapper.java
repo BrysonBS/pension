@@ -14,6 +14,9 @@ import java.util.List;
 */
 public interface GatewayMapper extends BaseMapper<Gateway> {
     List<String> selectAllByDeptIds(@Param("deptIds") List<Long> deptIds);
+
+    Gateway getOneByGwCode(@Param("gwCode") String gwCode);
+    List<Gateway> getListByExample(Gateway gateway);
 }
 
 

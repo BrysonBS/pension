@@ -1,15 +1,16 @@
 package com.ruoyi;
 
+import com.tuya.connector.spring.annotations.ConnectorScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 
 /**
  * 启动程序
  * 
  * @author ruoyi
  */
+@ConnectorScan(basePackages = "com.ruoyi.pension.tuya.connector")
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 public class RuoYiApplication
 {

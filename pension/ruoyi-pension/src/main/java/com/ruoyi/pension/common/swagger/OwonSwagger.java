@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @Tag(name = "欧万相关接口API")
-@RequestMapping("/owon")
+@RequestMapping("/swagger/owon")
 public class OwonSwagger {
     @Autowired
     private OwonReportService owonReportService;

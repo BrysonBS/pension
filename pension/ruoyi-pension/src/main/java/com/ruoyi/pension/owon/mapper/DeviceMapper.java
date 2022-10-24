@@ -15,6 +15,7 @@ import java.util.List;
 * @Entity com.ruoyi.pension.owon.domain.po.Device
 */
 public interface DeviceMapper extends BaseMapper<Device> {
+    List<Device> listByExample(Device device);
     List<Device> getListByDeptIdsAndDevice(@Param("deptIds") List<Long> deptIds,@Param("device") Device device);
     List<String> getPhonesByIeeeAndEp(@Param("ieee") String ieee,@Param("ep") Integer ep);
     List<String> selectAllByDeptIds(@Param("deptIds") List<Long> deptIds);

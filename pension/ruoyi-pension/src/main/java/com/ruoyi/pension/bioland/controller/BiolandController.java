@@ -1,15 +1,11 @@
 package com.ruoyi.pension.bioland.controller;
 
-import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.pension.bioland.domain.po.BiolandDevice;
 import com.ruoyi.pension.bioland.domain.po.SrcDataValue;
 import com.ruoyi.pension.bioland.service.BiolandDeviceService;
 import com.ruoyi.pension.bioland.service.SrcDataValueService;
 import com.ruoyi.pension.bioland.utils.HdwDataCheckUtils;
 import com.ruoyi.pension.bioland.utils.StringUtil;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +19,6 @@ import java.util.Calendar;
 
 @RestController
 @RequestMapping("/bioland")
-@Tag(name = "爱奥乐相关接口API")
 @Slf4j
 public class BiolandController {
     @Autowired
@@ -34,8 +29,6 @@ public class BiolandController {
     @Value("${bioland.server.ip}")
     private String currServerIP;
 
-    @Operation(summary = "爱奥乐数据上报")
-    @Parameter(name = "data",description = "上报数据",required = true)
     @GetMapping("/data")
     public void receiveData(HttpServletRequest request,
                             HttpServletResponse response, @RequestParam("data") String data)

@@ -219,8 +219,8 @@ public class NursingOrder extends BasePensionEntity implements Serializable {
     @TableField(exist = false)
     @JsonInclude
     private List<Integer> serviceItemsIds;
-    @TableField(exist = false)
-    private Map<String, String> params;
+    //@TableField(exist = false)
+    //private Map<String, String> params;
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

@@ -2,48 +2,55 @@ package com.ruoyi.pension.owon.controller.device;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.pension.common.aspect.annotation.OperationInfo;
 import com.ruoyi.pension.owon.domain.po.Gateway;
 import com.ruoyi.pension.owon.service.GatewayService;
 import com.ruoyi.pension.owon.service.SysDeptOwonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/device/gateway")
 public class GatewayController extends BaseController{
     @Autowired
-    private SysDeptOwonService sysDeptOwonService;
-    @Autowired
     private GatewayService gatewayService;
     /** 新增网关 */
+    @PreAuthorize("@ss.hasPermi('device:gateway:add')")
+    @Log(title = "设备管理/网关", businessType = BusinessType.UPDATE)
+    @OperationInfo(OperationInfo.Info.CREATED)
     @PostMapping()
     public AjaxResult postGateway(@Validated @RequestBody Gateway gateway){
-        if(gateway.getDeptId() == null) gateway.setDeptId(100L);
-        gateway.setCreateBy(getUsername());
-        gateway.setCreateTime(LocalDateTime.now());
-        //return AjaxResult.success();
         return toAjax(gatewayService.save(gateway));
     }
     /** 删除网关 */
+    @PreAuthorize("@ss.hasPermi('device:gateway:remove')")
+    @Log(title = "设备管理/网关", businessType = BusinessType.DELETE)
     @DeleteMapping()
     public AjaxResult deleteGateway(Gateway gateway){
         return toAjax(gatewayService.removeById(gateway.getId()));
     }
     /** 批量删除 */
+    @PreAuthorize("@ss.hasPermi('device:gateway:remove')")
+    @Log(title = "设备管理/网关", businessType = BusinessType.DELETE)
     @DeleteMapping("/batch")
     public AjaxResult deleteGateways(Integer[] id){
         return toAjax(gatewayService.removeByIds(List.of(id)));
     }
     /** 修改网关 */
+    @PreAuthorize("@ss.hasPermi('device:gateway:edit')")
+    @Log(title = "设备管理/网关", businessType = BusinessType.DELETE)
+    @OperationInfo(OperationInfo.Info.UPDATED)
     @PutMapping()
     public AjaxResult putGateway(@RequestBody Gateway gateway){
         return toAjax(gatewayService.updateById(gateway));
@@ -65,28 +72,10 @@ public class GatewayController extends BaseController{
                 .put(AjaxResult.DATA_TAG,gatewayResult);
     }
 
-
-
     @GetMapping("/list")
-    public TableDataInfo list(Optional<Long> deptId, Gateway gateway){
-        //不存在,从用户信息中获取
-        List<Long> deptIds = sysDeptOwonService.getListDeptAndChildrenByDeptId(
-                deptId.orElse(getLoginUser().getDeptId())
-        );
-
-        LambdaQueryWrapper<Gateway> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.select(
-                Gateway::getId,Gateway::getDeptId,Gateway::getGwName,
-                Gateway::getGwCode,Gateway::getOrderNum,Gateway::getLeader,
-                Gateway::getPhone, Gateway::getStatus,Gateway::getCreateBy,
-                Gateway::getCreateTime
-                )
-                .like(gateway.getGwName() != null,Gateway::getGwName,gateway.getGwName())
-                .like(gateway.getGwCode() != null,Gateway::getGwCode,gateway.getGwCode())
-                .in(Gateway::getDeptId,deptIds)
-                .eq(gateway.getStatus() != null,Gateway::getStatus,gateway.getStatus());
+    public TableDataInfo list(Gateway gateway){
         startPage();
-        List<Gateway> list = gatewayService.list(lambdaQueryWrapper);
+        List<Gateway> list = gatewayService.getListByExample(gateway);
         return getDataTable(list);
     }
 

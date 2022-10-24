@@ -113,6 +113,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                         "/callback/notify/weChatPay/*",
                         "/callback/refund/weChatPay/*"
                 ).anonymous()
+                //放行Actuator关闭应用
+                .antMatchers("/monitor/shutdown").hasRole("admin")
                 .antMatchers(
                         HttpMethod.GET,
                         "/",

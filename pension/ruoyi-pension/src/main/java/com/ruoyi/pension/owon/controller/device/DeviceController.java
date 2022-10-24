@@ -46,10 +46,9 @@ public class DeviceController extends BaseController {
 
     @GetMapping("/list")
     public TableDataInfo list(Device device) throws ExecutionException, InterruptedException, JsonProcessingException {
-        //不存则默认所属部门id
+
         Long deptId = (deptId = device.getDeptId()) == null ?
                 getLoginUser().getDeptId() : deptId;
-        device.setDeptId(deptId);
         List<Long> deptIds = deptId == 100L ?
                 List.of(100L)
                 : deptOwonService.getListDeptAndChildrenByDeptId(deptId);
@@ -71,12 +70,8 @@ public class DeviceController extends BaseController {
                     .join();
         }
 
-/*        for(String mac : macs){
-            deviceList.getEpListByMac(mac);//EP列表
-            bleManager.getBleListByMac(mac);//BLE列表
-        }*/
         startPage();
-        List<Device> list = deviceService.getListByDeptIdsAndDevice(deptIds,device);
+        List<Device> list = deviceService.getListByExample(device);
         return getDataTable(list);
     }
     /** 根据id查询设备 */
@@ -92,7 +87,7 @@ public class DeviceController extends BaseController {
     }
     /** 修改设备名称或归属部门 */
     @PreAuthorize("@ss.hasPermi('device:device:edit')")
-    @Log(title = "设备管理", businessType = BusinessType.UPDATE)
+    @Log(title = "设备管理/设备O", businessType = BusinessType.UPDATE)
     @PatchMapping()
     public AjaxResult setNameOrDept(@RequestBody Device device) throws ExecutionException, InterruptedException, JsonProcessingException {
         if(device.getName() != null){
@@ -106,6 +101,8 @@ public class DeviceController extends BaseController {
      * @param id
      * @return
      */
+    @PreAuthorize("@ss.hasPermi('device:gateway:remove')")
+    @Log(title = "设备管理/设备O", businessType = BusinessType.DELETE)
     @DeleteMapping("/batch")
     public AjaxResult delete(Integer[] id){
         return toAjax(deviceService.removeDeviceAndPhoneByIds(List.of(id)));

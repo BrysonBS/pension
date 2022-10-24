@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pension.tuya.mapper.TuyaDeviceMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.pension.tuya.domain.TuyaDevice">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="uid" column="uid" jdbcType="VARCHAR"/>
+            <result property="category" column="category" jdbcType="VARCHAR"/>
+            <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="icon" column="icon" jdbcType="VARCHAR"/>
+            <result property="ip" column="ip" jdbcType="VARCHAR"/>
+            <result property="lat" column="lat" jdbcType="VARCHAR"/>
+            <result property="localKey" column="local_key" jdbcType="VARCHAR"/>
+            <result property="lon" column="lon" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="model" column="model" jdbcType="VARCHAR"/>
+            <result property="online" column="online" jdbcType="BIT"/>
+            <result property="productId" column="product_id" jdbcType="VARCHAR"/>
+            <result property="ownerId" column="owner_id" jdbcType="VARCHAR"/>
+            <result property="sub" column="sub" jdbcType="BIT"/>
+            <result property="deviceId" column="device_id" jdbcType="VARCHAR"/>
+            <result property="timeZone" column="time_zone" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dept_id,user_id,
+        uid,category,category_name,
+        create_time,icon,ip,
+        lat,local_key,lon,
+        `name`,model,online,
+        product_id,owner_id,sub,device_id,time_zone
+    </sql>
+    <select id="listByExample" resultType="com.ruoyi.pension.tuya.domain.TuyaDevice">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM tuya_device
+        <where>
+            <if test="name != null">AND `name` LIKE CONCAT('%',#{name},'%')</if>
+            <if test="online != null">AND online = #{online}</if>
+            <if test="deviceId != null">AND device_id LIKE CONCAT('%',#{deviceId},'%')</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+    </select>
+</mapper>

@@ -91,8 +91,6 @@ public class PensionPayment extends BasePensionEntity implements Serializable {
     private String delFlag;
 
     @TableField(exist = false)
-    private Map<String, String> params;
-    @TableField(exist = false)
     private String deptName;
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

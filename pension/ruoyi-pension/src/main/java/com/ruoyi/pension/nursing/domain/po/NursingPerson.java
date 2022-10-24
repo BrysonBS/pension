@@ -62,7 +62,5 @@ public class NursingPerson extends BasePensionEntity implements Serializable {
     @TableField(exist = false)
     private String fullAddress;
     @TableField(exist = false)
-    private Map<String, Object> params;
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

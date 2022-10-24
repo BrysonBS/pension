@@ -1,9 +1,11 @@
 package com.ruoyi.pension.owon.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.pension.common.aspect.annotation.PensionDataScope;
 import com.ruoyi.pension.owon.domain.po.Gateway;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.mapper.GatewayMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,5 +19,12 @@ import java.util.List;
 public class GatewayService extends ServiceImpl<GatewayMapper, Gateway> implements IService<Gateway> {
     public List<String> selectAllByDeptIds(List<Long> deptIds){
         return this.baseMapper.selectAllByDeptIds(deptIds);
+    }
+    public Gateway getOneByGwCode(String mac){
+        return this.baseMapper.getOneByGwCode(mac);
+    }
+    @PensionDataScope(ignoreUser = true)
+    public List<Gateway> getListByExample(Gateway gateway){
+        return this.baseMapper.getListByExample(gateway);
     }
 }

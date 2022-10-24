@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.pension.common.aspect.annotation.PensionDataScope;
 import com.ruoyi.pension.common.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.Device;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.owon.domain.po.DeviceEp;
 import com.ruoyi.pension.owon.domain.po.DevicePhone;
+import com.ruoyi.pension.owon.domain.po.Gateway;
 import com.ruoyi.pension.owon.mapper.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * @author Administrator
@@ -31,21 +34,12 @@ public class DeviceService extends ServiceImpl<DeviceMapper, Device> implements 
     private RedisCache redisCache;
     @Autowired
     private SysDeptOwonService deptOwonService;
+    @Autowired
+    private GatewayService gatewayService;
 
-    public List<Device> getListByDeptIdsAndDevice(List<Long> deptIds,Device device){
-        if(deptIds.isEmpty()) deptIds = null;
-        List<Device> list = this.baseMapper.getListByDeptIdsAndDevice(deptIds,device);
-        for(Device e : list){
-            DeviceEp deviceEp = redisCache.getCacheObject(e.getIeee());
-            if(e.getLinkStatus() == null)//设置BLE设备状态
-                e.setLinkStatus(e.getNetState() == 1);
-            if(deviceEp == null) continue;
-            if(deviceEp.getLinkStatus() != null)//EP设备状态
-                e.setLinkStatus(deviceEp.getLinkStatus());
-            if(deviceEp.getNetState() != null) //BLE设备状态
-                e.setLinkStatus(deviceEp.getNetState() == 1);
-        }
-        return list;
+    @PensionDataScope(deptAlias = "a",ignoreUser = true)
+    public List<Device> getListByExample(Device device){
+        return this.baseMapper.listByExample(device);
     }
     @Transactional
     public void updateNameAndLinkStatusByList(List<DeviceEp> list){
@@ -54,22 +48,17 @@ public class DeviceService extends ServiceImpl<DeviceMapper, Device> implements 
         });
     }
 
-    public List<String> selectAllByDeptIds(List<Long> deptIds){
-        return this.baseMapper.selectAllByDeptIds(deptIds);
-    }
-
-    @Transactional
-    public int saveOrUpdateSelectiveByIeeeAndEp(DeviceEp deviceEp){
-        return this.baseMapper.saveOrUpdateByIeeeAndEp(deviceEp);
-    }
-
     public int saveOrUpdateByIeeeAndEpAndName(DeviceEp deviceEp){
         LambdaQueryWrapper<Device> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(deviceEp.getIeee() != null,Device::getIeee,deviceEp.getIeee());
+        //ieee : hash index
+        queryWrapper.eq(Device::getIeee,deviceEp.getIeee());
                 //.eq(deviceEp.getEp() != null,Device::getEp,deviceEp.getEp());
         Device device = this.baseMapper.selectOne(queryWrapper);
         if(device == null){
-            //新增
+            //新增时先更新deptId;
+            Optional.ofNullable(gatewayService.getOneByGwCode(deviceEp.getGwCode()))
+                    .ifPresent(gateway -> deviceEp.setDeptId(gateway.getDeptId()));
+            //然后新增
             return insertByDeviceEp(deviceEp);
         }
         if(device.getDeptName() != null && deviceEp.getName() != null){

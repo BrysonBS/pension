@@ -94,18 +94,18 @@
         AND source = 3
     </select>
     <select id="getListByExample" resultType="com.ruoyi.pension.bioland.domain.po.BiolandDevice">
-        SELECT
-        <include refid="Select_List"/>
-        FROM v_bioland_device_categories
+        SELECT * FROM v_bioland_device_categories a
         <where>
-            <if test="categoriesId != null"> categories_id = #{categoriesId} </if>
+            <if test="categoriesId != null"> a.categories_id = #{categoriesId} </if>
+            <if test="deptId == 100">
+                AND a.dept_id = 100
+            </if>
             <if test="serialNumber != null">
-                AND serial_number LIKE CONCAT('%',#{serialNumber},'%')
+                AND a.serial_number LIKE CONCAT('%',#{serialNumber},'%')
             </if>
             <if test="name != null">
-                AND `name` LIKE CONCAT('%',#{name},'%')
+                AND a.`name` LIKE CONCAT('%',#{name},'%')
             </if>
-            <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
     </select>

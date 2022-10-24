@@ -36,4 +36,32 @@
             #{deptId}
         </foreach>
     </select>
+    <select id="getOneByGwCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from owon_gateway
+        where
+        gw_code = #{gwCode,jdbcType=VARCHAR}
+    </select>
+    <select id="getListByExample" resultType="com.ruoyi.pension.owon.domain.po.Gateway">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM owon_gateway
+        <where>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="deptId == 100">
+                AND dept_id = 100
+            </if>
+            <if test="gwName != null">
+                AND gw_name LIKE CONCAT('%',#{gwName},'%')
+            </if>
+            <if test="gwName != null">
+                AND gw_code LIKE CONCAT('%',#{gwCode},'%')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+    </select>
 </mapper>

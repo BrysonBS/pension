@@ -42,8 +42,8 @@
         <wechatpay.version>0.4.7</wechatpay.version>
         <zxing.version>3.5.0</zxing.version>
         <alipay.version>4.31.72.ALL</alipay.version>
-
         <alipay.easy.version>2.2.2</alipay.easy.version>
+        <eclipse.paho.client.version>1.2.5</eclipse.paho.client.version>
     </properties>
 	
     <!-- 依赖声明 -->
@@ -56,6 +56,20 @@
                 <version>${springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tuya</groupId>
+                <artifactId>tuya-spring-boot-starter</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+
+
+            <!-- MQTT -->
+            <dependency>
+                <groupId>org.eclipse.paho</groupId>
+                <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+                <version>${eclipse.paho.client.version}</version>
             </dependency>
             <!-- 二维码 -->
             <dependency>
@@ -86,11 +100,6 @@
                 <groupId>com.alipay.sdk</groupId>
                 <artifactId>alipay-sdk-java</artifactId>
                 <version>${alipay.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alipay.sdk</groupId>
-                <artifactId>alipay-easysdk</artifactId>
-                <version>${alipay.easy.version}</version>
             </dependency>
 
             <!-- 阿里数据库连接池 -->
@@ -336,6 +345,10 @@
                 <version>2.22.2</version>
                 <configuration>
                     <skipTests>true</skipTests>    <!--默认关掉单元测试 -->
+                    <forkMode>always</forkMode>
+                    <argLine>--add-modules java.xml.bind</argLine>
+                    <argLine>--add-modules java.activation</argLine>
+                    <argLine>--add-opens=java.base/java.lang=ALL-UNNAMED --illegal-access=warn</argLine>
                 </configuration>
             </plugin>
         </plugins>
@@ -359,6 +372,10 @@
     </profiles>
 
     <repositories>
+        <repository>
+            <id>tuya-maven</id>
+            <url>https://maven-other.tuya.com/repository/maven-public/</url>
+        </repository>
         <repository>
             <id>public</id>
             <name>aliyun nexus</name>

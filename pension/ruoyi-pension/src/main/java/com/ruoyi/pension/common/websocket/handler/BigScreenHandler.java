@@ -1,9 +1,8 @@
-package com.ruoyi.pension.common.api;
+package com.ruoyi.pension.common.websocket.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -22,9 +21,12 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+/**
+ * 大屏展示相关
+ */
 @Component
 @Slf4j
-public class WebSocketMessageHandler {
+public class BigScreenHandler {
     @Autowired
     private NursingPersonService nursingPersonService;
     @Autowired

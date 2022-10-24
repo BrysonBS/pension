@@ -7,6 +7,7 @@ import com.ruoyi.pension.nursing.domain.po.NursingOrder;
 import com.ruoyi.pension.owon.domain.dto.Response;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 
@@ -31,6 +32,14 @@ public class MessageConfig {
         template.setExplicitQosEnabled(true);
         template.setTimeToLive(2000);//消息存活时间
         template.setReceiveTimeout(1500);//接收消息最大等待时间
+        return template;
+    }
+    //@Bean
+    public JmsTemplate jmsTemplateMqtt(ConnectionFactory connectionFactory){
+        JmsTemplate template = new JmsTemplate(connectionFactory);
+        template.setMessageConverter(messageConverter());
+        template.setExplicitQosEnabled(true);
+        template.setTimeToLive(10000);//消息存活时间
         return template;
     }
 

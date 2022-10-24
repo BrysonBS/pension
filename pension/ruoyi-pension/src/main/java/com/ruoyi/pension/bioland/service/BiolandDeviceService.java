@@ -31,12 +31,12 @@ public class BiolandDeviceService extends ServiceImpl<BiolandDeviceMapper, Biola
     private DeviceCategoriesService deviceCategoriesService;
     @Autowired
     private DevicePhoneService devicePhoneService;
+
     public List<BiolandDevice> getListByDeptIdsAndDevice(Collection<Long> deptIds, BiolandDevice device) {
         if(deptIds.isEmpty()) deptIds = null;
         return this.baseMapper.getListByDeptIdsAndDevice(deptIds,device);
     }
-
-    @PensionDataScope(ignoreUser = true)
+    @PensionDataScope(deptAlias = "a",ignoreUser = true)
     public List<BiolandDevice> getListByExample(BiolandDevice biolandDevice){
         return this.baseMapper.getListByExample(biolandDevice);
     }

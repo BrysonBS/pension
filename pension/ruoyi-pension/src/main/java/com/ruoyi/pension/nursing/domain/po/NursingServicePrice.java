@@ -101,7 +101,5 @@ public class NursingServicePrice extends BasePensionEntity implements Serializab
     @TableField(exist = false)
     private String[] dictValues;
     @TableField(exist = false)
-    private Map<String, String> params;
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

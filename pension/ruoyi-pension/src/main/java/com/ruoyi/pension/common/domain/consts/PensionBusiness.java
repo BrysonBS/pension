@@ -77,5 +77,21 @@ public class PensionBusiness {
         return SERVICE_PRICE + ":" + deptId;
     }
 
+    public static String IOT_MQTT = "IOT_MQTT";
+    public static String getKeyOfWebRTCConfig(String deviceId){
+        return IOT_MQTT.concat(":").concat(deviceId);
+    }
+    public static String getKeyOfWebRTCInfo(String deviceId){
+        return IOT_MQTT.concat(":WEB:RTC:").concat(deviceId);
+    }
+    public static String getMqttTopic(String deviceId){
+        return IOT_MQTT.concat(":user:device:").concat(deviceId);
+    }
+    public static String getMqttJmsEndpointId(String userId,String deviceId){
+        return "mqtt:jms:endpoint".concat(userId).concat(deviceId);
+    }
+    public static String getKeyOfMqttConnectInfo(String linkId){
+        return "mqtt:connect:info:".concat(linkId);
+    }
 
 }

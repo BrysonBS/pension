@@ -42,6 +42,7 @@ import DictTag from '@/components/DictTag'
 import VueMeta from 'vue-meta'
 // 字典数据组件
 import DictData from '@/components/DictData'
+import VueLoaders from 'vue-loaders';
 
 // echarts组件
 import * as echarts from 'echarts';
@@ -81,6 +82,7 @@ Vue.component('ImagePreview', ImagePreview)
 Vue.use(directive)
 Vue.use(plugins)
 Vue.use(VueMeta)
+Vue.use(VueLoaders)
 DictData.install()
 
 /**
