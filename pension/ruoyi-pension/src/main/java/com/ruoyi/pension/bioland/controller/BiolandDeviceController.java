@@ -22,8 +22,6 @@ public class BiolandDeviceController extends BaseController {
     @Autowired
     private BiolandDeviceService biolandDeviceService;
     @Autowired
-    private SysDeptOwonService deptOwonService;
-    @Autowired
     private DevicePhoneService devicePhoneService;
     //获取列表
     @GetMapping("/list")

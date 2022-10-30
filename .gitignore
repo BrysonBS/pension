@@ -8,6 +8,7 @@
 /pension/ruoyi-pension/target/
 /pension/ruoyi-quartz/target/
 /pension/ruoyi-system/target/
+/pension/ruoyi-admin/src/main/resources/*.key
 /pension/ruoyi-admin/src/main/resources/*.yml
 /pension/ruoyi-pension/src/main/resources/*.yml
 /pension/*/src/test/

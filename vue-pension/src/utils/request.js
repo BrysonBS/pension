@@ -6,8 +6,6 @@ import errorCode from '@/utils/errorCode'
 import { tansParams, blobValidate } from "@/utils/ruoyi";
 import cache from '@/plugins/cache'
 import { saveAs } from 'file-saver'
-import * as http from 'http'
-import * as https from 'https'
 
 let downloadLoadingInstance;
 // 是否显示重新登录
@@ -95,6 +93,19 @@ service.interceptors.response.use(res => {
       });
     }
       return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
+    } else if (code === 10002) {
+      // 第三方登录错误提示
+      MessageBox.confirm(msg, '系统提示', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        store.dispatch('LogOut').then(() => {
+          location.href = '/index';
+        })
+      }).catch(() => {});
+      return Promise.reject(new Error(msg))
     } else if (code === 500) {
       Message({
         message: msg,

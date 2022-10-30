@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  * 
  * @TableName owon_device
  */
-@TableName(value ="owon_device")
+@TableName(value ="owon_device",excludeProperty = {"createBy","createTime","updateBy","updateTime"})
 @Data
 @Builder
 @AllArgsConstructor

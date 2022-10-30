@@ -34,8 +34,8 @@ public class MessageConfig {
         template.setReceiveTimeout(1500);//接收消息最大等待时间
         return template;
     }
-    //@Bean
-    public JmsTemplate jmsTemplateMqtt(ConnectionFactory connectionFactory){
+    @Bean
+    public JmsTemplate jmsTemplateCommon(ConnectionFactory connectionFactory){
         JmsTemplate template = new JmsTemplate(connectionFactory);
         template.setMessageConverter(messageConverter());
         template.setExplicitQosEnabled(true);

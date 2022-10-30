@@ -136,9 +136,9 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="12">
           <el-form-item label="设备类别"
-                        v-hasPermi="['device:bioland:edit:class']"
-          >
+                        v-hasPermi="['device:bioland:edit:class']">
             <el-select v-model="form.categoriesId" filterable placeholder="请选择">
               <el-option
                 v-for="item in classOptions"
@@ -149,6 +149,7 @@
               </el-option>
             </el-select>
           </el-form-item>
+          </el-col>
         </el-row>
         <el-row :gutter="5">
           <el-form-item
@@ -164,6 +165,10 @@
             <el-col :span="3">
               <el-button type="danger" icon="el-icon-delete" circle @click.prevent="removeDomain(domain)"></el-button>
             </el-col>
+<!--            <el-col :span="11">
+              <el-checkbox-button v-model="domain.sms" size="mini" checked>短信</el-checkbox-button>
+              <el-checkbox-button v-model="domain.vms" size="mini" checked>语音</el-checkbox-button>
+            </el-col>-->
           </el-form-item>
         </el-row>
       </el-form>
@@ -268,7 +273,9 @@ export default {
       this.form.phones.push({
         id:'',
         phone: '',
-        deviceId: this.form.id
+        deviceId: this.form.id,
+/*        sms: '',
+        vms: '',*/
       });
     },
     /** 获取设备类别 */

@@ -14,8 +14,9 @@
       </el-form-item>
       <el-form-item prop="password">
         <el-input
-          v-model="loginForm.password"
+          v-model="loginForm.plainPassword"
           type="password"
+          :maxlength="maxLength"
           auto-complete="off"
           placeholder="密码"
           @keyup.enter.native="handleLogin"
@@ -46,6 +47,27 @@
           <router-link class="link-type" :to="'/register'">立即注册</router-link>
         </div>
       </el-form-item>
+      <!--  第三方应用登录 -->
+      <el-form-item style="width:100%;" v-show="auth">
+        <div class="oauth-login" style="display:flex">
+          <div class="oauth-login-item" @click="doSocialLogin('gitee')">
+            <svg-icon icon-class="gitee" style="height:1.2em" />
+            <span>Gitee</span>
+          </div>
+          <div class="oauth-login-item" @click="doSocialLogin('github')">
+            <svg-icon icon-class="github" style="height:1.2em" />
+            <span>Github</span>
+          </div>
+          <div class="oauth-login-item">
+            <svg-icon icon-class="weixin" style="height:1.2em" />
+            <span>Weixin</span>
+          </div>
+          <div class="oauth-login-item">
+            <svg-icon icon-class="qq" style="height:1.2em" />
+            <span>QQ</span>
+          </div>
+        </div>
+      </el-form-item>
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
@@ -56,7 +78,8 @@
 
 <script>
 import Cookies from "js-cookie";
-import { encrypt, decrypt } from "@/utils/jsencrypt";
+import { authBinding } from "@/api/system/auth";
+import { encrypt } from "@/utils/jsencrypt";
 import Verify from "@/components/Verifition/Verify";
 
 export default {
@@ -64,17 +87,22 @@ export default {
   name: "Login",
   data() {
     return {
+      //授权登录
+      auth: process.env.VUE_APP_ENABLE_AUTH,
+      maxLength: 20,
       loginForm: {
         username: "",
         password: "",
+        plainPassword: "",
         rememberMe: false,
         code: "",
+        uuid: "",
       },
       loginRules: {
         username: [
           { required: true, trigger: "blur", message: "请输入您的账号" }
         ],
-        password: [
+        plainPassword: [
           { required: true, trigger: "blur", message: "请输入您的密码" }
         ],
       },
@@ -102,16 +130,22 @@ export default {
       const rememberMe = Cookies.get("rememberMe");
       this.loginForm = {
         username: username === undefined ? this.loginForm.username : username,
-        password: password === undefined ? this.loginForm.password : decrypt(password),
+        password: password,
+        plainPassword: password === undefined ? this.loginForm.password : password.slice(0,this.maxLength + 1),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
       };
     },
-    capctchaCheckSuccess(params) {
+    async capctchaCheckSuccess(params) {
       this.loginForm.code = params.captchaVerification;
       this.loading = true;
+      //明文则加密
+      if (this.loginForm.plainPassword.length <= this.maxLength) {
+        this.loginForm.password = await encrypt(this.loginForm.plainPassword)
+      }
+
       if (this.loginForm.rememberMe) {
         Cookies.set("username", this.loginForm.username, { expires: 30 });
-        Cookies.set("password", encrypt(this.loginForm.password), { expires: 30, });
+        Cookies.set("password", this.loginForm.password, { expires: 30, });
         Cookies.set("rememberMe", this.loginForm.rememberMe, { expires: 30 });
       } else {
         Cookies.remove("username");
@@ -119,16 +153,21 @@ export default {
         Cookies.remove("rememberMe");
       }
       this.$store.dispatch("Login", this.loginForm).then(() => {
-          this.$router.push({ path: this.redirect || "/" }).catch(() => {});
-        }).catch(() => {
-          this.loading = false;
-        });
+        this.$router.push({ path: this.redirect || "/" }).catch(() => {});
+      }).catch(() => {
+        this.loading = false;
+      });
     },
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.$refs.verify.show();
         }
+      });
+    },
+    doSocialLogin(source) {
+      authBinding(source).then(res => {
+        top.location.href = res.msg;
       });
     },
   },
@@ -183,5 +222,24 @@ export default {
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;
+}
+.oauth-login {
+  display: flex;
+  align-items: center;
+  cursor:pointer;
+  justify-content: center;
+}
+.oauth-login-item {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+.oauth-login-item img {
+  height: 25px;
+  width: 25px;
+}
+.oauth-login-item span:hover {
+  text-decoration: underline red;
+  color: red;
 }
 </style>

@@ -81,6 +81,10 @@ public class BiolandDeviceService extends ServiceImpl<BiolandDeviceMapper, Biola
         }
     }
     @Transactional
+    public void saveIfAbsent(BiolandDevice device){
+        this.baseMapper.saveIfAbsent(device);
+    }
+    @Transactional
     public BiolandDevice  selectOneBySerialNumber(String serialNumber){
         return this.baseMapper.selectOneBySerialNumber(serialNumber);
     }

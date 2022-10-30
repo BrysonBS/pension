@@ -1,7 +1,6 @@
 package com.ruoyi.pension.bioland.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.websocket.WebSocketUsers;
@@ -10,15 +9,13 @@ import com.ruoyi.pension.bioland.domain.po.BiolandDevice;
 import com.ruoyi.pension.bioland.domain.po.SrcDataValue;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.pension.bioland.mapper.SrcDataValueMapper;
-import com.ruoyi.pension.common.api.SendSms;
-import com.ruoyi.pension.common.domain.consts.PensionBusiness;
-import com.ruoyi.pension.common.domain.enums.Operation;
+import com.ruoyi.pension.common.api.AlimsManager;
 import com.ruoyi.pension.common.domain.enums.Platform;
-import com.ruoyi.pension.common.domain.vo.ExampleVo;
 import com.ruoyi.pension.owon.domain.po.OwonNotice;
 import com.ruoyi.pension.common.domain.vo.NoticeVo;
 import com.ruoyi.pension.owon.service.OwonNoticeService;
 import com.ruoyi.pension.owon.service.SysUserOwonService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,13 +29,12 @@ import java.util.List;
 * @createDate 2022-05-13 15:24:44
 */
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SrcDataValueService extends ServiceImpl<SrcDataValueMapper, SrcDataValue> implements IService<SrcDataValue> {
-    @Autowired
-    private BiolandDeviceService biolandDeviceService;
-    @Autowired
-    private SysUserOwonService sysUserOwonService;
-    @Autowired
-    private OwonNoticeService owonNoticeService;
+    private final BiolandDeviceService biolandDeviceService;
+    private final SysUserOwonService sysUserOwonService;
+    private final OwonNoticeService owonNoticeService;
+    private final AlimsManager alimsManager;
 
     public List<SrcDataValue> listLatest(String serialNumber, LocalDateTime beginTime, LocalDateTime endTime){
         if(endTime != null) endTime = endTime.plusDays(1);
@@ -98,7 +94,7 @@ public class SrcDataValueService extends ServiceImpl<SrcDataValueMapper, SrcData
         //短信通知
         List<String> phones = biolandDeviceService.getPhonesBySerialNumber(biolandDevice.getSerialNumber());
         if(phones != null && phones.size() > 0)
-            SendSms.sendWarning(biolandDevice.getName(),phones.toArray(String[]::new));
+            alimsManager.sendAlertSms(biolandDevice.getTypeName() + ":" + biolandDevice.getName(),phones);
         return owonNotice;
     }
 }

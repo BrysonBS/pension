@@ -61,7 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
      */
     @Autowired
     private SwaggerFilter swaggerFilter;
-    
+
+
     /**
      * 解决 无法直接注入 AuthenticationManager
      *
@@ -103,7 +104,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 // 过滤请求
                 .authorizeRequests()
                 // 对于登录login 注册register 验证码captchaImage 允许匿名访问
-                .antMatchers("/login", "/register").anonymous()
+                .antMatchers("/login", "/register","/publicKey","/system/auth/binding/*", "/system/auth/social-login/*").permitAll()
                 .antMatchers("/captcha/get", "/captcha/check","/websocket/**").anonymous()
                 //放行owon和bioland上报和支付通知
                 .antMatchers(

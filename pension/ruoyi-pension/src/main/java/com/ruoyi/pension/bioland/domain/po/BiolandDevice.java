@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ruoyi.pension.common.domain.po.BasePensionEntity;
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
  * 
  * @TableName bioland_device
  */
-@TableName(value ="bioland_device")
+@TableName(value ="bioland_device",excludeProperty = {"createBy","createTime","updateBy","updateTime"})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

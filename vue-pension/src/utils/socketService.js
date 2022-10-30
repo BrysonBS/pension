@@ -53,9 +53,14 @@ export default class SocketService {
     //协议
     const protocol = window.location.protocol == 'http:' ? 'ws://' : 'wss://';
     //地址
-    const wsuri = protocol+window.location.host +this.uri+'/'+getToken();
-    this.ws = new WebSocket(wsuri);
+    let wsuri = protocol+window.location.host + this.uri+'/' + (getToken() || '');
+    
 
+    if(process.env.NODE_ENV === 'development'){
+      wsuri = 'ws://127.0.0.1' + this.uri+'/' + (getToken() || '');
+    }
+
+    this.ws = new WebSocket(wsuri);
     // 连接成功的事件
     this.ws.onopen = () => {
       //console.log('连接服务端成功');

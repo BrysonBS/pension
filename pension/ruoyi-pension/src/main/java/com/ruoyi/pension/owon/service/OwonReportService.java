@@ -6,7 +6,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.websocket.WebSocketUsers;
-import com.ruoyi.pension.common.api.SendSms;
+import com.ruoyi.pension.common.api.AlimsManager;
 import com.ruoyi.pension.owon.api.StatusManager;
 import com.ruoyi.pension.owon.domain.dto.Argument;
 import com.ruoyi.pension.owon.domain.dto.Datapacket;
@@ -16,7 +16,6 @@ import com.ruoyi.pension.common.domain.enums.Operation;
 import com.ruoyi.pension.common.domain.enums.Platform;
 import com.ruoyi.pension.owon.domain.po.Device;
 import com.ruoyi.pension.owon.domain.po.DeviceEp;
-import com.ruoyi.pension.owon.domain.po.Gateway;
 import com.ruoyi.pension.owon.domain.po.OwonNotice;
 import com.ruoyi.pension.common.domain.vo.NoticeVo;
 import com.ruoyi.pension.owon.mapper.OwonReportMapper;
@@ -52,6 +51,8 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
     private SysUserOwonService sysUserOwonService;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private AlimsManager alimsManager;
 
     @Transactional
     public boolean saveCascade(OwonReport owonReport) throws Exception {
@@ -254,7 +255,7 @@ public class OwonReportService extends ServiceImpl<OwonReportMapper, OwonReport>
         //短信通知
         List<String> phones = deviceService.getPhonesByIeeeAndEp(device.getIeee(),device.getEp());
         if(phones != null && phones.size() > 0)
-            SendSms.sendWarning(device.getName(),phones.toArray(String[]::new));
+            alimsManager.sendAlertSms(device.getDisplayName() + ":" + device.getName(),phones);
         return owonNotice;
     }
 

@@ -23,15 +23,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
-import io.swagger.v3.oas.annotations.extensions.Extension;
-import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.apache.activemq.artemis.api.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -54,6 +49,7 @@ import java.util.*;
 
 @Tag(name = "一般接口Api")
 @RestController
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/swagger/general")
 public class GeneralTestController extends BaseController {
     @Autowired
@@ -79,6 +75,7 @@ public class GeneralTestController extends BaseController {
     private JmsTemplate jmsTemplateTime;
     @Autowired
     private TuyaDeviceService tuyaDeviceService;
+    private final AlimsManager alimsManager;
 
 
     @Operation(summary = "tuya设备列表",security = { @SecurityRequirement(name = "Authorization") })
@@ -117,8 +114,14 @@ public class GeneralTestController extends BaseController {
 
     @Operation(summary = "发送短信测试",security = { @SecurityRequirement(name = "Authorization") })
     @GetMapping("/sendSms")
-    public AjaxResult SendSmsText(String phone) throws Exception {
-        SendSms.sendWarning("Sensor-D11396",new String[]{phone});
+    public AjaxResult SendSmsText(String name,String phone) throws Exception {
+        alimsManager.sendAlertSms(name,List.of(phone));
+        return AjaxResult.success();
+    }
+    @Operation(summary = "发送语音测试",security = { @SecurityRequirement(name = "Authorization") })
+    @GetMapping("/sendVms")
+    public AjaxResult SendVmsText(String name,String phone) throws Exception {
+        alimsManager.sendAlertVms(name,phone);
         return AjaxResult.success();
     }
 

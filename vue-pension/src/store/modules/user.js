@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login,socialLogin, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -37,6 +37,22 @@ const user = {
       const uuid = userInfo.uuid
       return new Promise((resolve, reject) => {
         login(username, password, code, uuid).then(res => {
+          setToken(res.token)
+          commit('SET_TOKEN', res.token)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    // 第三方平台登录
+    SocialLogin({ commit }, userInfo) {
+      const code = userInfo.code
+      const state = userInfo.state
+      const source = userInfo.source
+      return new Promise((resolve, reject) => {
+        socialLogin(source, code, state).then(res => {
           setToken(res.token)
           commit('SET_TOKEN', res.token)
           resolve()

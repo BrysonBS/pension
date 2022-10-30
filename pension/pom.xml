@@ -32,7 +32,8 @@
         <httpclient5.version>5.1.3</httpclient5.version>
         <knife4j.version>3.0.3</knife4j.version>
         <springdoc.version>1.6.8</springdoc.version>
-        <dysmsapi.verson>2.0.9</dysmsapi.verson>
+        <dysmsapi.version>1.0.1</dysmsapi.version>
+        <dyvmsapi.version>1.0.0</dyvmsapi.version>
         <com.aliyun.oss>3.15.0</com.aliyun.oss>
         <javax.xml.bind>2.3.1</javax.xml.bind>
         <javax.activation>1.1.1</javax.activation>
@@ -44,6 +45,8 @@
         <alipay.version>4.31.72.ALL</alipay.version>
         <alipay.easy.version>2.2.2</alipay.easy.version>
         <eclipse.paho.client.version>1.2.5</eclipse.paho.client.version>
+        <justAuth.version>1.4.0</justAuth.version>
+
     </properties>
 	
     <!-- 依赖声明 -->
@@ -63,14 +66,20 @@
                 <artifactId>tuya-spring-boot-starter</artifactId>
                 <version>1.1.1</version>
             </dependency>
-
-
             <!-- MQTT -->
             <dependency>
                 <groupId>org.eclipse.paho</groupId>
                 <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
                 <version>${eclipse.paho.client.version}</version>
             </dependency>
+
+            <!-- 第三方授权登录 -->
+            <dependency>
+                <groupId>com.xkcoding.justauth</groupId>
+                <artifactId>justauth-spring-boot-starter</artifactId>
+                <version>${justAuth.version}</version>
+            </dependency>
+
             <!-- 二维码 -->
             <dependency>
                 <groupId>com.google.zxing</groupId>
@@ -111,8 +120,14 @@
             <!--阿里短信服务-->
             <dependency>
                 <groupId>com.aliyun</groupId>
-                <artifactId>dysmsapi20170525</artifactId>
-                <version>${dysmsapi.verson}</version>
+                <artifactId>alibabacloud-dysmsapi20170525</artifactId>
+                <version>${dysmsapi.version}</version>
+            </dependency>
+            <!--阿里语音服务-->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>alibabacloud-dyvmsapi20170525</artifactId>
+                <version>${dyvmsapi.version}</version>
             </dependency>
             <!--阿里云oss-->
             <dependency>

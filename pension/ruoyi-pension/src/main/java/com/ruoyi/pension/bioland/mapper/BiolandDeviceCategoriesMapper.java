@@ -1,4 +1,5 @@
 package com.ruoyi.pension.bioland.mapper;
+import com.ruoyi.pension.bioland.domain.po.BiolandDevice;
 import org.apache.ibatis.annotations.Param;
 
 import com.ruoyi.pension.bioland.domain.po.BiolandDeviceCategories;

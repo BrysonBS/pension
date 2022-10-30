@@ -20,6 +20,7 @@ public interface BiolandDeviceMapper extends BaseMapper<BiolandDevice> {
 
     BiolandDevice selectOneBySerialNumber(@Param("serialNumber") String serialNumber);
     int saveOrUpdateBySerialNumber(BiolandDevice device);
+    void saveIfAbsent(BiolandDevice device);
 }
 
 

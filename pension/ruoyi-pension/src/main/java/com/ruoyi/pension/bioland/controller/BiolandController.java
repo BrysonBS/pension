@@ -46,7 +46,7 @@ public class BiolandController {
                 .serialNumber(srcDataValue.getSerialNumber())
                 .deviceType(srcDataValue.getDeviceType().getCode())
                 .build();
-        biolandDeviceService.saveIfNotPresent(biolandDevice);
+        biolandDeviceService.saveIfAbsent(biolandDevice);
         //再保存上报数据
         boolean result = srcDataValueService.saveDataAndSendNotice(srcDataValue);
         if (result) {
@@ -127,7 +127,6 @@ public class BiolandController {
 
         return ipsb.toString().toUpperCase();
     }
-
     /**
      * 获取服务器时间
      *

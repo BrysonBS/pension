@@ -57,6 +57,27 @@
             </otherwise>
         </choose>
     </insert>
+    <insert id="saveIfAbsent">
+        INSERT IGNORE INTO bioland_device
+        <trim prefix="(" suffix=")" prefixOverrides=",">
+            <if test="deptId != null">,dept_id</if>
+            <if test="categoriesId != null or deviceType != null">,categories_id</if>
+            <if test="name != null">,`name`</if>
+            <if test="serialNumber != null">,serial_number</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" prefixOverrides=",">
+            <if test="deptId != null">,#{deptId}</if>
+            <choose>
+                <when test="categoriesId != null">,#{categoriesId}</when>
+                <otherwise>
+                    ,(select id from bioland_device_categories where device_type = #{deviceType})
+                </otherwise>
+            </choose>
+            <if test="name != null">,#{name}</if>
+            <if test="serialNumber != null">,#{serialNumber}</if>
+        </trim>
+    </insert>
     <select id="getListByDeptIdsAndDevice" resultType="com.ruoyi.pension.bioland.domain.po.BiolandDevice">
         SELECT * FROM v_bioland_device_categories a
         <where>
